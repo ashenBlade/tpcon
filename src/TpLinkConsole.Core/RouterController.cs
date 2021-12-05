@@ -14,7 +14,7 @@ namespace TpLinkConsole.Core
         public RouterController(IPAddress routerAddress, string username, string password)
         {
             _router = new Router(routerAddress, username, password);
-            _client = new HttpClient() {BaseAddress = new Uri(routerAddress.ToString()),};
+            _client = new HttpClient() {BaseAddress = new Uri($"http://{routerAddress.ToString()}"),};
         }
 
         private HttpRequestMessage CreateMessage(HttpMethod method)
