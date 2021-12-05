@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TpLinkConsole.Core", "src\T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TpLinkConsole.Console", "src\TpLinkConsole.Console\TpLinkConsole.Console.csproj", "{D645AAB4-6C49-4FF3-A1D5-092E7903CF4E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E884FE8B-7274-4D2A-ABE3-0354BF4DBD62}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
