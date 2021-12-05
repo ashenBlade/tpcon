@@ -2,8 +2,13 @@
 
 using System;
 using System.Net;
+using System.Runtime.CompilerServices;
+using TpLinkConsole.Console;
+using TpLinkConsole.Console.CommandLineUtils;
+using TpLinkConsole.Core;
 
-var controller = new TpLinkConsole.Core.RouterController(IPAddress.Parse("192.168.0.1"), "admin", "admin");
+
+var controller = GetRouterController(args);
 Console.WriteLine($"Testing connection...");
 var success = await controller.TestConnectionAsync();
 var previousColor = Console.BackgroundColor;
@@ -18,3 +23,23 @@ else
     Console.WriteLine("Connection failed");
 }
 Console.BackgroundColor = previousColor;
+
+
+
+RouterController GetRouterController(string[] args)
+{
+    var parser = new CommandLineArgumentsParser();
+    ICommandLineArguments parsed;
+    try
+    {
+        parsed = parser.Parse(args);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+        throw;
+    }
+    return new RouterController(IPAddress.Parse(parsed?["address"] ?? "192.168.0.1" ),
+                                parsed?["username"] ?? "admin",
+                                parsed?["password"] ?? "admin");
+}

@@ -12,7 +12,9 @@ namespace TpLinkConsole.Console
             _arguments = arguments;
         }
 
-        public string this[string argument] => _arguments[argument];
+        public string this[string argument] => _arguments.TryGetValue(argument, out var value)
+                                                   ? value
+                                                   : null;
 
         public bool TryGetArgument(string argument, out string value)
         {
