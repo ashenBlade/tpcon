@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace TpLinkConsole.Console
+namespace TpLinkConsole.Console.CommandLineUtils
 {
     public interface ICommandLineArgumentsParser
     {
