@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TpLinkConsole.Console", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E884FE8B-7274-4D2A-ABE3-0354BF4DBD62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsParser.Core", "src\JsParser.Core\JsParser.Core.csproj", "{59235C6E-3D87-4921-8988-A31193B7D45A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsTypes", "src\JsTypes\JsTypes.csproj", "{59235C6E-3D87-4921-8988-A31193B7D45A}"
 EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution

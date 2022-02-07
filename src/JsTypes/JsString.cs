@@ -1,6 +1,6 @@
 using Microsoft.VisualBasic.CompilerServices;
 
-namespace JsParser.Core.Types;
+namespace JsTypes;
 
 public class JsString : JsType
 {

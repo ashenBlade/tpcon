@@ -1,6 +1,4 @@
-using Microsoft.VisualBasic.CompilerServices;
-
-namespace JsParser.Core.Types;
+namespace JsTypes;
 
 public class JsFunction : JsType
 {

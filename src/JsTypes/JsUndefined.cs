@@ -1,4 +1,4 @@
-namespace JsParser.Core.Types;
+namespace JsTypes;
 
 public class JsUndefined : JsType
 {
