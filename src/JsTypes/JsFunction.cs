@@ -10,4 +10,9 @@ public class JsFunction : JsType
         Name = name;
         Body = body;
     }
+
+    public override object Clone()
+    {
+        return new JsFunction(Name, Body);
+    }
 }

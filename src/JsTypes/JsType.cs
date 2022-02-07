@@ -1,4 +1,6 @@
 namespace JsTypes;
 
-public class JsType
-{ }
+public abstract class JsType : ICloneable
+{
+    public abstract object Clone();
+}

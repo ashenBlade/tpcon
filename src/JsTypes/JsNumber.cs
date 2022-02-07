@@ -8,4 +8,8 @@ public class JsNumber : JsType
     }
     
     public decimal Value { get; }
+    public override object Clone()
+    {
+        return new JsNumber(Value);
+    }
 }
