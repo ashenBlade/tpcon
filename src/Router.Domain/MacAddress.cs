@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Router.Domain;
@@ -5,6 +6,7 @@ namespace Router.Domain;
 public class MacAddress
 {
     private readonly byte[] _octets;
+    private string? _representation;
     public MacAddress(IReadOnlyList<byte> octets)
     {
         if (octets.Count != 6)
@@ -36,8 +38,8 @@ public class MacAddress
         {
             throw new ArgumentOutOfRangeException(nameof(mac), mac, $"Mac address does not satisfy representation: {MacAddressRegex}");
         }
-
-        return new MacAddress(mac.Split('-').Select(byte.Parse).ToArray());
+        
+        return new MacAddress(mac.Split('-').Select(hex => byte.Parse(hex, NumberStyles.HexNumber)).ToArray());
     }
 
     public bool Unicast => ( _octets[0] & 0b0000_0001 ) == 0;
@@ -45,4 +47,14 @@ public class MacAddress
 
     public bool GloballyUnique => ( _octets[0] & 0b0000_0010 ) == 0;
     public bool LocallyAdministered => !GloballyUnique;
+
+    public override string ToString()
+    {
+        return _representation ??= GetRepresentation(_octets);
+    }
+
+    private string GetRepresentation(byte[] octets)
+    {
+        return octets.Select(octet => $"{octet:X2}").Aggregate((s, n) => $"{s}-{n}");
+    }
 }
