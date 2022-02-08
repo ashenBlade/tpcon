@@ -11,7 +11,7 @@ public class LanParametersTests
     public void Constructor_WithValidParameters_ShouldCreateNewInstance()
     {
         // Arrange
-        var record = Record.Exception( () => new LanParameters(new MacAddress(), IPAddress.Any, new SubnetMask(0)) );
+        var record = Record.Exception( () => new LanParameters(MacAddress.Parse("11-11-11-11-11-11"), IPAddress.Any, new SubnetMask(0)) );
         
         Assert.Null(record);
     }
@@ -25,12 +25,12 @@ public class LanParametersTests
     [Fact]
     public void Constructor_WithNullAsIpAddress_ShouldThrowArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => new LanParameters(new MacAddress(), null, new SubnetMask(0)));
+        Assert.Throws<ArgumentNullException>(() => new LanParameters(MacAddress.Parse("11-11-11-11-11-11"), null, new SubnetMask(0)));
     }
     
     [Fact]
     public void Constructor_WithNullAsSubnetMask_ShouldThrowArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => new LanParameters(new MacAddress(), IPAddress.Any, null));
+        Assert.Throws<ArgumentNullException>(() => new LanParameters(MacAddress.Parse("11-11-11-11-11-11"), IPAddress.Any, null));
     }
 }
