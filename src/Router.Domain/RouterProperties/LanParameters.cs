@@ -4,14 +4,14 @@ namespace Router.Domain.RouterProperties;
 
 public struct LanParameters
 {
-    public LanParameters(MacAddress macAddress, IPAddress ipAddress, IPAddress subnetSubnetMask)
+    public LanParameters(MacAddress macAddress, IPAddress ipAddress, SubnetMask subnetMask)
     {
         MacAddress = macAddress;
         IpAddress = ipAddress;
-        SubnetMask = subnetSubnetMask;
+        SubnetMask = subnetMask;
     }
     
     public MacAddress MacAddress { get; }
     public IPAddress IpAddress { get; }
-    public IPAddress SubnetMask { get; }
+    public SubnetMask SubnetMask { get; }
 }
