@@ -2,7 +2,7 @@ using System.Net;
 
 namespace Router.Domain.RouterProperties;
 
-public struct LanParameters
+public class LanParameters
 {
     public LanParameters(MacAddress macAddress, IPAddress ipAddress, SubnetMask subnetMask)
     {
