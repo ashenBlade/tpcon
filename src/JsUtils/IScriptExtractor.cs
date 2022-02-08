@@ -1,4 +1,4 @@
-namespace Router.TPLink.ScriptExtractor;
+namespace JsUtils;
 
 public interface IScriptExtractor
 {

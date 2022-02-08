@@ -8,8 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\JsTypes\JsTypes.csproj" />
-      <ProjectReference Include="..\JsUtils\JsUtils.csproj" />
-      <ProjectReference Include="..\Router.Domain\Router.Domain.csproj" />
     </ItemGroup>
 
 </Project>

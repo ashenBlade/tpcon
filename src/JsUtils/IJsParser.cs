@@ -1,6 +1,6 @@
 using JsTypes;
 
-namespace Router.TPLink.JsParser;
+namespace JsUtils;
 
 public interface IJsParser
 {
