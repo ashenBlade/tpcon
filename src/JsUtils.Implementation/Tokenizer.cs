@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Immutable;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using JsUtils.Implementation.JsTokens;
@@ -101,16 +103,43 @@ public class Tokenizer : ITokenizer
 
         private JsStringLiteral ReadStringLiteral()
         {
-            var regex = new Regex(@"('(?<Content>(\s|.)*?)'|""(?<Content>(\s|.)*?)"")");
-            var match = regex.Match(_text, Position);
-            if (match.Success)
+            while (char.IsWhiteSpace(Current) && MoveNext())
             {
-                MoveSteps(match.Length);
-                var content = match.Value;
-                return new JsStringLiteral(content);
+                // Skip
             }
 
-            throw new UnexpectedTokenException(_text, _position, "Invalid string literal representation");
+            if (Current is not ('\'' or '"'))
+            {
+                throw new UnexpectedTokenException(_text, _position, $"Invalid string representation: \" or ' expected");
+            }
+            
+            char opener = Current;
+            char previous = '\0';
+            var builder = new StringBuilder();
+            while (MoveNext())
+            {
+                if (previous == '\\')
+                {
+                    builder.Append(Current);
+                }
+                else
+                {
+                    if (Current == opener)
+                    {
+                        MoveNext();
+                        return new JsStringLiteral(builder.ToString());
+                    }
+
+                    if (Current != '\\')
+                    {
+                        builder.Append(Current);
+                    }
+                }
+
+                previous = Current;
+            }
+            
+            throw new UnexpectedTokenException(_text, _position, "Unexpected string literal end");
         }
 
         private JsToken ReadWord()

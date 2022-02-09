@@ -225,4 +225,74 @@ public class TokenizerTests
         Assert.Equal(singleQuotedLiteralArray.Single(), jsStringLiteral);
         Assert.Equal(doubleQuotedLiteralArray.Single(), jsStringLiteral);
     }
+
+    public static IEnumerable<object[]> EscapedQuotesInsideStrings = new[] {
+                                                                               new object[]
+                                                                            {
+                                                                                @""" \"" """,
+                                                                                new JsStringLiteral[]
+                                                                                {
+                                                                                    new (@" \"" ")
+                                                                                }
+                                                                            },
+                                                                               new object[]
+                                                                               {
+                                                                                   @"  "" asdfasdf\' \'''' dfsdf \n"" "" sdf \"" """,
+                                                                                   new JsStringLiteral[]
+                                                                                   {
+                                                                                       new (" asdfasdf' '''' dfsdf \n"),
+                                                                                       new (@" sdf "" ")
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   @"""\""\'\"" \\ \\\"" "" '\'Hello\''",
+                                                                                   new JsStringLiteral[]
+                                                                                   {
+                                                                                       new (@"""'"" \ \"" "),
+                                                                                       new ("'Hello'")
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   "\n\n\t\"text/javascript\" ",
+                                                                                   new JsStringLiteral[]
+                                                                                   {
+                                                                                       new ("text/javascript")
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   "\"/dynaform/css_main.css\"",
+                                                                                   new JsStringLiteral[]
+                                                                                   {
+                                                                                       new ("/dynaform/css_main.css")
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   @"""<SPAN id=\""t_days\"" name=\""t_days\"">day(s)</SPAN>"" ""<span id = \""t_ie_dyn\"">IEEE802.1X + Dynamic IP<\/span>""",
+                                                                                   new JsStringLiteral[]
+                                                                                   {
+                                                                                       new("<SPAN id=\"t_days\" name=\"t_days\">day(s)</SPAN>"),
+                                                                                       new ("<span id = \"t_ie_dyn\">IEEE802.1X + Dynamic IP</span>")
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   @"'StatusHelpRpm.htm'",
+                                                                                   new JsStringLiteral[]
+                                                                                   {
+                                                                                       new ("StatusHelpRpm.htm")
+                                                                                   }
+                                                                               }
+                                                                           };
+    
+    [Theory]
+    [MemberData(nameof(EscapedQuotesInsideStrings))]
+    public void Tokenize_WithInnerEscapedQuotes_ShouldBeInsertedIntoStringContent(string strings, JsStringLiteral[] expected)
+    {
+        var actual = GetTokens(strings);
+        Assert.Equal(actual, expected);
+    }
 }
