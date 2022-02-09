@@ -42,7 +42,7 @@ public class TokenizerTests
     
     [Theory]
     [MemberData(nameof(VariableAssignment))]
-    public void Action_WithPrerequisites_ShouldBehaviour(string script, IEnumerable<JsToken> expected)
+    public void Tokenize_WithVariableAssignment_ShouldReturnTokensInSameOrderAsTheyAppear(string script, IEnumerable<JsToken> expected)
     {
         var actual = GetTokens(script).ToList();
         Assert.Equal(expected, actual);
