@@ -295,4 +295,46 @@ public class TokenizerTests
         var actual = GetTokens(strings);
         Assert.Equal(actual, expected);
     }
+
+    public static IEnumerable<object[]> JsControlFlowSequenceKeywords = new[]
+                                                                        {
+                                                                            new object[]
+                                                                            {
+                                                                                @"for", new JsToken[] {new JsFor()}
+                                                                            },
+                                                                            new object[]
+                                                                            {
+                                                                                @"if", new JsToken[] {new JsIf()}
+                                                                            },
+                                                                            new object[]
+                                                                            {
+                                                                                @"while", new JsToken[] {new JsWhile()}
+                                                                            },
+                                                                            new object[]
+                                                                            {
+                                                                                @"do", new JsToken[] {new JsDo()}
+                                                                            },
+                                                                            new object[]
+                                                                            {
+                                                                                @"do for while if if", new JsToken[] { new JsDo(), new JsFor(), new JsWhile(), new JsIf(), new JsIf() } 
+                                                                            }
+                                                                        };
+    
+    [Theory]
+    [MemberData(nameof(JsControlFlowSequenceKeywords))]
+    public void Tokenize_WithAllControlFlowKeywords_ShouldReturnOnlyKeywordsSequence(string jsKeywords, JsToken[] expected)
+    {
+        var actual = GetTokens(jsKeywords);
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData("do for while new new")]
+    [InlineData("123 new -232 x newX22")]
+    public void Tokenize_WithNewKeyword_ShouldRecognizeNewKeyword(string stringWithNewKeyword)
+    {
+        var actual = GetTokens(stringWithNewKeyword);
+        Assert.Contains(actual, token => token is JsNew);
+    }
+    
 }

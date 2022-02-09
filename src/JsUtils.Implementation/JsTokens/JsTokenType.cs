@@ -14,5 +14,10 @@ public enum JsTokenType
     Comma,
     Dot,
     Var,
-    Semicolon
+    Semicolon,
+    If,
+    While,
+    Do,
+    For,
+    New
 }

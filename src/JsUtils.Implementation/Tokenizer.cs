@@ -154,6 +154,11 @@ public class Tokenizer : ITokenizer
             return result switch
                    {
                        "var" => new JsVar(),
+                       "for" => new JsFor(),
+                       "while" => new JsWhile(),
+                       "do" => new JsDo(),
+                       "if" => new JsIf(),
+                       "new" => new JsNew(),
                        _     => new JsIdentifier(result)
                    };
         }
