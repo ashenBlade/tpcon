@@ -77,21 +77,40 @@ public class Tokenizer : ITokenizer
                 {
                     case '=':
                         toReturn = new JsEquals();
+                        MoveNext();
                         break;
                     case ';':
                         toReturn = new JsSemicolon();
+                        MoveNext();
                         break;
                     case '-':
                     case '+':
                         toReturn = ReadNumber();
                         break;
+                    case '\'':
+                    case '"':
+                        toReturn = ReadStringLiteral();
+                        break;
                     default:
                         throw new UnexpectedTokenException(_text, _position, "Unknown token type");
                 }
-                MoveNext();
             }
 
             return toReturn;
+        }
+
+        private JsStringLiteral ReadStringLiteral()
+        {
+            var regex = new Regex(@"('(?<Content>(\s|.)*?)'|""(?<Content>(\s|.)*?)"")");
+            var match = regex.Match(_text, Position);
+            if (match.Success)
+            {
+                MoveSteps(match.Length);
+                var content = match.Value;
+                return new JsStringLiteral(content);
+            }
+
+            throw new UnexpectedTokenException(_text, _position, "Invalid string literal representation");
         }
 
         private JsToken ReadWord()

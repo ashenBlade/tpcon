@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using JsTypes;
 using JsUtils.Implementation.JsTokens;
 using Xunit;
+using JsNumber = JsUtils.Implementation.JsTokens.JsNumber;
 
 namespace JsUtils.Implementation.Tests;
 
@@ -98,35 +101,35 @@ public class TokenizerTests
     }
 
     public static IEnumerable<object[]> Integers = new[]
-                                                              {
-                                                                  new object[]
-                                                                  {
-                                                                      "123 999 7444 0 22 90",
-                                                                      new JsNumber[]
-                                                                      {
-                                                                          new(123), new(999), new(7444), new(0),
-                                                                          new(22), new(90)
-                                                                      }
-                                                                  },
-                                                                  new object[]
-                                                                  {
-                                                                      "   2933 \t   12367   45635645 \n\n\n\n452467 987654",
-                                                                      new JsNumber[]
-                                                                      {
-                                                                          new (2933), new(12367), new(45635645), 
-                                                                          new(452467), new (987654)
-                                                                      }
-                                                                  },
-                                                                  new object[]
-                                                                  {
-                                                                      " -222 -0 222 35655 -12323 111 -2323",
-                                                                       new JsNumber[]
-                                                                       {
-                                                                           new (-222), new(0), new (222), new (35655),
-                                                                           new (-12323), new (111), new (-2323)
-                                                                       }
-                                                                  }
-                                                              };
+                                                   {
+                                                       new object[]
+                                                       {
+                                                           "123 999 7444 0 22 90",
+                                                           new JsNumber[]
+                                                           {
+                                                               new(123), new(999), new(7444), new(0),
+                                                               new(22), new(90)
+                                                           }
+                                                       },
+                                                       new object[]
+                                                       {
+                                                           "   2933 \t   12367   45635645 \n\n\n\n452467 987654",
+                                                           new JsNumber[]
+                                                           {
+                                                               new (2933), new(12367), new(45635645), 
+                                                               new(452467), new (987654)
+                                                           }
+                                                       },
+                                                       new object[]
+                                                       {
+                                                           " -222 -0 222 35655 -12323 111 -2323",
+                                                           new JsNumber[]
+                                                           {
+                                                               new (-222), new(0), new (222), new (35655),
+                                                               new (-12323), new (111), new (-2323)
+                                                           }
+                                                       }
+                                                   };
 
     [Theory]
     [MemberData(nameof(Integers))]
@@ -167,5 +170,59 @@ public class TokenizerTests
     {
         var actual = GetTokens(floatingPointNumbers).ToList();
         Assert.Equal(expected, actual);
+    }
+
+    public static IEnumerable<object[]> SingleQuotedStringWithDoubleQuotes = new[]
+                                                                    {
+                                                                        new object[]
+                                                                        {
+                                                                            @"""this is string""",
+                                                                            new JsStringLiteral[] {new("this is string")}
+                                                                        },
+                                                                        new object[]
+                                                                        {
+                                                                            "   \" asfsdf 123 22  2sdf\n\n\n2qudfd  oted string\" ",
+                                                                            new JsStringLiteral[]
+                                                                            {
+                                                                                new (" asfsdf 123 22  2sdf\n\n\n2qudfd  oted string")
+                                                                            }
+                                                                        },
+                                                                        new object[]
+                                                                        {
+                                                                            "\"\"",
+                                                                            new JsStringLiteral[]
+                                                                            {
+                                                                                new("")
+                                                                            }
+                                                                        }
+                                                            
+                                                                    };
+
+    [Theory]
+    [MemberData(nameof(SingleQuotedStringWithDoubleQuotes))]
+    public void Tokenize_WithSingleQuotedString_ShouldRecognizeItAsSingleStringLiteral(string stringWithQuotedCharacters, JsToken[] expected)
+    {
+        var actual = GetTokens(stringWithQuotedCharacters);
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Tokenize_WithDoubleAndSingleQuotesTypes_ShouldRecognizeThemAsStrings()
+    {
+        // Arrange
+        const string content = "string";
+        const string singleQuoted = "'" + content + "'";
+        const string doubleQuoted = "\"" + content + "\"";
+        var jsStringLiteral = new JsStringLiteral(content);
+        
+        // Act
+        var singleQuotedLiteralArray = GetTokens(singleQuoted).ToArray();
+        var doubleQuotedLiteralArray = GetTokens(doubleQuoted).ToArray();
+        
+        // Assert
+        Assert.Single(singleQuotedLiteralArray);
+        Assert.Single(doubleQuotedLiteralArray);
+        Assert.Equal(singleQuotedLiteralArray.Single(), jsStringLiteral);
+        Assert.Equal(doubleQuotedLiteralArray.Single(), jsStringLiteral);
     }
 }
