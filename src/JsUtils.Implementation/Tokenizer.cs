@@ -30,6 +30,12 @@ public class Tokenizer : ITokenizer
             return false;
         }
 
+        private bool MoveSteps(int steps)
+        {
+            _position += steps;
+            return _position < _text.Length;
+        }
+
         private char PeekNext()
         {
             return _position + 1 < _text.Length
@@ -75,6 +81,10 @@ public class Tokenizer : ITokenizer
                     case ';':
                         toReturn = new JsSemicolon();
                         break;
+                    case '-':
+                    case '+':
+                        toReturn = ReadNumber();
+                        break;
                     default:
                         throw new UnexpectedTokenException(_text, _position, "Unknown token type");
                 }
@@ -102,13 +112,16 @@ public class Tokenizer : ITokenizer
 
         private JsNumber ReadNumber()
         {
-            var builder = new StringBuilder();
-            do
+            // var builder = new StringBuilder();
+            var regex = new Regex(@"[\+-]?\d+(\.\d*)?");
+            var match = regex.Match(_text, _position);
+            if (match.Success)
             {
-                builder.Append(Current);
-            } while (MoveNext() && char.IsDigit(Current));
+                MoveSteps(match.Length);
+                return new JsNumber(decimal.Parse(match.Value));
+            }
 
-            return new JsNumber(decimal.Parse(builder.ToString()));
+            throw new UnexpectedTokenException(_text, _position, "Number expected");
         }
     }
     
