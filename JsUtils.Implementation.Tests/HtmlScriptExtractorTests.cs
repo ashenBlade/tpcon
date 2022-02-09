@@ -138,6 +138,8 @@ public class HtmlScriptExtractorTests
 
     [Theory]
     [InlineData("", "")]
+    [InlineData("<script></script><script></script>", "")]
+    [InlineData("<script></script><script>let date = Date.now();\nconsole.log(date);\n</script><script></script>", "let date = Date.now();\nconsole.log(date);\n")]
     public void ExtractScript_WithEmptyScriptTags_ShouldNotIncludeThemInResult(string html, string expected)
     {
         var actual = Extract(html);

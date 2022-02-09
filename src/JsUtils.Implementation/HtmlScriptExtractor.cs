@@ -12,9 +12,13 @@ public class HtmlScriptExtractor : IScriptExtractor
         var scripts = new List<string>();
         foreach (Match match in matches)
         {
-            scripts.Add(match.Groups["Content"].Value);
+            var value = match.Groups["Content"].Value;
+            if (value != string.Empty)
+            {
+                scripts.Add(value);
+            }
         }
-
+        
         return scripts.Count == 0 
                    ? string.Empty 
                    : scripts.Aggregate((s, n) => $"{s}\n{n}");
