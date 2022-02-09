@@ -7,13 +7,13 @@ namespace Router.TPLink;
 
 public abstract class TPLinkRouter : RemoteRouter
 {
-    protected IJsParser JsParser { get; }
+    protected IJsVariableExtractor JsVariableExtractor { get; }
     protected IScriptExtractor ScriptExtractor { get; }
     protected HttpClient HttpClient { get; }
-    protected TPLinkRouter(string username, string password, Uri address, IJsParser jsParser, IScriptExtractor scriptExtractor, HttpClient httpClient) 
+    protected TPLinkRouter(string username, string password, Uri address, IJsVariableExtractor jsVariableExtractor, IScriptExtractor scriptExtractor, HttpClient httpClient) 
         : base(username, password, address)
     {
-        JsParser = jsParser;
+        JsVariableExtractor = jsVariableExtractor;
         ScriptExtractor = scriptExtractor;
         HttpClient = httpClient;
     }
