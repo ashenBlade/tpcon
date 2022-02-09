@@ -7,7 +7,7 @@ namespace JsUtils.Implementation.Tests;
 
 public class JsVariableExtractorTests
 {
-    private readonly JsVariableExtractor _jsVariableExtractor = new JsVariableExtractor();
+    private readonly JsVariableExtractor _jsVariableExtractor = new(new Tokenizer());
     private List<JsVariable> Parse(string script) => _jsVariableExtractor.ExtractVariables(script).ToList();
 
     [Theory]
