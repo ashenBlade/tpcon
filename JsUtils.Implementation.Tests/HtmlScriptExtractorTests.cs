@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using Xunit;
 
@@ -14,9 +15,10 @@ public class HtmlScriptExtractorTests
         Assert.True(true);
     }
 
-    private string Extract(string html)
+    private IEnumerable<string> Extract(string html)
     {
-        return new HtmlScriptExtractor().ExtractScript(html);
+        return new HtmlScriptExtractor()
+              .ExtractScripts(html);
     }
     
     [Fact]
@@ -26,21 +28,19 @@ public class HtmlScriptExtractorTests
         const string emptyScriptTag = "<script></script>";
         
         // Act
-        var result = Extract(emptyScriptTag);
+        var actual = Extract(emptyScriptTag);
         
         // Assert
-        Assert.NotNull(result);
-        Assert.True(string.IsNullOrWhiteSpace(result));
+        Assert.Equal(new [] {string.Empty}, actual);
     }
 
     [Fact]
-    public void ExtractScript_WithNoScriptTags_ShouldReturnEmptyString()
+    public void ExtractScript_WithNoScriptTags_ShouldReturnEmptySequence()
     {
         const string noScriptTagsHtml =
             "<html><head><meta charset=\"utf-8\"></head><body><p>Hello, world</p></body></html>";
-        var result = Extract(noScriptTagsHtml);
-        Assert.NotNull(result);
-        Assert.True(string.IsNullOrWhiteSpace(result));
+        var actual = Extract(noScriptTagsHtml);
+        Assert.Equal(Array.Empty<string>(), actual);
     }
 
     public static IEnumerable<object[]> SingleScriptHtmls = new[]
@@ -48,23 +48,32 @@ public class HtmlScriptExtractorTests
                                                                 new object[]
                                                                 {
                                                                     "<script>var x = 10;</script>", 
-                                                                    "var x = 10;"
+                                                                    new[]
+                                                                    {
+                                                                        "var x = 10;"
+                                                                    }
                                                                 },
                                                                 new object[]
                                                                 {
                                                                     "<script>function DoSomething()\n {\n\tconsole.log(\"Hello, world\");\n }\n</script>",
-                                                                    "function DoSomething()\n {\n\tconsole.log(\"Hello, world\");\n }\n"
+                                                                    new []
+                                                                    {
+                                                                        "function DoSomething()\n {\n\tconsole.log(\"Hello, world\");\n }\n"
+                                                                    }
                                                                 },
                                                                 new object[]
                                                                 {
                                                                     "<script>console.log(\"Hello, world\");</script>",
-                                                                    "console.log(\"Hello, world\");"
+                                                                    new[]
+                                                                    {
+                                                                        "console.log(\"Hello, world\");"
+                                                                    }
                                                                 }
                                                             };
     
     [Theory]
     [MemberData(nameof(SingleScriptHtmls))]
-    public void ExtractScript_WithNonEmptySingleScriptTag_ShouldReturnSameAsInTheString(string html, string expected)
+    public void ExtractScript_WithNonEmptySingleScriptTag_ShouldReturnSameAsInTheString(string html, string[] expected)
     {
         var actual = Extract(html);
         Assert.Equal(expected, actual);
@@ -75,74 +84,123 @@ public class HtmlScriptExtractorTests
     [InlineData("<p>Hello, world for the second time</p>")]
     public void ExtractScript_WithMultipleNestedTagsAndNoScriptTag_ShouldReturnEmptyString(string html)
     {
-        var result = Extract(html);
-        Assert.NotNull(result);
-        Assert.True(string.IsNullOrWhiteSpace(result));
+        var scripts = Extract(html);
+        Assert.Empty(scripts);
     }
 
+    public static IEnumerable<object[]> MultipleNestedTagsWithWhitespaceScripts = new[]
+                                                                                  {
+                                                                                      new object[]
+                                                                                      {
+                                                                                          "<html>\n<head>\n<script></script><script></script></head>\n<body>\n<p>Hello, world</p>\n</body>\n</html>",
+                                                                                          new[] {"", ""}
+                                                                                      },
+                                                                                      new object[]
+                                                                                      {
+                                                                                          "<html>\n<head>\n<script>\n\n</script></head>\n<body>\n<p>Hello, world</p>\n</body>\n</html>",
+                                                                                          new[] {"\n\n"}
+                                                                                      }
+                                                                                  };
+
     [Theory]
-    [InlineData("<html>\n<head>\n<script></script><script></script></head>\n<body>\n<p>Hello, world</p>\n</body>\n</html>")]
-    [InlineData("<html>\n<head>\n<script>\n\n</script></head>\n<body>\n<p>Hello, world</p>\n</body>\n</html>")]
-    public void ExtractScript_WithMultipleNestedTagsAndSomeEmptyScriptTags_ShouldReturnEmptyString(string html)
+    [MemberData(nameof(MultipleNestedTagsWithWhitespaceScripts))]
+    public void ExtractScript_WithMultipleNestedTagsAndSomeWhiteSpacedOrEmptyScriptTags_ShouldReturnSequenceWithWhitespaceStrings(string html, string[] expected)
     {
-        var result = Extract(html);
-        Assert.NotNull(result);
-        Assert.True(string.IsNullOrWhiteSpace(result));
+        var actual = Extract(html);
+        Assert.Equal(expected, actual);
     }
 
     public static IEnumerable<object[]> NonEmptyScriptTagsHtmls = new[]
                                                                   {
-                                                                      new[]
+                                                                      new object[]
                                                                       {
                                                                           "<html>\n<head>\n<script>var x = 10;\nconsole.log(\"Hello, world\");\n</script></head>\n<body>\n<p>Hello, world</p>\n</body>\n</html>",
-                                                                          "var x = 10;\nconsole.log(\"Hello, world\");\n"
+                                                                          new []
+                                                                          {
+                                                                              "var x = 10;\nconsole.log(\"Hello, world\");\n"
+                                                                          }
                                                                       },
-                                                                      new[]
+                                                                      new object[]
                                                                       {
                                                                           "<html>\n<head><script>\nfunction Plus(x, y) {\n return x + y; \n};\n</script></head>\n<body></body>\n</html>",
-                                                                          "\nfunction Plus(x, y) {\n return x + y; \n};\n"
+                                                                          new []
+                                                                          {
+                                                                              "\nfunction Plus(x, y) {\n return x + y; \n};\n"
+                                                                          }
                                                                       }
                                                                   };
 
     [Theory]
     [MemberData(nameof(NonEmptyScriptTagsHtmls))]
-    public void ExtractScript_WithMultipleNestedTagsAndOneNonEmptyScriptTag_ShouldReturnInnerContentOfScriptTag(string html, string expected)
+    public void ExtractScript_WithMultipleNestedTagsAndOneNonEmptyScriptTag_ShouldReturnInnerContentOfScriptTag(
+        string html,
+        string[] expected)
     {
-        var actual = Extract(html);
-        Assert.NotNull(actual);
-        Assert.Equal(expected, actual);
-        Assert.Contains(expected, actual);
-    }
-
-    public static readonly IEnumerable<object[]> SeparatedScriptsHtmls = new[]
-                                                                {
-                                                                    new[]
-                                                                    {
-                                                                        "<html>\n<head><script>\nfunction Plus(x, y) {\n return x + y; \n};\n</script><script>var x = 10;</script></head>\n<body></body>\n</html>",
-                                                                        "\nfunction Plus(x, y) {\n return x + y; \n};\n\nvar x = 10;"
-                                                                    },
-                                                                    new[]
-                                                                    {
-                                                                        "<html>\n<head><script>console.log('Initialization started');</script></head>\n<body><script>document.write('<p>Hello, world</p>');</script></body></html>",
-                                                                        "console.log('Initialization started');\ndocument.write('<p>Hello, world</p>');"
-                                                                    }
-                                                                };
-
-    [Theory]
-    [MemberData(nameof(SeparatedScriptsHtmls))]
-    public void ExtractScript_WithMultipleNonEmptyScriptTags_ShouldBeSeparatedInResultStringByNewLine(string html, string expected)
-    {
-        var actual = Extract(html);
+        var actual = Extract(html).ToHashSet();
         Assert.Equal(expected, actual);
     }
+    
+    public static IEnumerable<object[]> HtmlWithEmptyAndNonEmptyScriptTags = new[]
+                                                                             {
+                                                                                 new object[]
+                                                                                 {
+                                                                                     "", 
+                                                                                     Array.Empty<string>()
+                                                                                 },
+                                                                                 new object[]
+                                                                                 {
+                                                                                     "<script></script><script></script>",
+                                                                                     new[]
+                                                                                     {
+                                                                                         "", 
+                                                                                         ""
+                                                                                     }
+                                                                                 },
+                                                                                 new object[]
+                                                                                 {
+                                                                                     "<script></script><script>let date = Date.now();\nconsole.log(date);\n</script><script></script>",
+                                                                                     new[]
+                                                                                     {
+                                                                                         "",
+                                                                                         "let date = Date.now();\nconsole.log(date);\n",
+                                                                                         ""
+                                                                                     }
+                                                                                 }
+                                                                             };
 
     [Theory]
-    [InlineData("", "")]
-    [InlineData("<script></script><script></script>", "")]
-    [InlineData("<script></script><script>let date = Date.now();\nconsole.log(date);\n</script><script></script>", "let date = Date.now();\nconsole.log(date);\n")]
-    public void ExtractScript_WithEmptyScriptTags_ShouldNotIncludeThemInResult(string html, string expected)
+    [MemberData(nameof(HtmlWithEmptyAndNonEmptyScriptTags))]
+    public void ExtractScript_WithEmptyScriptTags_ShouldNotIncludeThemInResult(string html, string[] expected)
     {
         var actual = Extract(html);
+        Assert.Equal(expected, actual);
+    }
+
+    public static IEnumerable<object[]> UpperCaseWithParametersScripts = new[]
+                                                                         {
+                                                                             new object[]
+                                                                             {
+                                                                                 "<SCRIPT language=\"javascript\" type=\"text/javascript\">var statistList = new Array( 188, 205002, 2, 2454, 0,0 );</SCRIPT>",
+                                                                                 new []
+                                                                                 {
+                                                                                     "var statistList = new Array( 188, 205002, 2, 2454, 0,0 );"
+                                                                                 }
+                                                                             },
+                                                                             new object[]
+                                                                             {
+                                                                                 "<SCRIPT language=\"javascript\" type=\"text/javascript\"> var wanPara = new Array( 4, \"A0-F3-C1-F9-DD-E5\", \"178.204.181.223\", 3, \"255.255.255.255\", 0, 0, \"178.204.181.223\", 0, 1, 0, \"89.232.109.74 , 217.23.177.252\", \"0 day(s) 01:41:41\", 1, 1, \"0.0.0.0\", \"0.0.0.0\", 0, 1, 0, 2, 0, 0,0 ); </SCRIPT>",
+                                                                                 new []
+                                                                                 {
+                                                                                     " var wanPara = new Array( 4, \"A0-F3-C1-F9-DD-E5\", \"178.204.181.223\", 3, \"255.255.255.255\", 0, 0, \"178.204.181.223\", 0, 1, 0, \"89.232.109.74 , 217.23.177.252\", \"0 day(s) 01:41:41\", 1, 1, \"0.0.0.0\", \"0.0.0.0\", 0, 1, 0, 2, 0, 0,0 ); "
+                                                                                 }
+                                                                             }
+                                                                         };
+    
+    [Theory]
+    [MemberData(nameof(UpperCaseWithParametersScripts))]
+    public void ExtractScript_WithScriptTagInUpperCaseWithParameters_ShouldReturnContentOfScriptTags(string script, string[] expected)
+    {
+        var actual = Extract(script);
         Assert.Equal(expected, actual);
     }
 }

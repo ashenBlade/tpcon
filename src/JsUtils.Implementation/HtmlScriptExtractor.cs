@@ -5,22 +5,10 @@ namespace JsUtils.Implementation;
 
 public class HtmlScriptExtractor : IScriptExtractor
 {
-    public string ExtractScript(string source)
+    public IEnumerable<string> ExtractScripts(string source)
     {
-        var regex = new Regex("<script(.|\n)*?>(?<Content>(.|\n)*?)</script>");
+        var regex = new Regex("<([Ss][Cc][Rr][Ii][Pp][Tt])(.|\n)*?>(?<Content>(.|\n)*?)</([Ss][Cc][Rr][Ii][Pp][Tt])>");
         var matches = regex.Matches(source);
-        var scripts = new List<string>();
-        foreach (Match match in matches)
-        {
-            var value = match.Groups["Content"].Value;
-            if (value != string.Empty)
-            {
-                scripts.Add(value);
-            }
-        }
-        
-        return scripts.Count == 0 
-                   ? string.Empty 
-                   : scripts.Aggregate((s, n) => $"{s}\n{n}");
+        return matches.Select(match => match.Groups["Content"].Value);
     }
 }
