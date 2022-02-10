@@ -19,5 +19,7 @@ public enum JsTokenType
     While,
     Do,
     For,
-    New
+    New,
+    LeftSquareBracket,
+    RightSquareBracket
 }

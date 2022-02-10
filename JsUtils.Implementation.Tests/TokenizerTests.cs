@@ -331,10 +331,83 @@ public class TokenizerTests
     [Theory]
     [InlineData("do for while new new")]
     [InlineData("123 new -232 x newX22")]
+    [InlineData("new")]
     public void Tokenize_WithNewKeyword_ShouldRecognizeNewKeyword(string stringWithNewKeyword)
     {
         var actual = GetTokens(stringWithNewKeyword);
         Assert.Contains(actual, token => token is JsNew);
     }
-    
+
+
+    public static IEnumerable<object[]> DifferentParenthesis = new[]
+                                                               {
+                                                                   new object[]
+                                                                   {
+                                                                       "{", new JsToken[] {new JsLeftBrace()}
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       "}", new JsToken[] {new JsRightBrace()}
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       ")", new JsToken[] {new JsRightParenthesis()}
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       "(", new JsToken[] {new JsLeftParenthesis()}
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       "[", new JsToken[] {new JsLeftSquareBracket()}
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       "]", new JsToken[] {new JsRightSquareBracket()}
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       "((()))", 
+                                                                       new JsToken[]
+                                                                       {
+                                                                           new JsLeftParenthesis(), new JsLeftParenthesis(), new JsLeftParenthesis(),
+                                                                           new JsRightParenthesis(), new JsRightParenthesis(), new JsRightParenthesis()
+                                                                       }
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       "{}{{",
+                                                                       new JsToken[]
+                                                                       {
+                                                                           new JsLeftBrace(), new JsRightBrace(),
+                                                                           new JsLeftBrace(), new JsLeftBrace()
+                                                                       }
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       "{))(}",
+                                                                       new JsToken[]
+                                                                       {
+                                                                           new JsLeftBrace(), new JsRightParenthesis(), new JsRightParenthesis(),
+                                                                           new JsLeftParenthesis(), new JsRightBrace()
+                                                                       }
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       "[[[]))",
+                                                                       new JsToken[]
+                                                                       {
+                                                                           new JsLeftSquareBracket(), new JsLeftSquareBracket(), new JsLeftSquareBracket(), 
+                                                                           new JsRightSquareBracket(), new JsRightParenthesis(), new JsRightParenthesis()
+                                                                       }
+                                                                   },
+                                                               };
+
+    [Theory]
+    [MemberData(nameof(DifferentParenthesis))]
+    public void Tokenize_WithDifferentParenthesisAndBrackets_ShouldRecognizeParenthesis(string parenthesis, JsToken[] expected)
+    {
+        var actual = GetTokens(parenthesis);
+        Assert.Equal(expected, actual);
+    }
 }

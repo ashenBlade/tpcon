@@ -53,7 +53,6 @@ public class Tokenizer : ITokenizer
 
         public JsToken? ReadToken()
         {
-            JsToken toReturn = null;
             while (char.IsWhiteSpace(Current) && MoveNext())
             {
                 // Move forward
@@ -61,41 +60,64 @@ public class Tokenizer : ITokenizer
 
             if (EndOfFile)
             {
-                return toReturn;
+                return null;
             }
 
             if (char.IsDigit(Current))
             {
-                toReturn = ReadNumber();
+                return ReadNumber();
             }
 
-            else if (char.IsLetter(Current))
+            if (char.IsLetter(Current))
             {
-                toReturn = ReadWord();
+                return ReadWord();
             }
-            else
+
+            JsToken toReturn;
+            switch (Current)
             {
-                switch (Current)
-                {
-                    case '=':
-                        toReturn = new JsEquals();
-                        MoveNext();
-                        break;
-                    case ';':
-                        toReturn = new JsSemicolon();
-                        MoveNext();
-                        break;
-                    case '-':
-                    case '+':
-                        toReturn = ReadNumber();
-                        break;
-                    case '\'':
-                    case '"':
-                        toReturn = ReadStringLiteral();
-                        break;
-                    default:
-                        throw new UnexpectedTokenException(_text, _position, "Unknown token type");
-                }
+                case '=':
+                    toReturn = new JsEquals();
+                    MoveNext();
+                    break;
+                case ';':
+                    toReturn = new JsSemicolon();
+                    MoveNext();
+                    break;
+                case '{':
+                    toReturn = new JsLeftBrace();
+                    MoveNext();
+                    break;
+                case '(':
+                    toReturn = new JsLeftParenthesis();
+                    MoveNext();
+                    break;
+                case '}':
+                    toReturn = new JsRightBrace();
+                    MoveNext();
+                    break;
+                case ')':
+                    toReturn = new JsRightParenthesis();
+                    MoveNext();
+                    break;
+                case ']':
+                    toReturn = new JsRightSquareBracket();
+                    MoveNext();
+                    break;
+                case '[':
+                    toReturn = new JsLeftSquareBracket();
+                    MoveNext();
+                    break;
+                case '-':
+                case '+':
+                    toReturn = ReadNumber();
+                    break;
+                case '\'':
+                case '"':
+                    toReturn = ReadStringLiteral();
+                    break;
+                default:
+                    throw new UnexpectedTokenException(_text, _position, "Unknown token type");
             }
 
             return toReturn;
