@@ -96,6 +96,9 @@ public class Tokenizer : ITokenizer
                     toReturn = new JsRightBrace();
                     MoveNext();
                     break;
+                case '/':
+                    toReturn = ReadRegex();
+                    break;
                 case ')':
                     toReturn = new JsRightParenthesis();
                     MoveNext();
@@ -129,6 +132,46 @@ public class Tokenizer : ITokenizer
             }
 
             return toReturn;
+        }
+
+        private JsRegex ReadRegex()
+        {
+            if (Current != '/')
+                throw new UnexpectedTokenException(_text, _position, $"Expected '/' for regex literal. Got '{Current}'");
+            
+            var builder = new StringBuilder();
+            var previous = '/';
+            while (MoveNext())
+            {
+                if (Current == '/')
+                {
+                    if (previous == '\\')
+                    {
+                        builder.Append(Current);
+                    }
+                    else
+                    {
+                        if (PeekNext() == '/')
+                        {
+                            throw new UnexpectedTokenException(_text, Position, "Unexpected comment declaration");
+                        }
+                        MoveNext();
+                        return new JsRegex(builder.ToString());
+                    }
+                }
+                else
+                {
+                    builder.Append(Current);
+                }
+
+                previous = Current;
+            }
+
+            if (EndOfFile)
+            {
+                throw new UnexpectedTokenException(_text, _position, "Unexpected script end");
+            }
+            throw new UnexpectedTokenException(_text, _position, $"Expected '/' for regex literal. Got: {Current}");
         }
 
         private JsStringLiteral ReadStringLiteral()

@@ -1,11 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using JsTypes;
+using System.Text.RegularExpressions;
 using JsUtils.Implementation.JsTokens;
 using Xunit;
-using JsNumber = JsUtils.Implementation.JsTokens.JsNumber;
 
 namespace JsUtils.Implementation.Tests;
 
@@ -173,30 +170,30 @@ public class TokenizerTests
     }
 
     public static IEnumerable<object[]> SingleQuotedStringWithDoubleQuotes = new[]
-                                                                    {
-                                                                        new object[]
-                                                                        {
-                                                                            @"""this is string""",
-                                                                            new JsStringLiteral[] {new("this is string")}
-                                                                        },
-                                                                        new object[]
-                                                                        {
-                                                                            "   \" asfsdf 123 22  2sdf\n\n\n2qudfd  oted string\" ",
-                                                                            new JsStringLiteral[]
-                                                                            {
-                                                                                new (" asfsdf 123 22  2sdf\n\n\n2qudfd  oted string")
-                                                                            }
-                                                                        },
-                                                                        new object[]
-                                                                        {
-                                                                            "\"\"",
-                                                                            new JsStringLiteral[]
-                                                                            {
-                                                                                new("")
-                                                                            }
-                                                                        }
+                                                                             {
+                                                                                 new object[]
+                                                                                 {
+                                                                                     @"""this is string""",
+                                                                                     new JsStringLiteral[] {new("this is string")}
+                                                                                 },
+                                                                                 new object[]
+                                                                                 {
+                                                                                     "   \" asfsdf 123 22  2sdf\n\n\n2qudfd  oted string\" ",
+                                                                                     new JsStringLiteral[]
+                                                                                     {
+                                                                                         new (" asfsdf 123 22  2sdf\n\n\n2qudfd  oted string")
+                                                                                     }
+                                                                                 },
+                                                                                 new object[]
+                                                                                 {
+                                                                                     "\"\"",
+                                                                                     new JsStringLiteral[]
+                                                                                     {
+                                                                                         new("")
+                                                                                     }
+                                                                                 }
                                                             
-                                                                    };
+                                                                             };
 
     [Theory]
     [MemberData(nameof(SingleQuotedStringWithDoubleQuotes))]
@@ -228,13 +225,13 @@ public class TokenizerTests
 
     public static IEnumerable<object[]> EscapedQuotesInsideStrings = new[] {
                                                                                new object[]
-                                                                            {
-                                                                                @""" \"" """,
-                                                                                new JsStringLiteral[]
-                                                                                {
-                                                                                    new (@" \"" ")
-                                                                                }
-                                                                            },
+                                                                               {
+                                                                                   @""" \"" """,
+                                                                                   new JsStringLiteral[]
+                                                                                   {
+                                                                                       new (@" \"" ")
+                                                                                   }
+                                                                               },
                                                                                new object[]
                                                                                {
                                                                                    @"  "" asdfasdf\' \'''' dfsdf \n"" "" sdf \"" """,
@@ -439,6 +436,60 @@ public class TokenizerTests
     public void Tokenize_WithCommasAndDots_ShouldSeparateThem(string commasAndDots, JsToken[] expected)
     {
         var actual = GetTokens(commasAndDots).ToList();
+        Assert.Equal(expected, actual);
+    }
+
+    public static IEnumerable<object[]> Regexes = new[]
+                                                  {
+                                                      new object[] 
+                                                      {
+                                                          "/a/", 
+                                                          new JsRegex[]
+                                                          {
+                                                              new("a")
+                                                          }},
+                                                      new object[] 
+                                                      {
+                                                          "/  /", 
+                                                          new JsRegex[]
+                                                          {
+                                                              new ("  ")
+                                                          }},
+                                                      new object[]
+                                                      {
+                                                          "   /dfsf*dfas/ / dsfdsf /", 
+                                                          new JsRegex[]
+                                                          {
+                                                              new ("dfsf*dfas"),
+                                                              new (" dsfdsf ")
+                                                          }
+                                                      },
+                                                      new object[]
+                                                      {
+                                                          @"/\// / / /[0-9]?[\w\d]*/",
+                                                          new JsRegex[]
+                                                          {
+                                                              new ("/"),
+                                                              new (" "),
+                                                              new ("[0-9]?[\\w\\d]*")
+                                                          }
+                                                      },
+                                                      new object[]
+                                                      {
+                                                          @"/(https?:\/\/)?\w+\.\w+/ /(https?:\/\/)?\w+\.\w+(\/\w+)*\/?/",
+                                                          new JsRegex[]
+                                                          {
+                                                              new("(https?://)?\\w+\\.\\w+"),
+                                                              new("(https?://)?\\w+\\.\\w+(\\/\\w+)*\\/?")
+                                                          }
+                                                      },
+                                                  };
+
+    [Theory]
+    [MemberData(nameof(Regexes))]
+    public void Tokenize_WithDifferentValidRegexes_ShouldReturnValidRegexes(string jsRegexes, JsRegex[] expected)
+    {
+        var actual = GetTokens(jsRegexes);
         Assert.Equal(expected, actual);
     }
 }
