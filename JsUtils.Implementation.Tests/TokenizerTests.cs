@@ -410,4 +410,35 @@ public class TokenizerTests
         var actual = GetTokens(parenthesis);
         Assert.Equal(expected, actual);
     }
+
+    public static IEnumerable<object[]> CommasAndDots = new[]
+                                                        {
+                                                            new object[]
+                                                            {
+                                                                ",,, , ,, ,,",
+                                                                new JsToken[]
+                                                                {
+                                                                    new JsComma(), new JsComma(), new JsComma(),
+                                                                    new JsComma(), new JsComma(), new JsComma(),
+                                                                    new JsComma(), new JsComma(),
+                                                                }
+                                                            },
+                                                            new object[]
+                                                            {
+                                                                ". . .. .... .",
+                                                                new JsToken[]
+                                                                {
+                                                                    new JsDot(), new JsDot(), new JsDot(), new JsDot(), new JsDot(),
+                                                                    new JsDot(), new JsDot(), new JsDot(), new JsDot(), 
+                                                                }
+                                                            }
+                                                        };
+
+    [Theory]
+    [MemberData(nameof(CommasAndDots))]
+    public void Tokenize_WithCommasAndDots_ShouldSeparateThem(string commasAndDots, JsToken[] expected)
+    {
+        var actual = GetTokens(commasAndDots).ToList();
+        Assert.Equal(expected, actual);
+    }
 }

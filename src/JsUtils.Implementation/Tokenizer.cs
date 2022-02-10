@@ -116,6 +116,14 @@ public class Tokenizer : ITokenizer
                 case '"':
                     toReturn = ReadStringLiteral();
                     break;
+                case '.':
+                    toReturn = new JsDot();
+                    MoveNext();
+                    break;
+                case ',':
+                    toReturn = new JsComma();
+                    MoveNext();
+                    break;
                 default:
                     throw new UnexpectedTokenException(_text, _position, "Unknown token type");
             }
@@ -175,13 +183,13 @@ public class Tokenizer : ITokenizer
             var result = builder.ToString();
             return result switch
                    {
-                       "var" => new JsVar(),
-                       "for" => new JsFor(),
+                       "var"   => new JsVar(),
+                       "for"   => new JsFor(),
                        "while" => new JsWhile(),
-                       "do" => new JsDo(),
-                       "if" => new JsIf(),
-                       "new" => new JsNew(),
-                       _     => new JsIdentifier(result)
+                       "do"    => new JsDo(),
+                       "if"    => new JsIf(),
+                       "new"   => new JsNew(),
+                       _       => new JsIdentifier(result)
                    };
         }
 
