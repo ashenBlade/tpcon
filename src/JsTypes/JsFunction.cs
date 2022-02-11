@@ -15,4 +15,11 @@ public class JsFunction : JsType
     {
         return new JsFunction(Name, Body);
     }
+
+    public override bool Equals(JsType? other)
+    {
+        return other is JsFunction function 
+            && function.Name == Name 
+            && function.Body == Body;
+    }
 }

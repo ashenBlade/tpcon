@@ -26,4 +26,9 @@ public class JsObject : JsType
     {
         return new JsObject(_types);
     }
+
+    public override bool Equals(JsType? other)
+    {
+        return ReferenceEquals(other, this);
+    }
 }

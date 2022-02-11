@@ -8,4 +8,9 @@ public class JsNull : JsType
     {
         return Instance;
     }
+
+    public override bool Equals(JsType? other)
+    {
+        return other is JsNull;
+    }
 }

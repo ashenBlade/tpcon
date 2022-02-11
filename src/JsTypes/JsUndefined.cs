@@ -8,4 +8,9 @@ public class JsUndefined : JsType
     {
         return Instance;
     }
+
+    public override bool Equals(JsType? other)
+    {
+        return ReferenceEquals(this, other);
+    }
 }

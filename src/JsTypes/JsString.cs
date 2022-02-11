@@ -13,4 +13,9 @@ public class JsString : JsType
     {
         return new JsString(Value);
     }
+
+    public override bool Equals(JsType? other)
+    {
+        return other is JsString jsString && jsString.Value == Value;
+    }
 }

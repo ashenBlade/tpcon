@@ -12,4 +12,9 @@ public class JsRegex : JsType
     {
         return new JsRegex(Regex);
     }
+
+    public override bool Equals(JsType? other)
+    {
+        return other is JsRegex regex && regex.Regex == Regex;
+    }
 }

@@ -12,4 +12,9 @@ public class JsNumber : JsType
     {
         return new JsNumber(Value);
     }
+
+    public override bool Equals(JsType? other)
+    {
+        return other is JsNumber number && number.Value == Value;
+    }
 }
