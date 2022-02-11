@@ -1,6 +1,8 @@
+using System.Collections;
+
 namespace JsTypes;
 
-public class JsObject : JsType
+public class JsObject : JsType, IEnumerable<KeyValuePair<string, JsType>>
 {
     private readonly Dictionary<string, JsType> _types = new();
 
@@ -13,7 +15,7 @@ public class JsObject : JsType
             _types.Add(key, (JsType) type.Clone());
         }    
     }
-    
+
     public JsType this[string key]
     {
         get => _types.TryGetValue(key, out var type)
@@ -29,6 +31,16 @@ public class JsObject : JsType
 
     public override bool Equals(JsType? other)
     {
-        return ReferenceEquals(other, this);
+        return other is JsObject jsObject && jsObject._types.Equals(_types);
+    }
+    
+    public IEnumerator<KeyValuePair<string, JsType>> GetEnumerator()
+    {
+        return _types.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

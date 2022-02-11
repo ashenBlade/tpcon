@@ -1,6 +1,6 @@
 namespace JsTypes;
 
-public class JsArray : JsObject
+public class JsArray : JsObject, IEnumerable<JsType>
 {
     private readonly List<JsType> _values;
     public JsArray()
@@ -19,5 +19,10 @@ public class JsArray : JsObject
     {
         get => _values[index];
         set => _values[index] = value;
+    }
+
+    public new IEnumerator<JsType> GetEnumerator()
+    {
+        return _values.GetEnumerator();
     }
 }

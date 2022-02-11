@@ -1,5 +1,5 @@
 using System.Collections;
-
+using System.Runtime.InteropServices.ComTypes;
 using JsTypes;
 using JsUtils.Implementation.JsTokens;
 using JsType = JsUtils.Implementation.JsTokens.JsType;
@@ -41,7 +41,7 @@ public class JsVariableExtractor : IJsVariableExtractor
                 var token = JsTokenEnumerator.Current;
                 if (token is JsVar)
                 {
-                    yield return ReadVariable();
+                    yield return ReadVariableDeclaration();
                 }
                 else
                 {
@@ -53,14 +53,15 @@ public class JsVariableExtractor : IJsVariableExtractor
         private bool MoveNext() => JsTokenEnumerator.MoveNext();
         private JsToken Current => JsTokenEnumerator.Current;
 
-        private JsVariable ReadVariable()
+        private JsVariable ReadVariableDeclaration()
         {
             ReadVar();
             var id = ReadIdentifier();
             ReadEquals();
+            
             var type = ReadType();
             ReadSemicolon();
-            return new JsVariable(id.Name, type.ToJsType());
+            return new JsVariable(id.Name, type);
         }
 
         private void ReadSemicolon()
@@ -70,18 +71,80 @@ public class JsVariableExtractor : IJsVariableExtractor
             MoveNext();
         }
 
-        private JsType ReadType()
+        private JsTypes.JsType ReadType()
         {
-            if (Current is not JsType type)
+            JsTypes.JsType type;
+            if (Current is JsType jsType)
             {
-                throw new Exception($"Expected JsType(number, string, regex) got {Current.Name}");
+                type = jsType.ToJsType();
             }
-
+            else if (Current is JsNew)
+            {
+                type = ReadObjectDeclaration();
+            }
+            else
+            {
+                throw new Exception("Expected basic type or object");
+            }
+            
             MoveNext();
             return type;
         }
 
-        private JsEquals ReadEquals()
+        private JsTypes.JsType ReadObjectDeclaration()
+        {
+            ReadNew();
+            var objectClassName = ReadIdentifier();
+            ReadLeftParenthesis();
+            if (objectClassName.Name == "Array")
+            {
+                var array = new JsArray();
+                while (Current is not JsRightParenthesis)
+                {
+                    var type = ReadType();
+                    array.Add(type);
+                    if (Current is JsComma)
+                    {
+                        break;
+                    }
+                }
+
+                return array;
+            }
+
+            var obj = new JsObject();
+            while (Current is not JsRightParenthesis)
+            {
+                ReadType();
+                if (Current is JsComma)
+                {
+                    break;
+                }
+            }
+            return obj;
+        }
+
+        private void ReadLeftParenthesis()
+        {
+            if (Current is not JsLeftParenthesis)
+            {
+                throw new Exception($"Expected '(' got {Current.Name}");
+            }
+
+            MoveNext();
+        }
+
+        private void ReadNew()
+        {
+            if (Current is not JsNew)
+            {
+                throw new Exception($"Expected 'new' got {Current.Name}");
+            }
+
+            MoveNext();
+        }
+
+        private void ReadEquals()
         {
             if (Current is not JsEquals equals)
             {
@@ -89,7 +152,6 @@ public class JsVariableExtractor : IJsVariableExtractor
             }
 
             MoveNext();
-            return equals;
         }
 
         private JsIdentifier ReadIdentifier()
