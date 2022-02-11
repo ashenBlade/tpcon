@@ -1,6 +1,6 @@
 namespace JsUtils.Implementation.JsTokens;
 
-public class JsStringLiteral : JsToken
+public class JsStringLiteral : JsType
 {
     public string Value { get; }
     

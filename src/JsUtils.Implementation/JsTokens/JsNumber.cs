@@ -1,6 +1,6 @@
 namespace JsUtils.Implementation.JsTokens;
 
-public class JsNumber : JsToken
+public class JsNumber : JsType
 {
     public decimal Value { get; }
 

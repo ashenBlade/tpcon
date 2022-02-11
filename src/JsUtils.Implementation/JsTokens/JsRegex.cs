@@ -1,6 +1,6 @@
 namespace JsUtils.Implementation.JsTokens;
 
-public class JsRegex : JsToken
+public class JsRegex : JsType
 {
     public string Value { get; }
 
