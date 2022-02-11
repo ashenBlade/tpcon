@@ -18,7 +18,7 @@ public class JsVariableExtractorTests
         return mock.Object;
     }
 
-    private static IEnumerable<JsVariable> Parse(JsToken[] tokens)
+    private static IEnumerable<JsVariable> Parse(params JsToken[] tokens)
     {
         return new JsVariableExtractor(GetTokenizer(tokens)).ExtractVariables("");
     }
@@ -70,18 +70,30 @@ public class JsVariableExtractorTests
     public void ExtractVariables_WithVariableDeclarationToNewObjectWithoutConstructorParameters_ShouldReturnSingleVariableWithEmptyObject()
     {
         var id = new JsIdentifier("name");
-        var actual = Parse(new JsToken[]
-                           {
-                               new JsVar(), id, new JsEquals(), 
-                               new JsNew(), new JsIdentifier("Object"),
-                               new JsLeftParenthesis(), new JsRightParenthesis(), 
-                               new JsSemicolon()
-                           })
+        var actual = Parse(new JsVar(), id, new JsEquals(), new JsNew(), new JsIdentifier("Object"), new JsLeftParenthesis(), new JsRightParenthesis(), new JsSemicolon())
            .ToList();
         Assert.Single(actual);
         var variable = actual[0];
         Assert.Equal(id.Name, variable.Name);
         Assert.True(variable.Value is JsObject);
         Assert.Empty((variable.Value as JsObject)!);
+    }
+
+    [Fact]
+    public void ExtractVariables_WithEmptyArrayAsObjectDeclaration_ShouldReturnEmptyJsArray()
+    {
+        // Arrange
+        var id = new JsIdentifier("array");
+        // Act
+        var actual = Parse(new JsVar(), id, new JsEquals(), new JsNew(), new JsIdentifier("Array"),
+                           new JsLeftParenthesis(), new JsRightParenthesis(), new JsSemicolon()).ToList();
+        
+        // Assert
+        Assert.Single(actual);
+        var variable = actual[0];
+        Assert.True(variable.Name == id.Name);
+        Assert.True(variable.Value is JsArray);
+        
+        Assert.True((variable.Value as JsArray)!.Count == 0);
     }
 }
