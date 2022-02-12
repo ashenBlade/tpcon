@@ -43,4 +43,6 @@ public class JsObject : JsType, IEnumerable<KeyValuePair<string, JsType>>
     {
         return GetEnumerator();
     }
+
+    public IEnumerable<KeyValuePair<string, JsType>> Values => _types;
 }
