@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
@@ -215,5 +216,63 @@ public class JsVariableExtractorTests
         Assert.Single(actual);
         var first = actual[0].Value;
         Assert.True(first is JsObject);
+    }
+
+    private static IEnumerable<JsToken> GetEmptyFunction(int parametersCount)
+    {
+        yield return new JsTokens.JsFunction();
+        yield return new JsIdentifier("SampleFunction");
+        yield return new JsLeftParenthesis();
+        if (parametersCount > 0)
+        {
+            yield return new JsIdentifier("sampleParam");
+            for (int i = 1; i < parametersCount; i++)
+            {
+                yield return new JsComma();
+                yield return new JsIdentifier("sampleParam" + i);
+            }
+        }
+
+        yield return new JsRightParenthesis();
+        yield return new JsLeftBrace();
+        yield return new JsRightBrace();
+    }
+
+    private static IEnumerable<JsToken> GetSingleVariableDeclaration(JsType type, string varName)
+    {
+        yield return new JsVar();
+        yield return new JsIdentifier(varName);
+        yield return new JsEquals();
+        yield return type;
+        yield return new JsSemicolon();
+    }
+
+    public static readonly IEnumerable<object[]> SingleVariableAndFunction = new[] 
+                                                                             {
+                                                                                 new object[]
+                                                                                 {
+                                                                                     new JsTokens.JsNumber(12), 0      
+                                                                                 },
+                                                                                 new object[]
+                                                                                 {
+                                                                                     new JsStringLiteral("String"), 1
+                                                                                  },
+                                                                                 new object[]
+                                                                                 {
+                                                                                     new JsTokens.JsRegex("1212"), 2
+                                                                                 }
+                                                                             };
+    
+    [Theory]
+    [MemberData(nameof(SingleVariableAndFunction))]
+    public void ExtractVariables_WithSingleVariableDeclarationBeforeFunctionDeclaration_ShouldReturnSingleVariable(JsType type, int functionParametersCount)
+    {
+        var actual = Parse(GetSingleVariableDeclaration(type, SampleIdentifierName)
+                          .Concat(GetEmptyFunction(functionParametersCount))
+                          .ToArray())
+           .ToList();
+        Assert.Single(actual);
+        var first = actual[0];
+        Assert.True(first.Value.Equals(type.ToJsType()));
     }
 }
