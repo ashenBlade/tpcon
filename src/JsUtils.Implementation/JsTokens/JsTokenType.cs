@@ -21,5 +21,6 @@ public enum JsTokenType
     For,
     New,
     LeftSquareBracket,
-    RightSquareBracket
+    RightSquareBracket,
+    Function
 }
