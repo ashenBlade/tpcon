@@ -14,7 +14,7 @@ public class JsVariableExtractorTests
     private static ITokenizer GetTokenizer(params JsToken[] toReturn)
     {
         var mock = new Mock<ITokenizer>();
-        mock.Setup(tokenizer => tokenizer.Tokenize(Moq.It.IsAny<string>())).Returns(toReturn);
+        mock.Setup(tokenizer => tokenizer.Tokenize(It.IsAny<string>())).Returns(toReturn);
         return mock.Object;
     }
 
@@ -95,5 +95,76 @@ public class JsVariableExtractorTests
         Assert.True(variable.Value is JsArray);
         
         Assert.True((variable.Value as JsArray)!.Count == 0);
+    }
+
+    public static readonly IEnumerable<object[]> JsArrayElements = new[] {
+                                                                             new object[]
+                                                                             {
+                                                                                 "x",
+                                                                                 new JsToken[]
+                                                                                 {
+                                                                                     new JsTokens.JsNumber(12),
+                                                                                     new JsStringLiteral("Sample string"),
+                                                                                 },
+                                                                             },
+                                                                             new object[]
+                                                                             {
+                                                                                 "someId2",
+                                                                                 new JsToken[]
+                                                                                 {
+                                                                                     new JsTokens.JsRegex("dfsdfs"),
+                                                                                     new JsTokens.JsNumber(232),
+                                                                                     new JsTokens.JsNumber(-2332)
+                                                                                 }
+                                                                             },
+                                                                             new object[]
+                                                                             {
+                                                                                 "another_id",
+                                                                                 new JsToken[]
+                                                                                 {
+                                                                                     new JsStringLiteral("string")
+                                                                                 }
+                                                                             }
+                                                                         };
+
+    private static IEnumerable<JsToken> GetArrayDeclarationWithGivenLiteralTypes(string variableName, JsType[] parameters)
+    {
+        yield return new JsVar();
+        yield return new JsIdentifier(variableName);
+        yield return new JsEquals();
+        yield return new JsNew();
+        yield return new JsIdentifier("Array");
+        yield return new JsLeftParenthesis();
+        if (parameters.Length > 0)
+        {
+            yield return parameters[0];
+            for (int i = 1; i < parameters.Length; i++)
+            {
+                yield return new JsComma();
+                yield return parameters[i];
+            }
+        }
+
+        yield return new JsRightParenthesis();
+        yield return new JsSemicolon();
+    }
+
+    [Theory]
+    [MemberData(nameof(JsArrayElements))]
+    public void ExtractVariables_WithNonEmptyArrayDeclaration_ShouldReturnArrayWithExpectedValues(string idName, JsType[] expected)
+    {
+        var declaration = GetArrayDeclarationWithGivenLiteralTypes(idName, expected);
+        var actual = Parse(declaration.ToArray()).ToList();
+        Assert.Single(actual);
+        var variable = actual[0];
+        Assert.True(variable.Name == idName);
+        Assert.True(variable.Value is JsArray);
+        var array = ( variable.Value as JsArray )!;
+        var arrayValues = array.Values.ToList();
+        Assert.True(array.Count == expected.Length);
+        for (int i = 0; i < array.Count; i++)
+        {
+            Assert.True(arrayValues[i].Equals(expected[i].ToJsType()));
+        }
     }
 }

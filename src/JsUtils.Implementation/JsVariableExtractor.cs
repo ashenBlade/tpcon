@@ -77,6 +77,7 @@ public class JsVariableExtractor : IJsVariableExtractor
             if (Current is JsType jsType)
             {
                 type = jsType.ToJsType();
+                MoveNext();
             }
             else if (Current is JsNew)
             {
@@ -86,8 +87,6 @@ public class JsVariableExtractor : IJsVariableExtractor
             {
                 throw new Exception("Expected basic type or object");
             }
-            
-            MoveNext();
             return type;
         }
 
@@ -96,32 +95,62 @@ public class JsVariableExtractor : IJsVariableExtractor
             ReadNew();
             var objectClassName = ReadIdentifier();
             ReadLeftParenthesis();
-            if (objectClassName.Name == "Array")
+            JsTypes.JsType toReturn;
+            if (objectClassName.Name is "Array")
             {
                 var array = new JsArray();
                 while (Current is not JsRightParenthesis)
                 {
                     var type = ReadType();
                     array.Add(type);
-                    if (Current is JsComma)
+                    if (Current is not JsComma)
                     {
                         break;
                     }
+
+                    ReadComma();
                 }
 
-                return array;
+                toReturn = array;
             }
-
-            var obj = new JsObject();
-            while (Current is not JsRightParenthesis)
+            else
             {
-                ReadType();
-                if (Current is JsComma)
+                var obj = new JsObject();
+                while (Current is not JsRightParenthesis)
                 {
-                    break;
+                    ReadType();
+                    if (Current is not JsComma)
+                    {
+                        break;
+                    }
+                    ReadComma();
                 }
+
+                toReturn = obj;
             }
-            return obj;
+
+            ReadRightParenthesis();
+            return toReturn;
+        }
+
+        private void ReadComma()
+        {
+            if (Current is not JsComma)
+            {
+                throw new Exception($"Expected ','. Got {Current.Name}");
+            }
+
+            MoveNext();
+        }
+
+        private void ReadRightParenthesis()
+        {
+            if (Current is not JsRightParenthesis)
+            {
+                throw new Exception($"Expected ')'. Got {Current.Name}");
+            }
+
+            MoveNext();
         }
 
         private void ReadLeftParenthesis()

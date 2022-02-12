@@ -25,4 +25,6 @@ public class JsArray : JsObject, IEnumerable<JsType>
     {
         return _values.GetEnumerator();
     }
+
+    public IEnumerable<JsType> Values => _values;
 }
