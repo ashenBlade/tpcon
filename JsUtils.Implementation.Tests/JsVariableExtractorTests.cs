@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using JsTypes;
 using JsUtils.Implementation.JsTokens;
@@ -97,43 +98,14 @@ public class JsVariableExtractorTests
         Assert.True((variable.Value as JsArray)!.Count == 0);
     }
 
-    public static readonly IEnumerable<object[]> JsArrayElements = new[] {
-                                                                             new object[]
-                                                                             {
-                                                                                 "x",
-                                                                                 new JsToken[]
-                                                                                 {
-                                                                                     new JsTokens.JsNumber(12),
-                                                                                     new JsStringLiteral("Sample string"),
-                                                                                 },
-                                                                             },
-                                                                             new object[]
-                                                                             {
-                                                                                 "someId2",
-                                                                                 new JsToken[]
-                                                                                 {
-                                                                                     new JsTokens.JsRegex("dfsdfs"),
-                                                                                     new JsTokens.JsNumber(232),
-                                                                                     new JsTokens.JsNumber(-2332)
-                                                                                 }
-                                                                             },
-                                                                             new object[]
-                                                                             {
-                                                                                 "another_id",
-                                                                                 new JsToken[]
-                                                                                 {
-                                                                                     new JsStringLiteral("string")
-                                                                                 }
-                                                                             }
-                                                                         };
-
-    private static IEnumerable<JsToken> GetArrayDeclarationWithGivenLiteralTypes(string variableName, JsType[] parameters)
+    
+    private static IEnumerable<JsToken> GetObjectDeclarationWithGivenLiteralTypes(string objectIdentifier, params JsType[] parameters)
     {
         yield return new JsVar();
-        yield return new JsIdentifier(variableName);
+        yield return new JsIdentifier(SampleIdentifierName);
         yield return new JsEquals();
         yield return new JsNew();
-        yield return new JsIdentifier("Array");
+        yield return new JsIdentifier(objectIdentifier);
         yield return new JsLeftParenthesis();
         if (parameters.Length > 0)
         {
@@ -148,23 +120,100 @@ public class JsVariableExtractorTests
         yield return new JsRightParenthesis();
         yield return new JsSemicolon();
     }
-
+    
+    public static readonly IEnumerable<object[]> JsArrayElements = new[] {
+                                                                             new object[]
+                                                                             {
+                                                                                 new JsToken[]
+                                                                                 {
+                                                                                     new JsTokens.JsNumber(12),
+                                                                                     new JsStringLiteral("Sample string"),
+                                                                                 },
+                                                                             },
+                                                                             new object[]
+                                                                             {
+                                                                                 new JsToken[]
+                                                                                 {
+                                                                                     new JsTokens.JsRegex("dfsdfs"),
+                                                                                     new JsTokens.JsNumber(232),
+                                                                                     new JsTokens.JsNumber(-2332)
+                                                                                 }
+                                                                             },
+                                                                             new object[]
+                                                                             {
+                                                                                 new JsToken[]
+                                                                                 {
+                                                                                     new JsStringLiteral("string")
+                                                                                 }
+                                                                             }
+                                                                         };
+    
     [Theory]
     [MemberData(nameof(JsArrayElements))]
-    public void ExtractVariables_WithNonEmptyArrayDeclaration_ShouldReturnArrayWithExpectedValues(string idName, JsType[] expected)
+    public void ExtractVariables_WithNonEmptyArrayDeclaration_ShouldReturnArrayWithExpectedValues(JsType[] expected)
     {
-        var declaration = GetArrayDeclarationWithGivenLiteralTypes(idName, expected);
+        var declaration = GetObjectDeclarationWithGivenLiteralTypes("Array", expected);
         var actual = Parse(declaration.ToArray()).ToList();
         Assert.Single(actual);
         var variable = actual[0];
-        Assert.True(variable.Name == idName);
         Assert.True(variable.Value is JsArray);
-        var array = ( variable.Value as JsArray )!;
+        var array = ( variable.Value as JsArray)!;
         var arrayValues = array.Values.ToList();
         Assert.True(array.Count == expected.Length);
         for (int i = 0; i < array.Count; i++)
         {
             Assert.True(arrayValues[i].Equals(expected[i].ToJsType()));
         }
+    }
+
+    private const string SampleIdentifierName = "x";
+    
+    public static readonly IEnumerable<object[]> ObjectsEnumerable = new[] 
+                                                                     {
+                                                                         new object[]
+                                                                         {
+                                                                             Array.Empty<JsType>()
+                                                                         },
+                                                                         new object[]
+                                                                         {
+                                                                             new JsType[]
+                                                                             {
+                                                                                 new JsTokens.JsNumber(12)
+                                                                             }
+                                                                         },
+                                                                         new object[]
+                                                                         {
+                                                                             new JsType[]
+                                                                             {
+                                                                                 new JsStringLiteral("1111")
+                                                                             }
+                                                                         },
+                                                                         new object[]
+                                                                         {
+                                                                             new JsType[]
+                                                                             {
+                                                                                 new JsTokens.JsRegex("regex")
+                                                                             }
+                                                                         },
+                                                                         new object[]
+                                                                         {
+                                                                             new JsType[]
+                                                                             {
+                                                                                 new JsTokens.JsNumber(123),
+                                                                                 new JsTokens.JsNumber(1455),
+                                                                                 new JsTokens.JsNumber(-67657)
+                                                                             }
+                                                                         }
+                                                                     };
+    
+    [Theory]
+    [MemberData(nameof(ObjectsEnumerable))]
+    public void ExtractVariables_WithEmptyObjectVariableDeclaration_ShouldReturnObjectType(JsType[] types)
+    {
+        var tokens = GetObjectDeclarationWithGivenLiteralTypes("Object", types).ToArray();
+        var actual = Parse(tokens).ToList();
+        Assert.Single(actual);
+        var first = actual[0].Value;
+        Assert.True(first is JsObject);
     }
 }
