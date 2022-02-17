@@ -50,6 +50,15 @@ public class Tokenizer : ITokenizer
                 end++;
             }
 
+            if (Current == '.')
+            {
+                end++;
+                while (MoveNext() && char.IsDigit(Current))
+                {
+                    end++;
+                }
+            }
+
             return new NumberLiteral(decimal.Parse(_source[start..(end+1)]));
         }
     }
