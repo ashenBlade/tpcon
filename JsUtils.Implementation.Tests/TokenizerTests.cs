@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JsUtils.Implementation.Tokens;
@@ -24,5 +25,20 @@ public class TokenizerTests
     {
         var actual = Tokenize(empty);
         Assert.Empty(actual);
+    }
+
+    [Fact]
+    public void Tokenize_WithStringWithOnlyPositiveIntegers_ShouldReturnNumberTokenWithSameValue()
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            var number = Random.Shared.Next();
+            var expected = new NumberLiteral(number);
+            var list = Tokenize(number.ToString());
+            Assert.Single(list);
+            var actual = list[0];
+            Assert.IsType<NumberLiteral>(actual);
+            Assert.Equal(expected, (NumberLiteral) actual);
+        }
     }
 }
