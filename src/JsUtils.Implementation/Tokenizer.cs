@@ -1,3 +1,4 @@
+using System.Text;
 using JsUtils.Implementation.Tokens;
 
 namespace JsUtils.Implementation;
@@ -36,9 +37,53 @@ public class Tokenizer : ITokenizer
                 {
                     return ReadNumber();
                 }
+
+                switch (Current)
+                {
+                    case '\'':
+                    case '"':
+                        return ReadStringLiteral();    
+                }
             }
 
             return null;
+        }
+
+        private StringLiteral ReadStringLiteral()
+        {
+            var opener = Current;
+            if (opener is not ('\'' or '"'))
+            {
+                throw new UnexpectedTokenException(_source, _position,
+                                                   $"Expected \" or \' at start of string literal. Got: {Current}");
+            }
+            var builder = new StringBuilder();
+            var previous = '\0';
+            while (MoveNext())
+            {
+                if (Current == opener)
+                {
+                    if (previous == '\\')
+                    {
+                        builder.Append(opener);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                if (Current == '\\')
+                {
+                    previous = Current;
+                    continue;
+                }
+
+                previous = Current;
+                builder.Append(Current);
+            }
+
+            return new StringLiteral(builder.ToString());
         }
 
         private Token ReadNumber()

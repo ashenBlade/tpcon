@@ -57,4 +57,30 @@ public class TokenizerTests
             Assert.Equal(expected, actual);
         }
     }
+
+    [Theory]
+    [InlineData(@"", "")]
+    [InlineData(@"value", "value")]
+    [InlineData(@"\""", "\"")]
+    [InlineData(@"\\", "\\")]
+    [InlineData(@"//", "//")]
+    [InlineData(@"aaaaaaaa", "aaaaaaaa")]
+    [InlineData(@"a   aa   aaa   aa", "a   aa   aaa   aa")]
+    [InlineData(@"a2222 43445.. //  aa", "a2222 43445.. //  aa")]
+    [InlineData(@"\\\\", @"\\")]
+    public void Tokenize_WithStringLiteral_ShouldReturnStringLiteralWithValueEqualsStringInQuotes(string literal, string value)
+    {
+        AssertStringLiteral(@$"""{literal}""", value);
+        AssertStringLiteral($@"'{literal}'", value);
+    }
+
+    private void AssertStringLiteral(string literal, string value)
+    {
+        var list = Tokenize(literal);
+        Assert.Single(list);
+        var actual = list[0];
+        Assert.IsType<StringLiteral>(actual);
+        var expected = new StringLiteral(value);
+        Assert.Equal(expected, actual);
+    }
 }
