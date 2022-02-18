@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using JsUtils.Implementation.Tokens;
 using Xunit;
 
@@ -99,5 +100,26 @@ public class TokenizerTests
         var list = Tokenize(source);
         Assert.Single(list);
         return (T)list[0];
+    }
+
+    public static readonly IEnumerable<object[]> KeywordsSequence = new[]
+                                                                    {
+                                                                        new object[] { Keywords.For.Lexeme, Keywords.For },
+                                                                        new object[] { Keywords.While.Lexeme, Keywords.While },
+                                                                        new object[] { Keywords.Do.Lexeme, Keywords.Do },
+                                                                        new object[] { Keywords.Else.Lexeme, Keywords.Else },
+                                                                        new object[] { Keywords.Case.Lexeme, Keywords.Case },
+                                                                        new object[] { Keywords.Switch.Lexeme, Keywords.Switch },
+                                                                        new object[] { Keywords.Break.Lexeme, Keywords.Break },
+                                                                        new object[] { Keywords.Function.Lexeme, Keywords.Function },
+                                                                        new object[] { Keywords.Return.Lexeme, Keywords.Return }
+                                                                    };
+
+    [Theory]
+    [MemberData(nameof(KeywordsSequence))]
+    public void Tokenize_WithJavascriptKeywords_ShouldReturnTokenWithSpecialTags(string source, Word expected)
+    {
+        var actual = TokenizeSingle<Word>(source);
+        Assert.Equal(expected, actual);
     }
 }

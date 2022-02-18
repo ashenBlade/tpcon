@@ -160,12 +160,27 @@ public class Tokenizer : ITokenizer
         }
     }
 
+    private static IEnumerable<Word> ReservedWords => new[] {
+                                                                Keywords.For,
+                                                                Keywords.Break, 
+                                                                Keywords.Do, 
+                                                                Keywords.While, 
+                                                                Keywords.Else,
+                                                                Keywords.Function, 
+                                                                Keywords.Const, 
+                                                                Keywords.Let,
+                                                                Keywords.Var, 
+                                                                Keywords.Switch, 
+                                                                Keywords.Return,
+                                                                Keywords.Case
+                                                            };
+
     private Dictionary<string, Token> GetReservedWords()
     {
-        return new Dictionary<string, Token>()
-               {
-                   {"true", new BoolLiteral(true)}, {"false", new BoolLiteral(false)}
-               };
+        var dict = ReservedWords.ToDictionary<Word?, string, Token>(word => word.Lexeme, word => word);
+        dict.Add("false", BoolLiteral.False);
+        dict.Add("true", BoolLiteral.True);
+        return dict;
     }
 
     public IEnumerable<Token> Tokenize(string source)
