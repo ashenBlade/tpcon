@@ -15,5 +15,6 @@ public static class Tags
                      Regex = 266,
                      True = 267,
                      False = 268,
-                     Function = 269;
+                     Function = 269,
+                     Return = 270;
 }

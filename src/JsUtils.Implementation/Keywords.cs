@@ -11,5 +11,7 @@ public static class Keywords
                                 Case = new("case", Tags.Case),
                                 Switch = new("switch", Tags.Switch),
                                 Else = new("else", Tags.Else),
-                                Function = new("function", Tags.Function);
+                                Function = new("function", Tags.Function),
+                                Return = new("return", Tags.Return);
+
 }
