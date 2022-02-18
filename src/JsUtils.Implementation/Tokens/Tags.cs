@@ -2,7 +2,7 @@ namespace JsUtils.Implementation.Tokens;
 
 public static class Tags
 {
-    public const int And = 256,
+    public const int Break = 256,
                      Else = 257,
                      For = 258,
                      While = 259,
