@@ -13,5 +13,6 @@ public static class Tags
                      Number = 264,
                      String = 265,
                      Regex = 266,
-                     Bool = 267;
+                     True = 267,
+                     False = 268;
 }

@@ -83,4 +83,21 @@ public class TokenizerTests
         var expected = new StringLiteral(value);
         Assert.Equal(expected, actual);
     }
+
+    [Theory]
+    [InlineData("true", true)]
+    [InlineData("false", false)]
+    public void Tokenize_WithBoolLiteral_ShouldReturnBoolLiteral(string literal, bool value)
+    {
+        var actual = TokenizeSingle<BoolLiteral>(literal);
+        var expected = new BoolLiteral(value);
+        Assert.Equal(expected, actual);
+    }
+
+    private T TokenizeSingle<T>(string source) where T : Token
+    {
+        var list = Tokenize(source);
+        Assert.Single(list);
+        return (T)list[0];
+    }
 }

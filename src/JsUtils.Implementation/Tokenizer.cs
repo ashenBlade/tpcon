@@ -1,4 +1,5 @@
 using System.Text;
+using System.Xml.Serialization;
 using JsUtils.Implementation.Tokens;
 
 namespace JsUtils.Implementation;
@@ -9,11 +10,13 @@ public class Tokenizer : ITokenizer
     {
         private readonly string _source;
         private int _position;
+        private readonly Dictionary<string, Token> _reserved;
         private int Position => _position;
         private char Current => _source[_position];
-        public InnerTokenizer(string source)
+        public InnerTokenizer(string source, Dictionary<string, Token> reserved)
         {
             _source = source;
+            _reserved = reserved;
             _position = -1;
         }
 
@@ -31,22 +34,71 @@ public class Tokenizer : ITokenizer
         
         public Token? Read()
         {
-            while (MoveNext())
+            while (MoveNext() && SkipWhitespaces())
             {
-                if (char.IsDigit(Current))
-                {
-                    return ReadNumber();
-                }
-
-                switch (Current)
-                {
-                    case '\'':
-                    case '"':
-                        return ReadStringLiteral();    
-                }
+                return Current switch
+                       {
+                           _ when char.IsDigit(Current) => ReadNumber(),
+                           _ when char.IsLetter(Current) => ReadWord(),
+                           '\'' or '\"' => ReadStringLiteral(),
+                           _ => throw new UnexpectedTokenException(_source, _position, "Unknown token")
+                       };
             }
 
             return null;
+        }
+
+        private bool SkipWhitespaces()
+        {
+            bool IsWhitespace(char ch) => ch is ' ' or '\t' or '\n';
+            while (true)
+            {
+                if (!IsWhitespace(Current))
+                {
+                    break;
+                }
+
+                if (!MoveNext())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private Token ReadWord()
+        {
+            var builder = new StringBuilder();
+            if (!char.IsLetter(Current))
+            {
+                throw new UnexpectedTokenException(_source, _position, $"Expected letter. Got: {Current}");
+            }
+
+            builder.Append(Current);
+            while (MoveNext() && char.IsLetterOrDigit(Current))
+            {
+                builder.Append(Current);
+            }
+
+            var result = builder.ToString();
+            return LookupWords(result);
+        }
+
+        private Token LookupWords(string lexeme)
+        {
+            if (TryGetReserved(lexeme, out var reserved))
+            {
+                return reserved!;
+            }
+
+            return new Identifier(lexeme);
+        }
+
+        private bool TryGetReserved(string lexeme, out Token? token)
+        {
+            token = null;
+            return _reserved.TryGetValue(lexeme, out token);
         }
 
         private StringLiteral ReadStringLiteral()
@@ -107,9 +159,18 @@ public class Tokenizer : ITokenizer
             return new NumberLiteral(decimal.Parse(_source[start..(end+1)]));
         }
     }
+
+    private Dictionary<string, Token> GetReservedWords()
+    {
+        return new Dictionary<string, Token>()
+               {
+                   {"true", new BoolLiteral(true)}, {"false", new BoolLiteral(false)}
+               };
+    }
+
     public IEnumerable<Token> Tokenize(string source)
     {
-        var tokenizer = new InnerTokenizer(source);
+        var tokenizer = new InnerTokenizer(source, GetReservedWords());
         while (true)
         {
             var token = tokenizer.Read();
