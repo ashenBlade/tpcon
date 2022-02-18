@@ -16,5 +16,8 @@ public static class Tags
                      True = 267,
                      False = 268,
                      Function = 269,
-                     Return = 270;
+                     Return = 270,
+                     Var = 271,
+                     Let = 272,
+                     Const = 273;
 }

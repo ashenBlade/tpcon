@@ -12,6 +12,9 @@ public static class Keywords
                                 Switch = new("switch", Tags.Switch),
                                 Else = new("else", Tags.Else),
                                 Function = new("function", Tags.Function),
-                                Return = new("return", Tags.Return);
+                                Return = new("return", Tags.Return),
+                                Var = new("var", Tags.Var),
+                                Let = new("let", Tags.Let),
+                                Const = new("const", Tags.Const);
 
 }
