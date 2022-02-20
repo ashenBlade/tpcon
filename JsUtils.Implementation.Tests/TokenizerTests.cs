@@ -99,7 +99,9 @@ public class TokenizerTests
     {
         var list = Tokenize(source);
         Assert.Single(list);
-        return (T)list[0];
+        var first = list[0];
+        Assert.IsType<T>(first);
+        return (T)first;
     }
 
     public static readonly IEnumerable<object[]> KeywordsSequence = new[]
@@ -120,6 +122,35 @@ public class TokenizerTests
     public void Tokenize_WithJavascriptKeywords_ShouldReturnTokenWithSpecialTags(string source, Word expected)
     {
         var actual = TokenizeSingle<Word>(source);
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData("a")]
+    [InlineData("x")]
+    [InlineData("data")]
+    [InlineData("d23243")]
+    [InlineData("Var")]
+    [InlineData("Let")]
+    [InlineData("someId")]
+    [InlineData("date")]
+    [InlineData("identi1")]
+    [InlineData("ii")]
+    [InlineData("i1")]
+    [InlineData("j")]
+    [InlineData("token")]
+    [InlineData("func")]
+    [InlineData("case_empty")]
+    [InlineData("not_equal")]
+    [InlineData("$value")]
+    [InlineData("_privateFiled")]
+    [InlineData("_")]
+    [InlineData("aaaa1$")]
+    [InlineData("adf23203_____43243dfdf")]
+    public void Tokenize_WithSingleValidNonReservedWord_ShouldReturnIdentifier(string id)
+    {
+        var actual = TokenizeSingle<Identifier>(id);
+        var expected = new Identifier(id);
         Assert.Equal(expected, actual);
     }
 }

@@ -13,33 +13,45 @@ public class Tokenizer : ITokenizer
         private readonly Dictionary<string, Token> _reserved;
         private int Position => _position;
         private char Current => _source[_position];
+        private bool EndOfFile { get; set; }
+
         public InnerTokenizer(string source, Dictionary<string, Token> reserved)
         {
             _source = source;
             _reserved = reserved;
             _position = -1;
+            EndOfFile = false;
         }
 
         private bool MoveNext()
         {
+            if (EndOfFile)
+            {
+                return false;
+            }
             _position++;
             if (_position >= _source.Length)
             {
-                _position--;
+                EndOfFile = true;
                 return false;
             }
 
             return true;
         }
-        
+
         public Token? Read()
         {
-            while (MoveNext() && SkipWhitespaces())
+            while (MoveNext())
             {
+                SkipWhitespaces();
+                if (EndOfFile)
+                {
+                    return null;
+                }
                 return Current switch
                        {
                            _ when char.IsDigit(Current) => ReadNumber(),
-                           _ when char.IsLetter(Current) => ReadWord(),
+                           _ when IsCorrectIdentifierStartLetter(Current) => ReadWord(),
                            '\'' or '\"' => ReadStringLiteral(),
                            _ => throw new UnexpectedTokenException(_source, _position, "Unknown token")
                        };
@@ -47,6 +59,7 @@ public class Tokenizer : ITokenizer
 
             return null;
         }
+
 
         private bool SkipWhitespaces()
         {
@@ -67,16 +80,26 @@ public class Tokenizer : ITokenizer
             return true;
         }
 
+        private bool CanBeUsedInIdentifierWord(char letter)
+        {
+            return char.IsLetterOrDigit(letter) || letter is '$' or '_';
+        }
+
+        private bool IsCorrectIdentifierStartLetter(char letter)
+        {
+            return char.IsLetter(letter) || letter is '_' or '$';
+        }
+
         private Token ReadWord()
         {
             var builder = new StringBuilder();
-            if (!char.IsLetter(Current))
+            if (!IsCorrectIdentifierStartLetter(Current))
             {
                 throw new UnexpectedTokenException(_source, _position, $"Expected letter. Got: {Current}");
             }
 
             builder.Append(Current);
-            while (MoveNext() && char.IsLetterOrDigit(Current))
+            while (MoveNext() && CanBeUsedInIdentifierWord(Current))
             {
                 builder.Append(Current);
             }
@@ -109,6 +132,7 @@ public class Tokenizer : ITokenizer
                 throw new UnexpectedTokenException(_source, _position,
                                                    $"Expected \" or \' at start of string literal. Got: {Current}");
             }
+
             var builder = new StringBuilder();
             var previous = '\0';
             while (MoveNext())
@@ -140,40 +164,39 @@ public class Tokenizer : ITokenizer
 
         private Token ReadNumber()
         {
-            var start = _position;
-            var end = _position;
-            while (MoveNext() && char.IsDigit(Current))
+            var builder = new StringBuilder();
+            if (!char.IsDigit(Current))
             {
-                end++;
+                throw new UnexpectedTokenException(_source, _position, $"Expected number. Given: {Current}");
             }
 
-            if (Current == '.')
+            builder.Append(Current);
+            while (MoveNext() && char.IsDigit(Current))
             {
-                end++;
+                builder.Append(Current);
+            }
+
+            
+            if (!EndOfFile && Current == '.')
+            {
+                builder.Append('.');
                 while (MoveNext() && char.IsDigit(Current))
                 {
-                    end++;
+                    builder.Append(Current);
                 }
             }
 
-            return new NumberLiteral(decimal.Parse(_source[start..(end+1)]));
+            return new NumberLiteral(decimal.Parse(builder.ToString()));
         }
     }
 
-    private static IEnumerable<Word> ReservedWords => new[] {
-                                                                Keywords.For,
-                                                                Keywords.Break, 
-                                                                Keywords.Do, 
-                                                                Keywords.While, 
-                                                                Keywords.Else,
-                                                                Keywords.Function, 
-                                                                Keywords.Const, 
-                                                                Keywords.Let,
-                                                                Keywords.Var, 
-                                                                Keywords.Switch, 
-                                                                Keywords.Return,
-                                                                Keywords.Case
-                                                            };
+    private static IEnumerable<Word> ReservedWords => new[]
+                                                      {
+                                                          Keywords.For, Keywords.Break, Keywords.Do, Keywords.While,
+                                                          Keywords.Else, Keywords.Function, Keywords.Const,
+                                                          Keywords.Let, Keywords.Var, Keywords.Switch, Keywords.Return,
+                                                          Keywords.Case
+                                                      };
 
     private Dictionary<string, Token> GetReservedWords()
     {
