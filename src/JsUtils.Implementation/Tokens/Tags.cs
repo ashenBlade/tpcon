@@ -19,5 +19,13 @@ public static class Tags
                      Return = 270,
                      Var = 271,
                      Let = 272,
-                     Const = 273;
+                     Const = 273,
+                     GreaterOrEqual = 274,
+                     LessOrEqual = 275,
+                     Equality = 276,
+                     StrongEquality = 277,
+                     And = 278,
+                     Or = 279,
+                     Increment = 280,
+                     Decrement = 281;
 }

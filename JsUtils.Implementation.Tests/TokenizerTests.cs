@@ -153,4 +153,32 @@ public class TokenizerTests
         var expected = new Identifier(id);
         Assert.Equal(expected, actual);
     }
+    
+
+    [Theory]
+    [InlineData(">=", Tags.GreaterOrEqual)]
+    [InlineData("<=", Tags.LessOrEqual)]
+    [InlineData(">", '>')]
+    [InlineData("<", '<')]
+    [InlineData("=", '=')]
+    [InlineData("==", Tags.Equality)]
+    [InlineData("===", Tags.StrongEquality)]
+    [InlineData("&&", Tags.And)]
+    [InlineData("&", '&')]
+    [InlineData("||", Tags.Or)]
+    [InlineData("|", '|')]
+    [InlineData("+", '+')]
+    [InlineData("++", Tags.Increment)]
+    [InlineData("-", '-')]
+    [InlineData("--", Tags.Decrement)]
+    [InlineData("!", '!')]
+    [InlineData("^", '^')]
+    public void Tokenize_WithMathOperationsSigns_ShouldReturnCorrectWords(string @operator, int expectedTag)
+    {
+        var expected = new Word(@operator, expectedTag);
+        var list = Tokenize(@operator);
+        Assert.Single(list);
+        var actual = list[0];
+        Assert.Equal(expected, actual);
+    }
 }

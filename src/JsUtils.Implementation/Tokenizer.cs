@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Xml.Serialization;
 using JsUtils.Implementation.Tokens;
@@ -52,12 +53,63 @@ public class Tokenizer : ITokenizer
                        {
                            _ when char.IsDigit(Current) => ReadNumber(),
                            _ when IsCorrectIdentifierStartLetter(Current) => ReadWord(),
+                           _ when IsMathOperator(Current) => ReadOperator(),
                            '\'' or '\"' => ReadStringLiteral(),
                            _ => throw new UnexpectedTokenException(_source, _position, "Unknown token")
                        };
             }
 
             return null;
+        }
+
+        private Token ReadOperator()
+        {
+            var current = Current;
+            var next = MoveNext()
+                           ? Current
+                           : '\0';
+            switch (current)
+            {
+                case '+':
+                    return next == '+'
+                               ? new Word("++", Tags.Increment)
+                               : new Token('+');
+
+                case '-':
+                    return next == '-'
+                               ? new Word("--", Tags.Decrement)
+                               : new Token('-');
+                case '|':
+                    return next == '|'
+                               ? new Word("||", Tags.Or)
+                               : new Token('|');
+                case '&':
+                    return next == '&'
+                               ? new Word("&&", Tags.And)
+                               : new Token('&');
+                case '=':
+                    if (next == '=')
+                    {
+                        var nextNext = MoveNext()
+                                           ? Current
+                                           : '\0';
+                        return nextNext == '='
+                                   ? new Word("===", Tags.StrongEquality)
+                                   : new Word("==", Tags.Equality);
+                    }
+
+                    return new Token('=');
+                case '<':
+                    return next == '='
+                               ? new Word("<=", Tags.LessOrEqual)
+                               : new Token('<');
+                case '>':
+                    return next == '='
+                               ? new Word(">=", Tags.GreaterOrEqual)
+                               : new Token('>');
+            }
+
+            return new Token(current);
         }
 
 
@@ -88,6 +140,11 @@ public class Tokenizer : ITokenizer
         private bool IsCorrectIdentifierStartLetter(char letter)
         {
             return char.IsLetter(letter) || letter is '_' or '$';
+        }
+
+        private bool IsMathOperator(char letter)
+        {
+            return letter is '|' or '&' or '+' or '-' or '!' or '=' or '^' or '<' or '>';
         }
 
         private Token ReadWord()
