@@ -42,21 +42,16 @@ public class Tokenizer : ITokenizer
 
         public Token? Read()
         {
-            while (MoveNext())
+            while (MoveNext() && SkipWhitespaces() && !EndOfFile)
             {
-                SkipWhitespaces();
-                if (EndOfFile)
-                {
-                    return null;
-                }
                 return Current switch
-                       {
-                           _ when char.IsDigit(Current) => ReadNumber(),
-                           _ when IsCorrectIdentifierStartLetter(Current) => ReadWord(),
-                           _ when IsMathOperator(Current) => ReadOperator(),
-                           '\'' or '\"' => ReadStringLiteral(),
-                           _ => throw new UnexpectedTokenException(_source, _position, "Unknown token")
-                       };
+                        {
+                            _ when char.IsDigit(Current) => ReadNumber(),
+                            _ when IsCorrectIdentifierStartLetter(Current) => ReadWord(),
+                            _ when IsMathOperator(Current) => ReadOperator(),
+                            '\'' or '\"' => ReadStringLiteral(),
+                            _ => new Token(Current)
+                        };
             }
 
             return null;

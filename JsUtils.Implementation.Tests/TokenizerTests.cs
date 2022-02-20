@@ -181,4 +181,28 @@ public class TokenizerTests
         var actual = list[0];
         Assert.Equal(expected, actual);
     }
+
+    [Theory]
+    
+    [InlineData("asdf 123", 2)]
+    [InlineData("asdf 123 dfdf", 3)]
+    [InlineData("&& && &&", 3)]
+    [InlineData("&& x 1", 3)]
+    [InlineData("&& * | ()", 5)]
+    [InlineData("&& * || ()", 5)]
+    [InlineData("&& * -97343 ()", 6)]
+    [InlineData("&& * - -", 4)]
+    [InlineData("/ + -", 3)]
+    [InlineData("++ ++ __variable ++", 4)]
+    [InlineData("++ $ __variable |", 4)]
+    [InlineData("++ var let const __variable |", 6)]
+    [InlineData("( ) ( ) ( ) ( ) { } { }", 12)]
+    [InlineData("( - ) ( + ) ( / ) ( . ) { . } { . }", 18)]
+    [InlineData("( - ) ( ( + ) ( function ) ) ( identifier_name ) { 776545678.2323 } { ++ }", 20)]
+    [InlineData("function printHelloWorld() { console.log(\"Hello, world\"); } ", 13)]
+    public void Tokenize_WithMultipleWords_ShouldReturnMultipleTokensWithSameCount(string input, int expectedCount)
+    {
+        var list = Tokenize(input);
+        Assert.Equal(list.Count, expectedCount);
+    }
 }
