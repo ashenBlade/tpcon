@@ -2,6 +2,21 @@ namespace JsUtils.Implementation.Tokens;
 
 public class Token: IEquatable<Token>
 {
+    #region Basic single tokens
+
+    public static Token LeftParenthesis => new('(');
+    public static Token RightParenthesis => new(')');
+    public static Token LeftBrace => new('{');
+    public static Token RightBrace => new('}');
+    public static Token Less => new('<');
+    public static Token Greater => new('>');
+    public static Token Minus => new('-');
+    public static Token Plus => new('+');
+    public static Token Negate => new('!');
+    public static Token Semicolon => new(';');
+    public static Token Equal => new('=');
+
+    #endregion
     public int Tag { get; }
 
     public Token(int tag)

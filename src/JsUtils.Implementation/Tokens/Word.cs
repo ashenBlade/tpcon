@@ -2,6 +2,16 @@ namespace JsUtils.Implementation.Tokens;
 
 public class Word: Token, IEquatable<Word>
 {
+    #region Basic words
+
+    public static Word And => new("&&", Tags.And);
+    public static Word Or => new("||", Tags.Or);
+    public static Word Increment => new("++", Tags.Increment);
+    public static Word Decrement => new("--", Tags.Decrement);
+    public static Word Equality => new("==", Tags.Equality);
+    public static Word StrongEquality => new("===", Tags.StrongEquality);
+    
+    #endregion
     public string Lexeme { get; }
 
     public Word(string lexeme, int tag): base(tag)
