@@ -28,5 +28,7 @@ public static class Tags
                      Or = 279,
                      Increment = 280,
                      Decrement = 281,
-                     New = 282;
+                     New = 282,
+                     Undefined = 283,
+                     Null = 284;
 }

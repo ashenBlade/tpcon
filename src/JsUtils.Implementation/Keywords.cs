@@ -16,6 +16,8 @@ public static class Keywords
                                 Var = new("var", Tags.Var),
                                 Let = new("let", Tags.Let),
                                 Const = new("const", Tags.Const),
-                                New = new("new", Tags.New);
+                                New = new("new", Tags.New),
+                                Undefined = new("undefined", Tags.Undefined),
+                                Null = new("null", Tags.Null);
 
 }

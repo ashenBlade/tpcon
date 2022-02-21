@@ -8,6 +8,10 @@ public class Token: IEquatable<Token>
     public static Token RightParenthesis => new(')');
     public static Token LeftBrace => new('{');
     public static Token RightBrace => new('}');
+    public static Token LeftBracket => new('[');
+    public static Token RightBracket => new(']');
+    public static Token Comma => new(',');
+    public static Token Dot => new('.');
     public static Token Less => new('<');
     public static Token Greater => new('>');
     public static Token Minus => new('-');
