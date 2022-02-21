@@ -272,7 +272,7 @@ public class Tokenizer : ITokenizer
                                                           Keywords.For, Keywords.Break, Keywords.Do, Keywords.While,
                                                           Keywords.Else, Keywords.Function, Keywords.Const,
                                                           Keywords.Let, Keywords.Var, Keywords.Switch, Keywords.Return,
-                                                          Keywords.Case
+                                                          Keywords.Case, Keywords.New
                                                       };
 
     private Dictionary<string, Token> GetReservedWords()

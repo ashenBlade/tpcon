@@ -15,6 +15,7 @@ public static class Keywords
                                 Return = new("return", Tags.Return),
                                 Var = new("var", Tags.Var),
                                 Let = new("let", Tags.Let),
-                                Const = new("const", Tags.Const);
+                                Const = new("const", Tags.Const),
+                                New = new("new", Tags.New);
 
 }
