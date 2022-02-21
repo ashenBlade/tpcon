@@ -14,14 +14,13 @@ public class Tokenizer : ITokenizer
         private readonly Dictionary<string, Token> _reserved;
         private int Position => _position;
         private char Current => _source[_position];
-        private bool EndOfFile { get; set; }
+        private bool EndOfFile => _position >= _source.Length;
 
         public InnerTokenizer(string source, Dictionary<string, Token> reserved)
         {
             _source = source;
             _reserved = reserved;
-            _position = -1;
-            EndOfFile = false;
+            _position = 0;
         }
 
         private bool MoveNext()
@@ -31,30 +30,31 @@ public class Tokenizer : ITokenizer
                 return false;
             }
             _position++;
-            if (_position >= _source.Length)
-            {
-                EndOfFile = true;
-                return false;
-            }
-
-            return true;
+            return !EndOfFile;
         }
 
         public Token? Read()
         {
-            while (MoveNext() && SkipWhitespaces() && !EndOfFile)
+            while (SkipWhitespaces() && !EndOfFile)
             {
                 return Current switch
                         {
                             _ when char.IsDigit(Current) => ReadNumber(),
                             _ when IsCorrectIdentifierStartLetter(Current) => ReadWord(),
-                            _ when IsMathOperator(Current) => ReadOperator(),
                             '\'' or '\"' => ReadStringLiteral(),
-                            _ => new Token(Current)
+                            _ when IsMathOperator(Current) => ReadOperator(),
+                            _ => ReadAsSingleToken()
                         };
             }
 
             return null;
+        }
+
+        private Token ReadAsSingleToken()
+        {
+            var token = new Token(Current);
+            MoveNext();
+            return token;
         }
 
         private Token ReadOperator()
@@ -63,68 +63,121 @@ public class Tokenizer : ITokenizer
             var next = MoveNext()
                            ? Current
                            : '\0';
+            Token? toReturn = null;
             switch (current)
             {
                 case '+':
-                    return next == '+'
-                               ? new Word("++", Tags.Increment)
-                               : new Token('+');
+                    if (next == '+')
+                    {
+                        MoveNext();
+                        toReturn = Word.Increment;
+                    }
+                    else
+                    {
+                        toReturn = Token.Plus;
+                    }
+                    break;
+                
 
                 case '-':
-                    return next == '-'
-                               ? new Word("--", Tags.Decrement)
-                               : new Token('-');
+                    if (next == '-')
+                    {
+                        MoveNext();
+                        toReturn = Word.Decrement;
+                    }
+                    else
+                    {
+                        toReturn = Token.Minus;
+                    }
+                    break;
                 case '|':
-                    return next == '|'
-                               ? new Word("||", Tags.Or)
-                               : new Token('|');
+                    if (next == '|')
+                    {
+                        MoveNext();
+                        toReturn = Word.Or;
+                    }
+                    else
+                    {
+                        toReturn = Token.BitwiseOr;
+                    }
+                    break;
                 case '&':
-                    return next == '&'
-                               ? new Word("&&", Tags.And)
-                               : new Token('&');
+                    if (next == '&')
+                    {
+                        MoveNext();
+                        toReturn = Word.And;
+                    }
+                    else
+                    {
+                        toReturn = Token.BitwiseAnd;
+                    }
+                    break;
                 case '=':
                     if (next == '=')
                     {
-                        var nextNext = MoveNext()
-                                           ? Current
-                                           : '\0';
-                        return nextNext == '='
-                                   ? new Word("===", Tags.StrongEquality)
-                                   : new Word("==", Tags.Equality);
+                        if (MoveNext() && Current == '=')
+                        {
+                            MoveNext();
+                            toReturn = Word.StrongEquality;
+                        }
+                        else
+                        {
+                            toReturn = Word.Equality;
+                        }
+                    }
+                    else
+                    {
+                        toReturn = Token.Equal;
                     }
 
-                    return new Token('=');
+                    break;
+
                 case '<':
-                    return next == '='
-                               ? new Word("<=", Tags.LessOrEqual)
-                               : new Token('<');
+                    if (next == '=')
+                    {
+                        MoveNext();
+                        toReturn = new Word("<=", Tags.LessOrEqual);
+                    }
+                    else
+                    {
+                        toReturn = Token.Less;
+                    }
+                    break;
                 case '>':
-                    return next == '='
-                               ? new Word(">=", Tags.GreaterOrEqual)
-                               : new Token('>');
+                    if (next == '=')
+                    {
+                        MoveNext();
+                        toReturn = new Word(">=", Tags.GreaterOrEqual);
+                    }
+                    else
+                    {
+                        toReturn = Token.Greater;
+                    }
+                    break;
             }
 
-            return new Token(current);
+            if (toReturn is null)
+            {
+                toReturn = new Token(current);
+            }
+            return toReturn;
         }
 
 
         private bool SkipWhitespaces()
         {
-            bool IsWhitespace(char ch) => ch is ' ' or '\t' or '\n';
-            while (true)
+            bool ShouldSkip(char ch) => ch is ' ' or '\t' or '\n';
+            while (!EndOfFile)
             {
-                if (!IsWhitespace(Current))
+                if (!ShouldSkip(Current))
                 {
                     break;
                 }
 
-                if (!MoveNext())
-                {
-                    return false;
-                }
+                MoveNext();
             }
 
-            return true;
+            return !EndOfFile;
         }
 
         private bool CanBeUsedInIdentifierWord(char letter)
@@ -194,11 +247,12 @@ public class Tokenizer : ITokenizer
                     if (previous == '\\')
                     {
                         builder.Append(opener);
+                        previous = Current;
+                        continue;
                     }
-                    else
-                    {
-                        break;
-                    }
+
+                    MoveNext();
+                    break;
                 }
 
                 if (Current == '\\')
@@ -210,7 +264,6 @@ public class Tokenizer : ITokenizer
                 previous = Current;
                 builder.Append(Current);
             }
-
             return new StringLiteral(builder.ToString());
         }
 

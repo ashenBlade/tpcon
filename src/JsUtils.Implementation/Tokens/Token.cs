@@ -15,6 +15,9 @@ public class Token: IEquatable<Token>
     public static Token Negate => new('!');
     public static Token Semicolon => new(';');
     public static Token Equal => new('=');
+    public static Token BitwiseOr => new('|');
+    public static Token BitwiseAnd => new('&');
+    public static Token Xor => new('^');
 
     #endregion
     public int Tag { get; }

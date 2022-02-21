@@ -203,6 +203,6 @@ public class TokenizerTests
     public void Tokenize_WithMultipleWords_ShouldReturnMultipleTokensWithSameCount(string input, int expectedCount)
     {
         var list = Tokenize(input);
-        Assert.Equal(list.Count, expectedCount);
+        Assert.Equal(expectedCount, list.Count);
     }
 }
