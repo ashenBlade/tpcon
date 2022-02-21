@@ -205,4 +205,129 @@ public class TokenizerTests
         var list = Tokenize(input);
         Assert.Equal(expectedCount, list.Count);
     }
+
+    public static readonly IEnumerable<object[]> StringAndTokenSequence = new[]
+                                                                                     {
+                                                                                         new object[]
+                                                                                         {
+                                                                                             "12 12 12",
+                                                                                             new List<Token>()
+                                                                                             {
+                                                                                                 new NumberLiteral(12),
+                                                                                                 new NumberLiteral(12),
+                                                                                                 new NumberLiteral(12)
+                                                                                             }
+                                                                                         },
+                                                                                         new object[]
+                                                                                         {
+                                                                                             "x y $ const",
+                                                                                             new List<Token>()
+                                                                                             {
+                                                                                                 new Identifier("x"),
+                                                                                                 new Identifier("y"),
+                                                                                                 new Identifier("$"),
+                                                                                                 Keywords.Const
+                                                                                             }
+                                                                                         },
+                                                                                         new object[]
+                                                                                         {
+                                                                                             "123.323 , function variable var",
+                                                                                             new List<Token>()
+                                                                                             {
+                                                                                                 new NumberLiteral(123.323M),
+                                                                                                 new Token(','),
+                                                                                                 Keywords.Function,
+                                                                                                 new Identifier("variable"),
+                                                                                                 Keywords.Var
+                                                                                             }
+                                                                                         },
+                                                                                         new object[]
+                                                                                         {
+                                                                                             "\"this is a string\" 'another string' _this_is_variable$$ {}",
+                                                                                             new List<Token>()
+                                                                                             {
+                                                                                                 new StringLiteral("this is a string"),
+                                                                                                 new StringLiteral("another string"),
+                                                                                                 new Identifier("_this_is_variable$$"),
+                                                                                                 new Token('{'),
+                                                                                                 new Token('}')
+                                                                                             }
+                                                                                         },
+                                                                                         new object[]
+                                                                                         {
+                                                                                             "new Date(0);",
+                                                                                             new List<Token>()
+                                                                                             {
+                                                                                                 Keywords.New,
+                                                                                                 new Identifier("Date"),
+                                                                                                 Token.LeftParenthesis,
+                                                                                                 new NumberLiteral(0),
+                                                                                                 Token.RightParenthesis,
+                                                                                                 Token.Semicolon
+                                                                                             }
+                                                                                         },
+                                                                                         new object[]
+                                                                                         {
+                                                                                             "function doSubmit(){\nreturn 0;\n}\n",
+                                                                                             new List<Token>()
+                                                                                             {
+                                                                                                 Keywords.Function, new Identifier("doSubmit"), Token.LeftParenthesis, Token.RightParenthesis,
+                                                                                                 Token.LeftBrace, 
+                                                                                                 Keywords.Return, new NumberLiteral(0), Token.Semicolon, 
+                                                                                                 Token.RightBrace
+                                                                                             }
+                                                                                         },
+                                                                                         new object[]
+                                                                                         {
+                                                                                             "var x = [0,\t 1,\t 2,\n 3\n, 4, 5, 6, 7];",
+                                                                                             new List<Token>()
+                                                                                             {
+                                                                                                 Keywords.Var, new Identifier("x"), Token.Equal, Token.LeftBracket,
+                                                                                                 new NumberLiteral(0), Token.Comma,
+                                                                                                 new NumberLiteral(1), Token.Comma,
+                                                                                                 new NumberLiteral(2), Token.Comma,
+                                                                                                 new NumberLiteral(3), Token.Comma,
+                                                                                                 new NumberLiteral(4), Token.Comma,
+                                                                                                 new NumberLiteral(5), Token.Comma,
+                                                                                                 new NumberLiteral(6), Token.Comma,
+                                                                                                 new NumberLiteral(7), Token.RightBracket, Token.Semicolon
+                                                                                             }
+                                                                                         },
+                                                                                         new object[]
+                                                                                         {
+                                                                                             "function x() {\n\tconsole.log(\"Hello, world\");\n\treturn undefined; \n}\n",
+                                                                                             new List<Token>()
+                                                                                             {
+                                                                                                 Keywords.Function, new Identifier("x"), Token.LeftParenthesis, Token.RightParenthesis, Token.LeftBrace,
+                                                                                                 new Identifier("console"), Token.Dot, new Identifier("log"), Token.LeftParenthesis, new StringLiteral("Hello, world"), Token.RightParenthesis, Token.Semicolon,
+                                                                                                 Keywords.Return, Keywords.Undefined, Token.Semicolon,
+                                                                                                 Token.RightBrace
+                                                                                             }
+                                                                                         },
+                                                                                         new object[]
+                                                                                         {
+                                                                                             "var array = new Array(\"string\", 0.0, 111, \"router param\", \"\\\"\", 23232, null);",
+                                                                                             new List<Token>()
+                                                                                             {
+                                                                                                 Keywords.Var, new Identifier("array"), Token.Equal, 
+                                                                                                 Keywords.New, new Identifier("Array"), Token.LeftParenthesis,
+                                                                                                 new StringLiteral("string"), Token.Comma, 
+                                                                                                 new NumberLiteral(0.0M), Token.Comma, 
+                                                                                                 new NumberLiteral(111), Token.Comma, 
+                                                                                                 new StringLiteral("router param"), Token.Comma, 
+                                                                                                 new StringLiteral("\""), Token.Comma, 
+                                                                                                 new NumberLiteral(23232), Token.Comma, 
+                                                                                                 Keywords.Null, Token.RightParenthesis, Token.Semicolon
+                                                                                             }
+                                                                                         }
+                                                                                     };
+    
+
+    [Theory]
+    [MemberData(nameof(StringAndTokenSequence))]
+    public void Tokenize_WithStringWithMultipleDifferentTokens_ShouldReturnExpectedTokenSequence(string input, List<Token> expected)
+    {
+        var actual = Tokenize(input);
+        Assert.Equal(actual, expected);
+    }
 }
