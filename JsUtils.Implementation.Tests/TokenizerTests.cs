@@ -200,7 +200,7 @@ public class TokenizerTests
     [InlineData("( - ) ( + ) ( / ) ( . ) { . } { . }", 18)]
     [InlineData("( - ) ( ( + ) ( function ) ) ( identifier_name ) { 776545678.2323 } { ++ }", 20)]
     [InlineData("function printHelloWorld() { console.log(\"Hello, world\"); } ", 13)]
-    public void Tokenize_WithMultipleWords_ShouldReturnMultipleTokensWithSameCount(string input, int expectedCount)
+    public void Tokenize_WithStringWithMultipleWords_ShouldReturnTokenSequenceWithExpectedCount(string input, int expectedCount)
     {
         var list = Tokenize(input);
         Assert.Equal(expectedCount, list.Count);
