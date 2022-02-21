@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Net;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Xml.Serialization;
@@ -57,110 +59,80 @@ public class Tokenizer : ITokenizer
             return token;
         }
 
-        private Token ReadOperator()
+        private Token ReadAhead(params KeyValuePair<char, Token>[] sequence)
+        {
+            var toReturn = new Token(Current);
+            for (int i = 0; i < sequence.Length; i++)
+            {
+                if (!MoveNext())
+                {
+                    break;
+                }
+                var (ch, token) = sequence[i];
+                if (Current == ch)
+                {
+                    toReturn = token;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            MoveNext();
+
+            return toReturn;
+        }
+
+        private Token ReadTwoAhead(char next, Token second, char nextNext, Token third)
         {
             var current = Current;
-            var next = MoveNext()
-                           ? Current
-                           : '\0';
-            Token? toReturn = null;
-            switch (current)
+            if (MoveNext() && Current == next)
             {
-                case '+':
-                    if (next == '+')
-                    {
-                        MoveNext();
-                        toReturn = Word.Increment;
-                    }
-                    else
-                    {
-                        toReturn = Token.Plus;
-                    }
-                    break;
-                
+                if (MoveNext() && Current == nextNext)
+                {
+                    MoveNext();
+                    return third;
+                }
 
-                case '-':
-                    if (next == '-')
-                    {
-                        MoveNext();
-                        toReturn = Word.Decrement;
-                    }
-                    else
-                    {
-                        toReturn = Token.Minus;
-                    }
-                    break;
-                case '|':
-                    if (next == '|')
-                    {
-                        MoveNext();
-                        toReturn = Word.Or;
-                    }
-                    else
-                    {
-                        toReturn = Token.BitwiseOr;
-                    }
-                    break;
-                case '&':
-                    if (next == '&')
-                    {
-                        MoveNext();
-                        toReturn = Word.And;
-                    }
-                    else
-                    {
-                        toReturn = Token.BitwiseAnd;
-                    }
-                    break;
-                case '=':
-                    if (next == '=')
-                    {
-                        if (MoveNext() && Current == '=')
-                        {
-                            MoveNext();
-                            toReturn = Word.StrongEquality;
-                        }
-                        else
-                        {
-                            toReturn = Word.Equality;
-                        }
-                    }
-                    else
-                    {
-                        toReturn = Token.Equal;
-                    }
-
-                    break;
-
-                case '<':
-                    if (next == '=')
-                    {
-                        MoveNext();
-                        toReturn = new Word("<=", Tags.LessOrEqual);
-                    }
-                    else
-                    {
-                        toReturn = Token.Less;
-                    }
-                    break;
-                case '>':
-                    if (next == '=')
-                    {
-                        MoveNext();
-                        toReturn = new Word(">=", Tags.GreaterOrEqual);
-                    }
-                    else
-                    {
-                        toReturn = Token.Greater;
-                    }
-                    break;
+                return second;
             }
 
-            if (toReturn is null)
+            return new Token(current);
+        }
+        
+        private Token ReadOneAhead(char after, Token toReturn)
+        {
+            var current = Current;
+            if (MoveNext() && Current  == after)
             {
-                toReturn = new Token(current);
+                MoveNext();
+                return toReturn;
             }
-            return toReturn;
+
+            return new Token(current);
+        }
+
+        private Token ReadSingle()
+        {
+            var current = Current;
+            MoveNext();
+            return new Token(current);
+        }
+
+        private Token ReadOperator()
+        {
+            return Current switch
+                   {
+                       '+' => ReadOneAhead('+', Word.Increment),
+                       '-' => ReadOneAhead('-', Word.Decrement),
+                       '|' => ReadOneAhead('|', Word.Or),
+                       '&' => ReadOneAhead('&', Word.And),
+                       '=' => ReadTwoAhead('=', Word.Equality, '=', Word.StrongEquality),
+                       '<' => ReadOneAhead('=', new Word("<=", Tags.LessOrEqual)),
+                       '>' => ReadOneAhead('=', new Word(">=", Tags.GreaterOrEqual)),
+                       _   => ReadSingle()
+                   };
         }
 
 
