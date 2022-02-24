@@ -172,7 +172,7 @@ public class Tokenizer : ITokenizer
             var builder = new StringBuilder();
             if (!IsCorrectIdentifierStartLetter(Current))
             {
-                throw new UnexpectedTokenException(_source, _position, $"Expected letter. Got: {Current}");
+                throw new UnexpectedCharacterException(_source, _position, $"Expected letter. Got: {Current}");
             }
 
             builder.Append(Current);
@@ -206,7 +206,7 @@ public class Tokenizer : ITokenizer
             var opener = Current;
             if (opener is not ('\'' or '"'))
             {
-                throw new UnexpectedTokenException(_source, _position,
+                throw new UnexpectedCharacterException(_source, _position,
                                                    $"Expected \" or \' at start of string literal. Got: {Current}");
             }
 
@@ -244,7 +244,7 @@ public class Tokenizer : ITokenizer
             var builder = new StringBuilder();
             if (!char.IsDigit(Current))
             {
-                throw new UnexpectedTokenException(_source, _position, $"Expected number. Given: {Current}");
+                throw new UnexpectedCharacterException(_source, _position, $"Expected number. Given: {Current}");
             }
 
             builder.Append(Current);
