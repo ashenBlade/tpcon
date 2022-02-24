@@ -1,14 +1,34 @@
+using JsUtils.Implementation.Tokens;
+
 namespace JsUtils.Implementation;
 
-public class UnexpectedTokenException : Exception
+public class UnexpectedTokenException : ParsingException
 {
     public string Description { get; }
-    public string Text { get; }
-    public int Position { get; }
-    public UnexpectedTokenException(string text, int position, string description)
+    public int Expected { get; }
+    public int Actual { get; }
+
+    public UnexpectedTokenException(Token given, Token expected) : this(given.Tag, expected.Tag)
     {
-        Text = text;
-        Position = position;
+        Expected = expected.Tag;
+        Actual = given.Tag;
+    }
+
+    public UnexpectedTokenException(int actualTag, int expectedTag) :
+        this($"Expected token tag: '{actualTag}'. Given tag: '{expectedTag}'")
+    {
+        Expected = expectedTag;
+        Actual = actualTag;
+    }
+
+    public UnexpectedTokenException(string description)
+    {
         Description = description;
+    }
+
+
+    public override string ToString()
+    {
+        return Description;
     }
 }
