@@ -28,4 +28,26 @@ public class ScriptVariableExtractorTests
         var actual = extractor.ExtractVariables(string.Empty).ToList();
         Assert.Empty(actual);
     }
+
+    private JsVariable ExtractSingle(params Token[] tokens)
+    {
+        var list = GetExtractor(tokens)
+                  .ExtractVariables("")
+                  .ToList();
+        Assert.Single(list);
+        return list[0];
+    }
+    
+    [Theory]
+    [InlineData("x", 14)]
+    [InlineData("y", 0)]
+    [InlineData("variable", 0.001)]
+    [InlineData("gri123_", 2324343)]
+    public void ExtractVariables_WithSequenceWithNumberAssignment_ShouldReturnSingleVariable(string variable, decimal value)
+    {
+        var expected = new JsVariable(variable, new JsNumber(value));
+        var actual = ExtractSingle(Keywords.Var, new Identifier(variable), Token.Equal, new NumberLiteral(value),
+                                   Token.Semicolon);
+        Assert.Equal(expected, actual);
+    }
 }
