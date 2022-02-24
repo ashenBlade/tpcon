@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using JsTypes;
 using JsUtils.Implementation.Tokens;
 using Moq;
@@ -37,7 +39,14 @@ public class ScriptVariableExtractorTests
         Assert.Single(list);
         return list[0];
     }
-    
+
+    private const string SampleVariableName = "x";
+
+    private Token[] GetLiteralVariableAssigmentSequence(string variableName, Token assignee)
+    {
+        return new[] {Keywords.Var, new Identifier(variableName), Token.Equal, assignee, Token.Semicolon};
+    }
+
     [Theory]
     [InlineData("x", 14)]
     [InlineData("y", 0)]
@@ -46,8 +55,31 @@ public class ScriptVariableExtractorTests
     public void ExtractVariables_WithSequenceWithNumberAssignment_ShouldReturnSingleVariable(string variable, decimal value)
     {
         var expected = new JsVariable(variable, new JsNumber(value));
-        var actual = ExtractSingle(Keywords.Var, new Identifier(variable), Token.Equal, new NumberLiteral(value),
-                                   Token.Semicolon);
+        var actual = ExtractSingle(GetLiteralVariableAssigmentSequence(variable, new NumberLiteral(value)));
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData("x", "this is string")]
+    [InlineData("x", "")]
+    [InlineData("variable", "dasdfhj")]
+    [InlineData("dfdsger4543__", "grger   \t\t\t")]
+    [InlineData("$ere11", "grger   \t\n")]
+    [InlineData("$__", "ff_ef3r43gwy36 56756bee")]
+    public void ExtractVariables_WithStringLiteralAssigment_ShouldReturnVariableWithSameStringValue(string variable, string value)
+    {
+        var expected = new JsVariable(variable, new JsString(value));
+        var actual = ExtractSingle(GetLiteralVariableAssigmentSequence(variable, new StringLiteral(value)));
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ExtractVariables_WithBoolLiteralsAssignment_ShouldReturnVariablesWithSameBoolValues(bool value)
+    {
+        var expected = new JsVariable(SampleVariableName, new JsBool(value));
+        var actual = ExtractSingle(GetLiteralVariableAssigmentSequence(SampleVariableName, new BoolLiteral(value)));
         Assert.Equal(expected, actual);
     }
 }
