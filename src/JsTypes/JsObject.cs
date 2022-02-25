@@ -2,7 +2,7 @@ using System.Collections;
 
 namespace JsTypes;
 
-public class JsObject : JsType, IEnumerable<KeyValuePair<string, JsType>>
+public class JsObject : JsType, IEnumerable<KeyValuePair<string, JsType>>, IEquatable<JsObject>
 {
     private readonly Dictionary<string, JsType> _types = new();
 
@@ -31,7 +31,10 @@ public class JsObject : JsType, IEnumerable<KeyValuePair<string, JsType>>
 
     public override bool Equals(JsType? other)
     {
-        return other is JsObject jsObject && jsObject._types.Equals(_types);
+
+        return other is JsObject jsObject
+            && _types.Count == jsObject._types.Count
+            && !_types.Except(jsObject._types).Any();
     }
     
     public IEnumerator<KeyValuePair<string, JsType>> GetEnumerator()
@@ -45,4 +48,24 @@ public class JsObject : JsType, IEnumerable<KeyValuePair<string, JsType>>
     }
 
     public IEnumerable<KeyValuePair<string, JsType>> Values => _types;
+
+    public bool Equals(JsObject? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return _types.Equals(other._types);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals(( JsObject ) obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return _types.GetHashCode();
+    }
 }

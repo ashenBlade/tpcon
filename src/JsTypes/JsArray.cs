@@ -1,7 +1,10 @@
 namespace JsTypes;
 
-public class JsArray : JsObject, IEnumerable<JsType>
+public class JsArray : JsObject, IEnumerable<JsType>, IEquatable<JsArray>
 {
+    public int Count => _values.Count;
+    public IEnumerable<JsType> Values => _values;
+    
     private readonly List<JsType> _values;
     public JsArray()
     {
@@ -13,7 +16,6 @@ public class JsArray : JsObject, IEnumerable<JsType>
         _values.Add(type);
     }
 
-    public int Count => _values.Count;
     
     public JsType this[int index]
     {
@@ -26,5 +28,24 @@ public class JsArray : JsObject, IEnumerable<JsType>
         return _values.GetEnumerator();
     }
 
-    public IEnumerable<JsType> Values => _values;
+
+    public bool Equals(JsArray? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return _values.Equals(other._values);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != GetType()) return false;
+        return Equals(( JsArray ) obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return _values.GetHashCode();
+    }
 }
