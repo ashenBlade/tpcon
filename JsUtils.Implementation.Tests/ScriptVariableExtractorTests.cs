@@ -82,4 +82,27 @@ public class ScriptVariableExtractorTests
         var actual = ExtractSingle(GetLiteralVariableAssigmentSequence(SampleVariableName, new BoolLiteral(value)));
         Assert.Equal(expected, actual);
     }
+
+
+    private Token[] GetVariableAssignmentTokenSequence(string variable, params Token[] assignment)
+    {
+        var list = new List<Token> {Keywords.Var, new Identifier(variable), Token.Equal};
+        list.AddRange(assignment);
+        list.Add(Token.Semicolon);
+        return list.ToArray();
+    }
+
+    private Token[] GetCustomObjectAssignmentTokenSequence(string variable, string objectId)
+    {
+        return GetVariableAssignmentTokenSequence(variable, Keywords.New, new Identifier(objectId),
+                                                  Token.LeftParenthesis, Token.RightParenthesis);
+    }
+    
+    [Fact]
+    public void ExtractVariables_WithObjectAssignment_ShouldReturnVariableWithObjectTypeValue()
+    {
+        var expected = new JsVariable(SampleVariableName, new JsObject());
+        var actual = ExtractSingle(GetCustomObjectAssignmentTokenSequence(SampleVariableName, "Object"));
+        Assert.Equal(expected, actual);
+    }
 }
