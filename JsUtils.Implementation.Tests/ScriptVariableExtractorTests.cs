@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -103,6 +104,72 @@ public class ScriptVariableExtractorTests
     {
         var expected = new JsVariable(SampleVariableName, new JsObject());
         var actual = ExtractSingle(GetCustomObjectAssignmentTokenSequence(SampleVariableName, "Object"));
+        Assert.Equal(expected, actual);
+    }
+
+    private (JsType, Token) GetRandomJsNumber()
+    {
+        var value = Random.Shared.Next(0, int.MaxValue);
+        return ( new JsNumber(value), new NumberLiteral(value) );
+    }
+
+    private (JsType, Token) GetRandomJsString()
+    {
+        var str = "string";
+        return ( new JsString(str), new StringLiteral(str) );
+    }
+
+    private (JsType, Token) GetRandomJsBool()
+    {
+        return Random.Shared.Next(0, 1) == 0
+                   ? ( JsBool.True, BoolLiteral.True )
+                   : ( JsBool.False, BoolLiteral.False );
+    }
+
+    
+    private (JsType JsType, Token Token) GetRandomLiteralType()
+    {
+        return Random.Shared.Next(0, 3) switch
+               {
+                   0 => GetRandomJsBool(),
+                   1 => GetRandomJsNumber(),
+                   2 => GetRandomJsString(),
+                   _ => GetRandomLiteralType() // Just in case
+               };
+    }
+
+    private Token[] GetObjectWithConstructorParamsAssignmentSequence(string variable, params Token[] literals)
+    {
+        var list = new List<Token>() {Keywords.Var, new Identifier(variable), Token.Equal, Keywords.New, new Identifier("Object"), Token.LeftParenthesis};
+        if (literals.Length > 0)
+        {
+            list.Add(literals[0]);
+            for (var i = 1; i < literals.Length; i++)
+            {
+                list.Add(Token.Comma);
+                list.Add(literals[i]);
+            }
+        }
+        list.Add(Token.RightParenthesis);
+        list.Add(Token.Semicolon);
+        return list.ToArray();
+    }
+    
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    public void ExtractVariables_WithObjectWithSeveralLiteralConstructorParamsAssignment_ShouldReturnObject(int paramsCount)
+    {
+        var expected = new JsVariable(SampleVariableName, new JsObject());
+        var ctorParams = Enumerable.Range(0, paramsCount)
+                                   .Select(_ => GetRandomLiteralType().Token)
+                                   .ToArray();
+
+        var sequence = GetObjectWithConstructorParamsAssignmentSequence(SampleVariableName, ctorParams);
+        var actual = ExtractSingle(sequence);
         Assert.Equal(expected, actual);
     }
 }

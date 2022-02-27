@@ -109,15 +109,11 @@ public class ScriptVariableExtractor : IJsVariableExtractor
 
         private void ReadParams()
         {
-            if (Current is Identifier)
-            {
-                MoveNext();
-            }
-
-            while (Current.Tag is ',')
+            ReadType();
+            while (Current.Tag == ',')
             {
                 ReadTag(',');
-                ReadIdentifier();
+                ReadType();
             }
         }
 
