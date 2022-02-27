@@ -172,4 +172,65 @@ public class ScriptVariableExtractorTests
         var actual = ExtractSingle(sequence);
         Assert.Equal(expected, actual);
     }
+
+    private Token[] GetSequenceOfObjectAssignmentToVariable(string variableName, Token[][] ctorParams)
+    {
+        var sequence = new List<Token>()
+                   {
+                       Keywords.Var,
+                       new Identifier(variableName),
+                       Token.Equal,
+                       Keywords.New,
+                       new Identifier("Object"),
+                       Token.LeftParenthesis
+                   };
+        if (ctorParams.Length > 0)
+        {
+            sequence.AddRange(ctorParams[0]);
+            for (var i = 1; i < ctorParams.Length; i++)
+            {
+                sequence.Add(Token.Comma);
+                sequence.AddRange(ctorParams[i]);
+            }
+        }
+        sequence.Add(Token.RightParenthesis);
+        sequence.Add(Token.Semicolon);
+        return sequence.ToArray();
+    }
+    
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    public void ExtractVariables_WithObjectWithSeveralObjectConstructorParamsAssignment_ShouldReadObjectDeclarationAsParameter(int paramsCount)
+    {
+        var expected = new JsVariable(SampleVariableName, new JsObject());
+        var ctorParams = Enumerable.Range(0, paramsCount)
+                                   .Select(_ => GetRandomObjectDeclaration())
+                                   .ToArray();
+        var sequence = GetSequenceOfObjectAssignmentToVariable(SampleVariableName, ctorParams);
+        var actual = ExtractSingle(sequence);
+        Assert.Equal(expected, actual);
+    }
+
+    private Token[] GetRandomObjectDeclaration()
+    {
+        var paramsCount = Random.Shared.Next(7);
+        var literals = Enumerable.Range(0, paramsCount)
+                                .Select(_ => GetRandomLiteralType().Token)
+                                .ToArray();
+        var list = new List<Token>() {Keywords.New, new Identifier("Object"), Token.LeftParenthesis};
+        if (paramsCount > 0)
+        {
+            list.Add(literals[0]);
+            for (int i = 1; i < literals.Length; i++)
+            {
+                list.Add(Token.Comma);
+                list.Add(literals[i]);
+            }
+        }
+        list.Add(Token.RightParenthesis);
+        return list.ToArray();
+    }
 }
