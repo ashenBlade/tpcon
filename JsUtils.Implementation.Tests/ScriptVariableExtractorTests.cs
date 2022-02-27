@@ -22,6 +22,9 @@ public class ScriptVariableExtractorTests
         return mock.Object;
     }
 
+    private List<JsVariable> ExtractVariables(Token[] sequence) => GetExtractor(sequence)
+                                                                  .ExtractVariables("")
+                                                                  .ToList();
     private ScriptVariableExtractor GetExtractor(params Token[] tokens) => new(GetTokenizer(tokens));
     
     [Fact]
@@ -176,14 +179,14 @@ public class ScriptVariableExtractorTests
     private Token[] GetSequenceOfObjectAssignmentToVariable(string variableName, Token[][] ctorParams)
     {
         var sequence = new List<Token>()
-                   {
-                       Keywords.Var,
-                       new Identifier(variableName),
-                       Token.Equal,
-                       Keywords.New,
-                       new Identifier("Object"),
-                       Token.LeftParenthesis
-                   };
+                       {
+                           Keywords.Var,
+                           new Identifier(variableName),
+                           Token.Equal,
+                           Keywords.New,
+                           new Identifier("Object"),
+                           Token.LeftParenthesis
+                       };
         if (ctorParams.Length > 0)
         {
             sequence.AddRange(ctorParams[0]);
@@ -218,8 +221,8 @@ public class ScriptVariableExtractorTests
     {
         var paramsCount = Random.Shared.Next(7);
         var literals = Enumerable.Range(0, paramsCount)
-                                .Select(_ => GetRandomLiteralType().Token)
-                                .ToArray();
+                                 .Select(_ => GetRandomLiteralType().Token)
+                                 .ToArray();
         var list = new List<Token>() {Keywords.New, new Identifier("Object"), Token.LeftParenthesis};
         if (paramsCount > 0)
         {
@@ -232,5 +235,65 @@ public class ScriptVariableExtractorTests
         }
         list.Add(Token.RightParenthesis);
         return list.ToArray();
+    }
+
+    public static readonly IEnumerable<object[]> SequencesWithoutVariableAssignments = new[]
+                                                                                       {
+                                                                                           new object[]
+                                                                                           {
+                                                                                               new[]
+                                                                                               {
+                                                                                                   Keywords.Function,
+                                                                                                   new
+                                                                                                       Identifier("print"),
+                                                                                                   Token
+                                                                                                      .LeftParenthesis,
+                                                                                                   new
+                                                                                                       Identifier("msg"),
+                                                                                                   Token
+                                                                                                      .RightParenthesis,
+                                                                                                   Token.LeftBrace, new
+                                                                                                       Identifier("console"),
+                                                                                                   Token.Dot,
+                                                                                                   new
+                                                                                                       Identifier("log"),
+                                                                                                   Token
+                                                                                                      .LeftParenthesis,
+                                                                                                   new
+                                                                                                       Identifier("msg"),
+                                                                                                   Token
+                                                                                                      .RightParenthesis,
+                                                                                                   Token.Semicolon,
+                                                                                                   Token.RightBrace
+                                                                                               }
+                                                                                           },
+                                                                                           new object[]
+                                                                                           {
+                                                                                               new[]
+                                                                                               {
+                                                                                                   new Identifier("document"), Token.Dot, new Identifier("getElementById"), Token.LeftParenthesis, new StringLiteral("root"), Token.RightParenthesis, 
+                                                                                                   Token.Dot, new Identifier("addEventListener"), Token.LeftParenthesis, new StringLiteral("click"), Token.Comma, new Identifier("e"), Token.Equal, Token.Greater,
+                                                                                                   new Identifier("console"), Token.Dot, new Identifier("log"), Token.LeftParenthesis, new StringLiteral("clicked"), Token.RightParenthesis, Token.RightParenthesis, Token.Semicolon
+                                                                                               }
+                                                                                           },
+                                                                                           new object[]
+                                                                                           {
+                                                                                               new[]
+                                                                                               {
+                                                                                                   Token.Semicolon, 
+                                                                                                   Token.Semicolon, 
+                                                                                                   Token.Semicolon, 
+                                                                                                   Token.Semicolon, 
+                                                                                                   Token.Semicolon
+                                                                                               }
+                                                                                           },
+                                                                                       };
+
+    [Theory]
+    [MemberData(nameof(SequencesWithoutVariableAssignments))]
+    public void ExtractVariables_WithSequenceWithoutVariableAssignment_ShouldReturnEmptySequence(Token[] sequence)
+    {
+        var actual = ExtractVariables(sequence);
+        Assert.Empty(actual);
     }
 }
