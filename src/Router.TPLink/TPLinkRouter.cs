@@ -1,16 +1,23 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Buffers.Text;
+using System.Data;
+using System.Net.Http.Headers;
 using System.Text;
 using JsUtils;
 using Router.Domain;
 
 namespace Router.TPLink;
 
-public abstract class TPLinkRouter : RemoteRouter
+public class TPLinkRouter : RemoteRouter
 {
     protected IJsVariableExtractor JsVariableExtractor { get; }
     protected IScriptExtractor ScriptExtractor { get; }
     protected HttpClient HttpClient { get; }
-    protected TPLinkRouter(string username, string password, Uri address, IJsVariableExtractor jsVariableExtractor, IScriptExtractor scriptExtractor, HttpClient httpClient) 
+    public TPLinkRouter(string username, 
+                           string password, 
+                           Uri address, 
+                           IJsVariableExtractor jsVariableExtractor, 
+                           IScriptExtractor scriptExtractor, 
+                           HttpClient httpClient) 
         : base(username, password, address)
     {
         JsVariableExtractor = jsVariableExtractor;
@@ -37,5 +44,24 @@ public abstract class TPLinkRouter : RemoteRouter
         {
             return false;
         }
+    }
+
+    public override async Task RebootAsync()
+    {
+        var builder = new UriBuilder(Address)
+                      {
+                          Path = "/userRpm/SysRebootRpm.htm",
+                          Query = "Reboot=Reboot"
+                      }.Uri;
+        
+        var message = new HttpRequestMessage(HttpMethod.Get, builder)
+                      {
+                          Headers = 
+                          { 
+                              Referrer = Address, 
+                              Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Username}:{Password}"))),
+                          }
+                      };
+        await HttpClient.SendAsync(message);
     }
 }

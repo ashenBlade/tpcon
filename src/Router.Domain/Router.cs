@@ -8,6 +8,5 @@ public abstract class Router
     public LanParameters LanParameters { get; protected set; }
     public WlanParameters WlanParameters { get; protected set; }
 
-    public abstract Task RefreshAsync();
     public abstract Task RebootAsync();
 }

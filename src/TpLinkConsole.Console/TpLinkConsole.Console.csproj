@@ -8,6 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\JsUtils.Implementation\JsUtils.Implementation.csproj" />
+      <ProjectReference Include="..\Router.TPLink\Router.TPLink.csproj" />
       <ProjectReference Include="..\TpLinkConsole.Core\TpLinkConsole.Core.csproj" />
     </ItemGroup>
 
