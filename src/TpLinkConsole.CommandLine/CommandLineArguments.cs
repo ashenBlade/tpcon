@@ -5,6 +5,9 @@ namespace TpLinkConsole.CommandLine
         public CommandLineArgument? this[string name] =>
             throw new NotImplementedException();
 
+        public IEnumerable<CommandLineArgument> Arguments =>
+            throw new NotImplementedException();
+
         public IEnumerable<string> MainCommand { get; }
         public bool TryGetArgument(string name, out CommandLineArgument? value)
         {
