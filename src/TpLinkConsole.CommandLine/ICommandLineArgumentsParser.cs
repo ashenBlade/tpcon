@@ -1,4 +1,4 @@
-namespace TpLinkConsole.Console.CommandLineUtils
+namespace TpLinkConsole.CommandLine
 {
     public interface ICommandLineArgumentsParser
     {

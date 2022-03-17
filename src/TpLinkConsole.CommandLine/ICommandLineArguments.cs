@@ -1,4 +1,4 @@
-namespace TpLinkConsole.Console
+namespace TpLinkConsole.CommandLine
 {
     public interface ICommandLineArguments
     {

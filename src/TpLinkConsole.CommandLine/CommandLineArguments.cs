@@ -1,6 +1,4 @@
-using System.Net.WebSockets;
-
-namespace TpLinkConsole.Console.CommandLineUtils
+namespace TpLinkConsole.CommandLine
 {
     public class CommandLineArguments : ICommandLineArguments
     {
