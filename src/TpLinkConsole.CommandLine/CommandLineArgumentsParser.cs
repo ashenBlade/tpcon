@@ -2,28 +2,16 @@ namespace TpLinkConsole.CommandLine
 {
     public class CommandLineArgumentsParser : ICommandLineArgumentsParser
     {
+        private IReadOnlyCollection<CommandLineParameter> _parameters;
+        
+        public CommandLineArgumentsParser(IReadOnlyCollection<CommandLineParameter> parameters)
+        {
+            _parameters = parameters;
+        }
+
         public ICommandLineArguments Parse(string[] args)
         {
-            var dict = new Dictionary<string, string>();
-            for (int i = 0; i < args.Length; i += 2)
-            {
-                var arg = args[i];
-                if (!IsParameterName(arg))
-                {
-                    throw new ArgumentException($"Parameter name expected. Got: {arg}");
-                }
-
-                string? value = null;
-
-                if (i + 1 >= args.Length || IsParameterName(value = args[i + 1]))
-                {
-                    throw new ArgumentException($"Argument expected before {arg}. Got: {value}");
-                }
-
-                dict[arg] = value;
-            }
-
-            return new CommandLineArguments(dict);
+            throw new NotImplementedException();
         }
 
         private bool IsParameterName(string s)
