@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using JsUtils;
 using Router.Domain;
+using Router.Domain.RouterProperties;
 
 namespace Router.TPLink;
 
@@ -13,11 +14,11 @@ public class TPLinkRouter : RemoteRouter
     protected IScriptExtractor ScriptExtractor { get; }
     protected HttpClient HttpClient { get; }
     public TPLinkRouter(string username, 
-                           string password, 
-                           Uri address, 
-                           IJsVariableExtractor jsVariableExtractor, 
-                           IScriptExtractor scriptExtractor, 
-                           HttpClient httpClient) 
+                        string password, 
+                        Uri address, 
+                        IJsVariableExtractor jsVariableExtractor, 
+                        IScriptExtractor scriptExtractor, 
+                        HttpClient httpClient) 
         : base(username, password, address)
     {
         JsVariableExtractor = jsVariableExtractor;
@@ -27,6 +28,21 @@ public class TPLinkRouter : RemoteRouter
 
     private string? _hashedCredentials;
 
+    private HttpRequestMessage GetHttpRequestMessage(string path, string query = "")
+    {
+        var uri = new UriBuilder(Address) {Path = path, Query = query}.Uri;
+        return new HttpRequestMessage(HttpMethod.Get, uri)
+               {
+                   Headers =
+                   {
+                       Referrer = Address,
+                       Authorization =
+                           new AuthenticationHeaderValue("Basic",
+                                                         Convert.ToBase64String(Encoding.UTF8
+                                                                                        .GetBytes($"{Username}:{Password}")))
+                   }
+               };
+    }
     private string HashedCredentials =>
         _hashedCredentials ??= Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Username}:{Password}"));
     public override async Task<bool> CheckConnectionAsync()
@@ -39,7 +55,6 @@ public class TPLinkRouter : RemoteRouter
             response.EnsureSuccessStatusCode();
             return true;
         }
-        
         catch (HttpRequestException ex)
         {
             return false;
@@ -48,20 +63,22 @@ public class TPLinkRouter : RemoteRouter
 
     public override async Task RebootAsync()
     {
-        var builder = new UriBuilder(Address)
-                      {
-                          Path = "/userRpm/SysRebootRpm.htm",
-                          Query = "Reboot=Reboot"
-                      }.Uri;
-        
-        var message = new HttpRequestMessage(HttpMethod.Get, builder)
-                      {
-                          Headers = 
-                          { 
-                              Referrer = Address, 
-                              Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Username}:{Password}"))),
-                          }
-                      };
+        var message = GetHttpRequestMessage("/userRpm/SysRebootRpm.htm", "Reboot=Reboot");
         await HttpClient.SendAsync(message);
+    }
+
+    public override Task<LanParameters> GetLanParametersAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task<WlanParameters> GetWlanParametersAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task<RouterStatistics> GetStatisticsAsync()
+    {
+        throw new NotImplementedException();
     }
 }
