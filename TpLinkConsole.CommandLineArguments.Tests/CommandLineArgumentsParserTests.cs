@@ -1,9 +1,10 @@
+using TpLinkConsole.CommandLine;
 using Xunit;
 
 namespace TpLinkConsole.CommandLineArguments.Tests;
 
 public class CommandLineArgumentsParserTests
 {
-    [Fact]
-    public void Test1() { }
+    private static CommandLineArgumentsParser Parser => new();
+    private static ICommandLineArguments Parse(string[] args) => Parser.Parse(args);
 }
