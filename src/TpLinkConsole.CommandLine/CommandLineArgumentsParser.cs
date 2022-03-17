@@ -17,7 +17,7 @@ namespace TpLinkConsole.Console.CommandLineUtils
                     throw new ArgumentException($"Parameter name expected. Got: {arg}");
                 }
 
-                string value = null;
+                string? value = null;
 
                 if (i + 1 >= args.Length || IsParameterName(value = args[i + 1]))
                 {
