@@ -1,8 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TpLinkConsole.CommandLine;
+using TpLinkConsole.CommandLine.Exceptions;
 using Xunit;
 
 namespace TpLinkConsole.CommandLineArguments.Tests;
@@ -156,4 +156,19 @@ public class CommandLineArgumentsParserTests
             Assert.True(actual.HasArgument(argument.Key));
         }
     }
+
+    [Fact]
+    public void Parse_WithMissingArgumentValue_ShouldThrowArgumentValueExpectedException()
+    {
+        const string argument = "--username";
+        Assert.Throws<ArgumentValueExpectedException>(() => Parse(new[] {argument}));
+    }
+
+    [Fact]
+    public void Parse_WithMultipleValuesForSingleParameter_ShouldThrowArgumentExpectedException()
+    {
+        Assert.Throws<ArgumentExpectedException>(() => Parse(new[] {"wlan", "--username", "admin", "name" ,"--address", "192.168.0.1"}));
+    }
+    
+    
 }
