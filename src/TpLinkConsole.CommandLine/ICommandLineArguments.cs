@@ -2,9 +2,9 @@ namespace TpLinkConsole.CommandLine
 {
     public interface ICommandLineArguments
     {
-        public CommandLineArgument? this[string name] { get; }
-        public IEnumerable<CommandLineArgument> Arguments { get; }
+        public Argument? this[string name] { get; }
+        public IEnumerable<Argument> Arguments { get; }
         public IEnumerable<string> MainCommand { get; }
-        public bool TryGetArgument(string name, out CommandLineArgument? value);
+        public bool TryGetArgument(string name, out Argument? value);
     }
 }
