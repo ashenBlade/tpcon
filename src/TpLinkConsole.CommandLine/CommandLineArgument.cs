@@ -2,11 +2,11 @@ namespace TpLinkConsole.CommandLine;
 
 public class CommandLineArgument : Argument
 {
-    public IReadOnlyList<string> Aliases { get; }
+    public string Alias { get; }
 
-    public CommandLineArgument(string name, string value, params string[] aliases) 
+    public CommandLineArgument(string name, string value, string alias) 
         : base(name, value)
     {
-        Aliases = aliases.ToList();
+        Alias = alias;
     }
 }

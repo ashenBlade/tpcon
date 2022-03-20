@@ -11,12 +11,7 @@ namespace TpLinkConsole.CommandLine
 
         public ICommandLineArguments Parse(string[] args)
         {
-            throw new NotImplementedException();
-        }
-
-        private bool IsParameterName(string s)
-        {
-            return s.StartsWith("--");
+            return new CommandLineArguments(Array.Empty<string>());
         }
     }
 }

@@ -2,16 +2,33 @@ namespace TpLinkConsole.CommandLine
 {
     public class CommandLineArguments : ICommandLineArguments
     {
-        public CommandLineArgument? this[string name] =>
-            throw new NotImplementedException();
+        private readonly IDictionary<string, CommandLineArgument> _arguments;
+        public IEnumerable<string> MainCommand { get; }
+
+        public CommandLineArguments(IEnumerable<string> mainCommand, 
+                                    params CommandLineArgument[] arguments)
+        {
+            MainCommand = mainCommand;
+            _arguments = arguments.ToDictionary(arg => arg.Name, arg => arg);
+        }
+
+        public CommandLineArguments(IEnumerable<string> mainCommand, 
+                                    IDictionary<string, CommandLineArgument> arguments)
+        {
+            MainCommand = mainCommand;
+            _arguments = arguments;
+        }
+
+        public CommandLineArgument? this[string name] => 
+            _arguments[name];
 
         public IEnumerable<CommandLineArgument> Arguments =>
-            throw new NotImplementedException();
+            _arguments.Select(pair => pair.Value);
 
-        public IEnumerable<string> MainCommand { get; }
+        
         public bool TryGetArgument(string name, out CommandLineArgument? value)
         {
-            throw new NotImplementedException();
+            return _arguments.TryGetValue(name, out value);
         }
     }
 }
