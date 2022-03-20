@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TpLinkConsole.CommandLine;
@@ -67,7 +68,7 @@ public class CommandLineArgumentsParserTests
         var args = actual.Arguments.ToList();
         Assert.Single(args);
         Assert.Equal(args[0].Value, value);
-        Assert.Equal(args[0].Name, parameter);
+        Assert.Equal(args[0].Name, parameter[2..]);
     }
 
     public static IEnumerable<object[]> MultipleArguments => new[]
@@ -87,7 +88,7 @@ public class CommandLineArgumentsParserTests
         var numberOfArguments = arguments.Length / 2;
         var args = commands.Arguments.ToList();
         Assert.Equal(numberOfArguments, args.Count);
-        Assert.Equal(arguments, args.SelectMany(arg => new[]{arg.Name, arg.Value}));
+        Assert.Equal(arguments.Select(arg => arg.StartsWith("--") ? arg[2..] : arg), args.SelectMany(arg => new[]{arg.Name, arg.Value}));
     }
 
     public static IEnumerable<object[]> ArgumentsAfterCommands => new[]
@@ -106,7 +107,53 @@ public class CommandLineArgumentsParserTests
         var numOfArguments = arguments.Length / 2;
         var actualArguments = actual.Arguments.ToList();
         Assert.Equal(numOfArguments, actualArguments.Count);
-        Assert.Equal(arguments, actualArguments.SelectMany(arg => new[]{arg.Name, arg.Value}));
+        Assert.Equal(arguments.Select(arg => arg.StartsWith("--") ? arg[2..] : arg), actualArguments.SelectMany(arg => new[]{arg.Name, arg.Value}));
         Assert.Equal(commands, actual.MainCommand);
+    }
+
+    public static IEnumerable<object[]> ArgumentsWithoutDashesDictionary => new[]
+                                                               {
+                                                                   new object[]
+                                                                   {
+                                                                       new Dictionary<string, string>()
+                                                                       {
+                                                                           {"username", "admin-name"},
+                                                                           {"password", "some_password_123"}
+                                                                       }
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       new Dictionary<string, string>()
+                                                                       {
+                                                                           {"output", "json"},
+                                                                           {"date", "01.01.2001"},
+                                                                           {"time", "19:30"}
+                                                                       }
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       new Dictionary<string, string>()
+                                                                       {
+                                                                           {"place", "house"}, {"target", "all"}
+                                                                       }
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       new Dictionary<string, string>()
+                                                                       {
+                                                                           {"netmask", "255.255.255.0"}
+                                                                       }
+                                                                   }
+                                                               };
+
+    [Theory]
+    [MemberData(nameof(ArgumentsWithoutDashesDictionary))]
+    public void Parse_WithMultipleArguments_ShouldReturnArgumentValueFromIndexerByNameWithoutDashes(Dictionary<string, string> arguments)
+    {
+        var actual = Parse(arguments.SelectMany(pair => new[] {$"--{pair.Key}", pair.Value}).ToArray());
+        foreach (var argument in arguments)
+        {
+            Assert.True(actual.HasArgument(argument.Key));
+        }
     }
 }

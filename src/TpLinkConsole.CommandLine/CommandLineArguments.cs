@@ -23,5 +23,10 @@ namespace TpLinkConsole.CommandLine
         {
             return _arguments.TryGetValue(name, out value);
         }
+
+        public bool HasArgument(string name)
+        {
+            return _arguments.ContainsKey(name);
+        }
     }
 }

@@ -6,5 +6,6 @@ namespace TpLinkConsole.CommandLine
         public IEnumerable<Argument> Arguments { get; }
         public IEnumerable<string> MainCommand { get; }
         public bool TryGetArgument(string name, out Argument? value);
+        public bool HasArgument(string name);
     }
 }

@@ -28,7 +28,7 @@ namespace TpLinkConsole.CommandLine
                     throw new ArgumentExpectedException();
                 }
 
-                var parameter = args[i];
+                var parameter = args[i][2..];
                 i++;
                 if (i == args.Length)
                 {
