@@ -2,7 +2,7 @@ namespace TpLinkConsole.CommandLine
 {
     public class CommandLineArguments : ICommandLineArguments
     {
-        private readonly IDictionary<string, CommandLineArgument> _arguments;
+        private readonly Dictionary<string, CommandLineArgument> _arguments;
         public IEnumerable<string> MainCommand { get; }
 
         public CommandLineArguments(IEnumerable<string> mainCommand, 
@@ -13,7 +13,7 @@ namespace TpLinkConsole.CommandLine
         }
 
         public CommandLineArguments(IEnumerable<string> mainCommand, 
-                                    IDictionary<string, CommandLineArgument> arguments)
+                                    Dictionary<string, CommandLineArgument> arguments)
         {
             MainCommand = mainCommand;
             _arguments = arguments;

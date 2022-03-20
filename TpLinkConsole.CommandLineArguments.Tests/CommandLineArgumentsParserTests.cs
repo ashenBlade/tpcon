@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TpLinkConsole.CommandLine;
 using Xunit;
 
@@ -18,10 +19,22 @@ public class CommandLineArgumentsParserTests
     private static ICommandLineArguments Parse(string[] args) => GetParser(DefaultParameters).Parse(args);
 
     [Fact]
-    public void Parse_WithEmptyArray_ShouldReturnEmptyICommandLineArgumnets()
+    public void Parse_WithEmptyArray_ShouldReturnEmptyICommandLineArguments()
     {
         var actual = Parse(Array.Empty<string>());
         Assert.Empty(actual.Arguments);
         Assert.Empty(actual.MainCommand);
+    }
+
+    [Fact]
+    public void Parse_WithSingleCommandSet_ShouldReturnArgumentsWithSameCommand()
+    {
+        // Arrange
+        const string command = "set";
+        // Act
+        var actual = Parse(new[] {command});
+        // Assert
+        Assert.Single(actual.MainCommand);
+        Assert.Same(command, actual.MainCommand.First());
     }
 }

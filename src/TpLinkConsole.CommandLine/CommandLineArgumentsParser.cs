@@ -11,7 +11,7 @@ namespace TpLinkConsole.CommandLine
 
         public ICommandLineArguments Parse(string[] args)
         {
-            return new CommandLineArguments(Array.Empty<string>());
+            return new CommandLineArguments(args);
         }
     }
 }
