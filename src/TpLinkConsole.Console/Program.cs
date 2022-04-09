@@ -1,24 +1,13 @@
-﻿using System.Runtime.CompilerServices;
-using TpLinkConsole.CommandLine;
-using TpLinkConsole.CommandLine.Exceptions;
+﻿using Router.Commands;
 
-var parser = new CommandLineArgumentsParser();
+ICommandParser parser = null!;
+var command = parser.ParseCommand(args);
 try
 {
-    var cmd = parser.Parse(args);
+    await command.ExecuteAsync();
 }
-catch (ArgumentValueExpectedException argumentValueExpectedException)
+catch (Exception ex)
 {
-    Console.WriteLine($"Value expected for parameter: {argumentValueExpectedException.ParameterName}");
-    return;
-}
-catch (ArgumentExpectedException argumentExpectedException)
-{
-    Console.WriteLine($"Argument expected");
-    return;
-}
-catch (CommandLineParsingException cmdParsingException)
-{
-    Console.WriteLine("Invalid arguments");
-    return;
+    Console.WriteLine($"Could not execute command. Unknown error.");
+    Console.WriteLine(ex.Message);
 }
