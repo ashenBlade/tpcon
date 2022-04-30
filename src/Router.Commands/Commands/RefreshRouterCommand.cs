@@ -1,6 +1,6 @@
 using Router.Domain;
 
-namespace Router.Commands.Implementation.Commands;
+namespace Router.Commands.Commands;
 
 public class RefreshRouterCommand : RouterCommand
 {
@@ -13,5 +13,6 @@ public class RefreshRouterCommand : RouterCommand
         using var client = new HttpClient();
         using var message = GetRequestMessageBase("/userRpm/SysRebootRpm.htm", "Reboot=Reboot");
         var response = await client.SendAsync(message);
+        response.EnsureSuccessStatusCode();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Router.Commands;
+using Router.CommandsParser.CommandLineParser;
 
-ICommandParser parser = null!;
+ICommandParser parser = new CommandLineParserCommandParser(Console.Out);
 var command = parser.ParseCommand(args);
 try
 {
