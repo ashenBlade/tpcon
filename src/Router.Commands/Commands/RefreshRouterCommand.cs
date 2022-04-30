@@ -1,4 +1,6 @@
+using System.Net;
 using Router.Domain;
+using Router.Domain.Exceptions;
 
 namespace Router.Commands.Commands;
 
@@ -12,7 +14,18 @@ public class RefreshRouterCommand : RouterCommand
     {
         using var client = new HttpClient();
         using var message = GetRequestMessageBase("/userRpm/SysRebootRpm.htm", "Reboot=Reboot");
-        var response = await client.SendAsync(message);
-        response.EnsureSuccessStatusCode();
+        HttpResponseMessage response;
+        try
+        {
+            response = await client.SendAsync(message);
+        }
+        catch (HttpRequestException)
+        {
+            throw new RouterUnreachableException(RouterParameters.GetAddress().ToString());
+        }
+        if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
+        {
+            throw new InvalidRouterCredentialsException(RouterParameters.Username, RouterParameters.Password);
+        }
     }
 }

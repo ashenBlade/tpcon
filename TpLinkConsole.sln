@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E884FE8B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsTypes", "src\JsTypes\JsTypes.csproj", "{59235C6E-3D87-4921-8988-A31193B7D45A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router.Domain", "src\Router.Domain\Router.Domain.csproj", "{F485B695-1088-40EA-B6D4-14403501A8B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router", "src\Router\Router.csproj", "{F485B695-1088-40EA-B6D4-14403501A8B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router.Domain.Tests", "Router.Domain.Tests\Router.Domain.Tests.csproj", "{41BCD52C-F828-48F1-87C9-0B6A75659E3B}"
 EndProject
