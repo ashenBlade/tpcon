@@ -30,18 +30,20 @@ public class CommandLineParserCommandParser : ICommandParser
         });
         return parser;
     }
+
+    private RouterParameters GetParameters(BaseRouterArguments args) =>
+        new(args.GetIpAddressParsed, args.Username, args.Password);
     
-    public IRouterCommand ParseCommand(IEnumerable<string> commandLineArguments)
+    public IRouterCommand ParseCommand(string[] commandLineArguments)
     {
         return Parser.ParseArguments(commandLineArguments, SupportedCommands)
                      .MapResult(obj => obj switch
                                        {
                                            RefreshRouterArguments refresh => ( IRouterCommand ) new
-                                               RefreshRouterCommand(new RouterParameters(IPAddress.Parse(refresh.IpAddress),
-                                                                                         refresh.Username,
-                                                                                         refresh.Password)),
-                                           _ => throw new UnknownCommandException(commandLineArguments.ToArray())
+                                               RefreshRouterCommand(GetParameters(refresh)),
+                                           HealthCheckRouterArguments health => new HealthCheckCommand(GetParameters(health)),
+                                           _ => throw new UnknownCommandException(commandLineArguments)
                                        },
-                                errs => throw new UnknownCommandException(commandLineArguments.ToArray()));
+                                _ => throw new UnknownCommandException(commandLineArguments));
     }
 }

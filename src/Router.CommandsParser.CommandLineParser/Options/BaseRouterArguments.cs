@@ -1,3 +1,4 @@
+using System.Net;
 using CommandLine;
 
 namespace Router.CommandsParser.CommandLineParser.Options;
@@ -12,4 +13,6 @@ internal class BaseRouterArguments
 
     [Option('p', "password", Default = "admin", HelpText = "Password of router", Hidden = false, Required = false)]
     public string Password { get; set; }
+
+    public IPAddress GetIpAddressParsed => IPAddress.Parse(IpAddress);
 }

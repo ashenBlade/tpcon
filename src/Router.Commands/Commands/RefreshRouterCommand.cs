@@ -14,18 +14,17 @@ public class RefreshRouterCommand : RouterCommand
     {
         using var client = new HttpClient();
         using var message = GetRequestMessageBase("/userRpm/SysRebootRpm.htm", "Reboot=Reboot");
-        HttpResponseMessage response;
         try
         {
-            response = await client.SendAsync(message);
+            using var response = await client.SendAsync(message);
+            if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
+            {
+                throw new InvalidRouterCredentialsException(RouterParameters.Username, RouterParameters.Password);
+            }
         }
         catch (HttpRequestException)
         {
             throw new RouterUnreachableException(RouterParameters.GetAddress().ToString());
-        }
-        if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
-        {
-            throw new InvalidRouterCredentialsException(RouterParameters.Username, RouterParameters.Password);
         }
     }
 }
