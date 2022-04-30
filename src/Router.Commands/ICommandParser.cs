@@ -4,5 +4,5 @@ namespace Router.Commands;
 
 public interface ICommandParser
 {
-    public IRouterCommand ParseCommand(string[] commandLineArguments);
+    public IRouterCommand ParseCommand(IEnumerable<string> commandLineArguments);
 }

@@ -2,7 +2,7 @@ using CommandLine;
 
 namespace Router.CommandsParser.CommandLineParser.Options;
 
-public class BaseRouterArguments
+internal class BaseRouterArguments
 {
     [Option('a', "address", Default = "192.168.0.1", HelpText = "Address of router to connect", Hidden = false, Required = false)]
     public string IpAddress { get; set; }

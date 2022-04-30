@@ -31,7 +31,7 @@ public class CommandLineParserCommandParser : ICommandParser
         return parser;
     }
     
-    public IRouterCommand ParseCommand(string[] commandLineArguments)
+    public IRouterCommand ParseCommand(IEnumerable<string> commandLineArguments)
     {
         return Parser.ParseArguments(commandLineArguments, SupportedCommands)
                      .MapResult( obj => obj switch
