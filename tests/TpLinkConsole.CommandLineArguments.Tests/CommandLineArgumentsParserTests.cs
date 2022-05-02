@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Router.CommandsParser.CommandLineParser;
 using TpLinkConsole.CommandLine;
 using TpLinkConsole.CommandLine.Exceptions;
 using Xunit;
@@ -9,7 +10,7 @@ namespace TpLinkConsole.CommandLineArguments.Tests;
 
 public class CommandLineArgumentsParserTests
 {
-    private static CommandLineArgumentsParser GetParser() => new();
+    private static CommandLineParserCommandParser GetParser() => new();
 
     private static ICommandLineArguments Parse(string[] args) => GetParser().Parse(args);
 

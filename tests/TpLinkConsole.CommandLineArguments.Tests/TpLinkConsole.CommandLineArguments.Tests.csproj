@@ -21,7 +21,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\Router\Router.csproj" />
+      <ProjectReference Include="..\..\src\Router.CommandsParser.CommandLineParser\Router.CommandsParser.CommandLineParser.csproj" />
+      <ProjectReference Include="..\src\Router.CommandsParser.CommandLineParser\Router.CommandsParser.CommandLineParser.csproj" />
+      <ProjectReference Include="..\src\TpLinkConsole.CommandLine\TpLinkConsole.CommandLine.csproj" />
     </ItemGroup>
 
 </Project>
