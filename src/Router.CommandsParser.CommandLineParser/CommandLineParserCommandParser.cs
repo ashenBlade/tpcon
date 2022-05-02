@@ -1,8 +1,6 @@
 using System.Globalization;
-using System.Net;
 using CommandLine;
 using Router.Commands;
-using Router.Commands.Commands;
 using Router.Commands.Exceptions;
 using Router.CommandsParser.CommandLineParser.Options;
 using Router.Domain;
@@ -11,11 +9,14 @@ namespace Router.CommandsParser.CommandLineParser;
 
 public class CommandLineParserCommandParser : ICommandParser
 {
+    private readonly IRouterCommandFactoryFactory _factoryFactory;
     private Parser Parser { get; }
     private static Type[] SupportedCommands => new[] {typeof(RefreshRouterArguments), typeof(HealthCheckRouterArguments)};
     
-    public CommandLineParserCommandParser(TextWriter? output = null)
+    public CommandLineParserCommandParser(IRouterCommandFactoryFactory factoryFactory, TextWriter? output = null)
     {
+        ArgumentNullException.ThrowIfNull(factoryFactory);
+        _factoryFactory = factoryFactory;
         Parser = InitializeParser(output);
     }
 
@@ -31,6 +32,11 @@ public class CommandLineParserCommandParser : ICommandParser
         return parser;
     }
 
+    private IRouterCommandFactory GetFactory(BaseRouterArguments arguments)
+    {
+        return _factoryFactory.CreateRouterCommandFactory(new RouterContext(GetParameters(arguments)));
+    }
+    
     private RouterParameters GetParameters(BaseRouterArguments args) =>
         new(args.GetIpAddressParsed, args.Username, args.Password);
     
@@ -39,9 +45,8 @@ public class CommandLineParserCommandParser : ICommandParser
         return Parser.ParseArguments(commandLineArguments, SupportedCommands)
                      .MapResult(obj => obj switch
                                        {
-                                           RefreshRouterArguments refresh => ( IRouterCommand ) new
-                                               RefreshRouterCommand(GetParameters(refresh)),
-                                           HealthCheckRouterArguments health => new HealthCheckCommand(GetParameters(health)),
+                                           RefreshRouterArguments refresh => (IRouterCommand) GetFactory(refresh).CreateRefreshRouterCommand(),
+                                           HealthCheckRouterArguments health => GetFactory(health).CreateHealthCheckCommand(),
                                            _ => throw new UnknownCommandException(commandLineArguments)
                                        },
                                 _ => throw new UnknownCommandException(commandLineArguments));

@@ -4,12 +4,12 @@ using Router.Domain;
 
 namespace Router.Commands;
 
-public abstract class RouterCommand : IRouterCommand
+public abstract class BaseRouterCommand : IRouterCommand
 {
     protected RouterParameters RouterParameters { get; }
     protected string AuthorizationHeaderBase64Encoded { get; }
 
-    protected RouterCommand(RouterParameters routerParameters)
+    protected BaseRouterCommand(RouterParameters routerParameters)
     {
         RouterParameters = routerParameters;
         AuthorizationHeaderBase64Encoded =
