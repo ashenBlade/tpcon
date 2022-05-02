@@ -2,7 +2,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using Router.Domain;
 
-namespace Router.Commands;
+namespace Router.Commands.Commands;
 
 public abstract class BaseRouterCommand : IRouterCommand
 {
