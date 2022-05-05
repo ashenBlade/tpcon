@@ -6,9 +6,9 @@ public class JsArray : JsObject, IEnumerable<JsType>, IEquatable<JsArray>
     public IEnumerable<JsType> Values => _values;
     
     private readonly List<JsType> _values;
-    public JsArray()
+    public JsArray(IEnumerable<JsType>? initials = null)
     {
-        _values = new List<JsType>();
+        _values = initials?.ToList() ?? new List<JsType>();
     }
     
     public void Add(JsType type)

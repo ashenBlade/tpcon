@@ -77,7 +77,7 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                 variable = ReadVariable();
                 return true;
             }
-            // Skip every strange assignement
+            // Skip every strange assignment
             catch (UnexpectedTokenException)
             {
                 return NextVariable(out variable);
@@ -101,9 +101,36 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                        NumberLiteral _ => ReadNumber(),
                        StringLiteral _ => ReadString(),
                        BoolLiteral _   => ReadBool(),
-                       Word _          => ReadObjectDeclaration(),
+                       Word w          => w.Lexeme switch
+                                          {
+                                              "undefined" => ReadUndefined(),
+                                              "null" => ReadNull(),
+                                              _ => ReadObjectDeclaration(),
+                                          },
                        _ => throw new UnexpectedTokenException("Expected literal or word")
                    };
+        }
+
+        private JsUndefined ReadUndefined()
+        {
+            if (Current is not Word {Lexeme: "undefined"})
+            {
+                throw new UnexpectedTokenException($"Expected \"undefined\". Got: {Current}");
+            }
+
+            MoveNext();
+            return JsUndefined.Instance;
+        }
+
+        private JsNull ReadNull()
+        {
+            if (Current is not Word {Lexeme: "null"})
+            {
+                throw new UnexpectedTokenException($"Expected \"null\". Got: {Current}");
+            }
+
+            MoveNext();
+            return JsNull.Instance;
         }
 
         private JsObject ReadObjectDeclaration()
