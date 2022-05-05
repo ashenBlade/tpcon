@@ -122,6 +122,12 @@ public class HtmlScriptVariableExtractorIntegrationTests
                                                                                        new JsVariable("_private",
                                                                                                       JsBool.True)
                                                                                    },
+                                                                                   new object[]
+                                                                                   {
+                                                                                       "var obj = new Object();",
+                                                                                       new JsVariable("obj",
+                                                                                                      new JsObject())
+                                                                                   },
                                                                                };
 
     [Theory]
@@ -133,5 +139,97 @@ public class HtmlScriptVariableExtractorIntegrationTests
         var variable = actual[0];
         Assert.Equal(variable.Name, expected.Name);
         Assert.Equal(variable.Value, expected.Value);
+    }
+
+
+    public static IEnumerable<object[]> ScriptsWithMultipleAssignments => new[]
+                                                                           {
+                                                                               new object[]
+                                                                               {
+                                                                                   "var x = 10;var y = 11;",
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("x", new JsNumber(10)),
+                                                                                       new("y", new JsNumber(11))
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   "var ages = new Array(17, 20, 11, 14); var name = \"Tom or Bob\";",
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("ages",
+                                                                                           new JsArray(new[]
+                                                                                                       {
+                                                                                                           new
+                                                                                                               JsNumber(17),
+                                                                                                           new
+                                                                                                               JsNumber(20),
+                                                                                                           new
+                                                                                                               JsNumber(11),
+                                                                                                           new
+                                                                                                               JsNumber(14)
+                                                                                                       })),
+                                                                                       new("name",
+                                                                                           new JsString("Tom or Bob"))
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   "var myNull = null; var thisIsNotNull = new Object();",
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("myNull", JsNull.Instance),
+                                                                                       new("thisIsNotNull",
+                                                                                           new JsObject())
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   "var first = 1; var second = 2 ; var third = 3;",
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("first", new JsNumber(1)),
+                                                                                       new("second", new JsNumber(2)),
+                                                                                       new("third", new JsNumber(3)),
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   "var prev = undefined; var next = true; var empty = ''; var exact = true;",
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("prev", JsUndefined.Instance),
+                                                                                       new("next", JsBool.True),
+                                                                                       new("empty", new JsString("")),
+                                                                                       new("exact", JsBool.True),
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   "var firstVar_ = 1; console.log('123'); var secVa$ = null;",
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("firstVar_", new JsNumber(1)),
+                                                                                       new("secVa$", JsNull.Instance),
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   "(function() {\n this.name = \"Some test name\";\n this.age = 20;\n return this;\n})().name; var u = 12; console.log({age: 20}); var status = new Array(1, 0, \"192.168.0.1\");",
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("u", new JsNumber(12)),
+                                                                                       new("status", new JsArray(new JsType[]{new JsNumber(1), new JsNumber(0), new JsString("192.168.0.1")})),
+                                                                                   }
+                                                                               },
+                                                                           };
+
+    [Theory]
+    [MemberData(nameof(ScriptsWithMultipleAssignments))]
+    public void ExtractVariables_WithMultipleVariableAssignments_ShouldReturnRightVariables(string script, JsVariable[] expected)
+    {
+        var actual = ExtractVariables(DecorateWithStubHtml(script));
+        Assert.Equal(actual, expected);
     }
 }
