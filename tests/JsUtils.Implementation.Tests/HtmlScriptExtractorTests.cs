@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using Xunit;
 
 namespace JsUtils.Implementation.Tests;
@@ -24,13 +23,8 @@ public class HtmlScriptExtractorTests
     [Fact]
     public void ExtractScript_WithEmptyScriptTag_ShouldReturnEmptyString()
     {
-        // Arrange
         const string emptyScriptTag = "<script></script>";
-        
-        // Act
         var actual = Extract(emptyScriptTag);
-        
-        // Assert
         Assert.Equal(new [] {string.Empty}, actual);
     }
 
@@ -203,4 +197,16 @@ public class HtmlScriptExtractorTests
         var actual = Extract(script);
         Assert.Equal(expected, actual);
     }
+
+    public static IEnumerable<object[]> RawScripts => new[]
+                                                      {
+                                                          new object[]
+                                                          {
+                                                              " var wanPara = new Array( 4, \"A0-F3-C1-F9-DD-E5\", \"178.204.181.223\", 3, \"255.255.255.255\", 0, 0, \"178.204.181.223\", 0, 1, 0, \"89.232.109.74 , 217.23.177.252\", \"0 day(s) 01:41:41\", 1, 1, \"0.0.0.0\", \"0.0.0.0\", 0, 1, 0, 2, 0, 0,0 ); ",
+                                                          },
+                                                          new object[]
+                                                          {
+                                                              "var statistList = new Array( 188, 205002, 2, 2454, 0,0 );"
+                                                          }
+                                                      };
 }

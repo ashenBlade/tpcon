@@ -23,7 +23,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\JsUtils.Implementation\JsUtils.Implementation.csproj" />
-      <ProjectReference Include="..\src\JsUtils.Implementation\JsUtils.Implementation.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="samples\StatusRpm.htm">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

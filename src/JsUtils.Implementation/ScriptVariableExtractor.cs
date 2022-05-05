@@ -72,8 +72,16 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                 return false;
             }
             // Found var tag
-            variable = ReadVariable();
-            return true;
+            try
+            {
+                variable = ReadVariable();
+                return true;
+            }
+            // Skip every strange assignement
+            catch (UnexpectedTokenException)
+            {
+                return NextVariable(out variable);
+            }
         }
 
         private JsVariable ReadVariable()
@@ -93,7 +101,8 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                        NumberLiteral _ => ReadNumber(),
                        StringLiteral _ => ReadString(),
                        BoolLiteral _   => ReadBool(),
-                       Word _          => ReadObjectDeclaration()
+                       Word _          => ReadObjectDeclaration(),
+                       _ => throw new UnexpectedTokenException("Expected literal or word")
                    };
         }
 
