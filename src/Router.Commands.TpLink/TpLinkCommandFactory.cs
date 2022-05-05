@@ -6,18 +6,25 @@ namespace Router.Commands.TpLink;
 
 public class TpLinkCommandFactory : RouterCommandFactory
 {
-
+    private TpLinkRouter Router { get; }
     public TpLinkCommandFactory(RouterParameters routerParameters)
         : base(routerParameters)
-    { }
+    {
+        Router = new TpLinkRouter(RouterParameters);
+    }
     
     public override HealthCheckCommand CreateHealthCheckCommand()
     {
-        return new TpLinkHealthCheckCommand(RouterParameters);
+        return new TpLinkHealthCheckCommand(RouterParameters, Router);
     }
 
     public override RefreshRouterCommand CreateRefreshRouterCommand()
     {
-        return new TpLinkRefreshRouterCommand(RouterParameters);
+        return new TpLinkRefreshRouterCommand(RouterParameters, Router);
+    }
+
+    public override GetWlanStatusCommand CreateGetWlanStatusCommand()
+    {
+        return new TpLinkGetWlanStatusCommand(RouterParameters, Console.Out, Router);
     }
 }

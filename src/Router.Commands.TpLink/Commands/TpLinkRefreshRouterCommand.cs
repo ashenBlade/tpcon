@@ -7,25 +7,15 @@ namespace Router.Commands.TpLink.Commands;
 
 public class TpLinkRefreshRouterCommand : RefreshRouterCommand
 {
-    public TpLinkRefreshRouterCommand(RouterParameters routerParameters) 
-        : base(routerParameters) 
-    { }
+    private TpLinkRouter Router { get; }
+    public TpLinkRefreshRouterCommand(RouterParameters routerParameters, TpLinkRouter router)
+        : base(routerParameters)
+    {
+        Router = router;
+    }
     
     public override async Task ExecuteAsync()
     {
-        using var client = new HttpClient();
-        using var message = GetRequestMessageBase("/userRpm/SysRebootRpm.htm", "Reboot=Reboot");
-        try
-        {
-            using var response = await client.SendAsync(message);
-            if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
-            {
-                throw new InvalidRouterCredentialsException(RouterParameters.Username, RouterParameters.Password);
-            }
-        }
-        catch (HttpRequestException)
-        {
-            throw new RouterUnreachableException(RouterParameters.GetAddress().ToString());
-        }
+        await Router.RefreshAsync();
     }
 }

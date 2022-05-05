@@ -6,4 +6,5 @@ public interface IRouterCommandFactory
 {
     HealthCheckCommand CreateHealthCheckCommand();
     RefreshRouterCommand CreateRefreshRouterCommand();
+    GetWlanStatusCommand CreateGetWlanStatusCommand();
 }

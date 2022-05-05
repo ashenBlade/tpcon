@@ -6,19 +6,18 @@ namespace Router.Commands.TpLink.Commands;
 
 public class TpLinkHealthCheckCommand : HealthCheckCommand
 {
-    public TpLinkHealthCheckCommand(RouterParameters routerParameters) : base(routerParameters) { }
+    private readonly TpLinkRouter _router;
+
+    public TpLinkHealthCheckCommand(RouterParameters routerParameters,
+                                    TpLinkRouter router) : base(routerParameters)
+    {
+        _router = router;
+    }
     public override async Task ExecuteAsync()
     {
-        using var client = new HttpClient();
-        try
+        if (!await _router.CheckConnectionAsync())
         {
-            using var msg = GetRequestMessageBase(string.Empty);
-            using var response = await client.SendAsync(msg);
-            Console.WriteLine($"OK");
-        }
-        catch (HttpRequestException)
-        {
-            throw new RouterUnreachableException(RouterParameters.GetAddress().ToString());
+            throw new RouterUnreachableException(_router.RouterParameters.Address.ToString());
         }
     }
 }
