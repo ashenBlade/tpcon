@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using JsTypes;
 using Xunit;
 
@@ -79,9 +81,18 @@ public class HtmlScriptVariableExtractorIntegrationTests
         Assert.Empty(actual);
     }
 
-    private static string DecorateWithStubHtml(string script)
+    private static string DecorateWithStubHtml(params string[] scripts)
     {
-        return $"<html><head><script>{script}</script></head><body></body></html>";
+        var builder = new StringBuilder();
+        builder.Append("<html><head>");
+        foreach (var script in scripts)
+        {
+            builder.Append("<SCRIPT language=\"javascript\" type=\"text/javascript\">");
+            builder.Append(script);
+            builder.Append("</SCRIPT>");
+        }
+        builder.Append("</head><body></body></html>");
+        return builder.ToString();
     }
 
     public static IEnumerable<object[]> ScriptsWithSingleVariableAssignment => new[]
@@ -137,8 +148,8 @@ public class HtmlScriptVariableExtractorIntegrationTests
         var actual = ExtractVariables(DecorateWithStubHtml(script));
         Assert.Single(actual);
         var variable = actual[0];
-        Assert.Equal(variable.Name, expected.Name);
-        Assert.Equal(variable.Value, expected.Value);
+        Assert.Equal(expected.Name, variable.Name);
+        Assert.Equal(expected.Value, variable.Value);
     }
 
 
@@ -229,7 +240,62 @@ public class HtmlScriptVariableExtractorIntegrationTests
     [MemberData(nameof(ScriptsWithMultipleAssignments))]
     public void ExtractVariables_WithMultipleVariableAssignments_ShouldReturnRightVariables(string script, JsVariable[] expected)
     {
-        var actual = ExtractVariables(DecorateWithStubHtml(script));
-        Assert.Equal(actual, expected);
+        var html = DecorateWithStubHtml(script);
+        var actual = ExtractVariables(html);
+        Assert.Equal(expected, actual);
+    }
+
+    public static IEnumerable<object[]> MultipleSingleAssignmentScripts => new[]
+                                                                           {
+                                                                               new object[]
+                                                                               {
+                                                                                   new[] {"var x = 10;", "var y = 15;"},
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("x", new JsNumber(10)),
+                                                                                       new("y", new JsNumber(15)),
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   new[] {"var x = new Array(new Array(), 80, 90, 0, 0, 0);", "var sec = null;", "console.log('done');"},
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("x", new JsArray(new JsType[]{new JsArray(), new JsNumber(80), new JsNumber(90), new JsNumber(0), new JsNumber(0), new JsNumber(0)})),
+                                                                                       new("sec", JsNull.Instance),
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   new[] {"var wlanPara = new Array(90, 0, 1, \"192.168.0.1\", 11, null);", "var delay = 150000;\n function doReboot() \n{ \nsend(); \n}"},
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("wlanPara", new JsArray(new JsType[]{new JsNumber(90), new JsNumber(0), new JsNumber(1), new JsString("192.168.0.1"), new JsNumber(11), JsNull.Instance})),
+                                                                                       new("delay", new JsNumber(150000)),
+                                                                                   }
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   new[] {"console.log(\"Hello\");", "console.log(\"world\");",  "console.log(\"world\");",  "console.error(\"world\");"},
+                                                                                   Array.Empty<JsVariable>()
+                                                                               },
+                                                                               new object[]
+                                                                               {
+                                                                                   new[] {"var undef = undefined; sendStatus();", "doUpdate(); var global = new Object();"},
+                                                                                   new JsVariable[]
+                                                                                   {
+                                                                                       new("undef", JsUndefined.Instance),
+                                                                                       new("global", new JsObject()),
+                                                                                   }
+                                                                               },
+                                                                           };
+
+    [Theory]
+    [MemberData(nameof(MultipleSingleAssignmentScripts))]
+    public void ExtractVariables_WithMultipleSingleVariableAssignments_ShouldReturnRightVariables(string[] scripts, JsVariable[] expected)
+    {
+        var html = DecorateWithStubHtml(scripts);
+        var actual = ExtractVariables(html);
+        Assert.Equal(expected, actual);
     }
 }
