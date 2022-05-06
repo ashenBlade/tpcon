@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
+using JsTypes;
+using JsUtils.Implementation;
 using Router.Domain;
 using Router.Domain.Exceptions;
 using Router.Domain.RouterProperties;
@@ -75,6 +77,27 @@ public class TpLinkRouter
 
     public async Task<WlanParameters> GetWlanParametersAsync()
     {
-        throw new NotImplementedException();
+        using var client = new HttpClient();
+        var requestAddress = new Uri( $"http://{RouterParameters.Address}/userRpm/StatusRpm.htm" );
+        using var message =
+            new HttpRequestMessage(HttpMethod.Get, requestAddress)
+            {
+                Headers = {Authorization = AuthorizationHeaderEncoded, Referrer = requestAddress}
+            };
+        var response = await client.SendAsync(message);
+        if (response.StatusCode is HttpStatusCode.Forbidden 
+                                or HttpStatusCode.Unauthorized)
+        {
+            throw new InvalidRouterCredentialsException(RouterParameters.Username, RouterParameters.Password);
+        }
+        var html = await response.Content.ReadAsStringAsync();
+        var wlanPara =
+            new HtmlScriptVariableExtractor(new HtmlScriptExtractor(), new ScriptVariableExtractor(new Tokenizer()))
+               .ExtractVariables(html)
+               .First(v => v.Name is "wlanPara");
+        var array = ( JsArray ) wlanPara.Value;
+        var isActive = ( array[0] as JsNumber )!.Value == 1;
+        var ssid = ( array[1] as JsString )!.Value;
+        return new WlanParameters(ssid, string.Empty, isActive);
     }
 }

@@ -136,19 +136,29 @@ public class ScriptVariableExtractor : IJsVariableExtractor
         private JsObject ReadObjectDeclaration()
         {
             TryReadToken(Tags.New);
-            ReadIdentifier();
+            var identifier = ReadIdentifier();
+            var arguments = ReadFunctionArguments();
+            return identifier.Lexeme == "Array"
+                       ? new JsArray(arguments)
+                       : new JsObject();
+        }
+
+        private List<JsType> ReadFunctionArguments()
+        {
+            var types = new List<JsType>();
             ReadTag('(');
-            if (Current.Tag != ')')
+            while (Current.Tag != ')')
             {
-                ReadType();
-                while (Current.Tag == ',')
+                var type = ReadType();
+                types.Add(type);
+                if (Current.Tag == ')')
                 {
-                    ReadTag(',');
-                    ReadType();
+                    break;
                 }
+                ReadTag(',');
             }
             ReadTag(')');
-            return new JsObject();
+            return types;
         }
 
         private void TryReadToken(int tag)

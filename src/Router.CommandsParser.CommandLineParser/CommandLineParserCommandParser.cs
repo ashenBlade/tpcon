@@ -11,7 +11,12 @@ public class CommandLineParserCommandParser : ICommandParser
 {
     private readonly IRouterCommandFactoryFactory _factoryFactory;
     private Parser Parser { get; }
-    private static Type[] SupportedCommands => new[] {typeof(RefreshRouterArguments), typeof(HealthCheckRouterArguments)};
+    private static Type[] SupportedCommands => new[]
+                                               {
+                                                   typeof(RefreshRouterArguments), 
+                                                   typeof(HealthCheckRouterArguments),
+                                                   typeof(GetWlanStatusArguments)
+                                               };
     
     public CommandLineParserCommandParser(IRouterCommandFactoryFactory factoryFactory, TextWriter? output = null)
     {
@@ -47,6 +52,7 @@ public class CommandLineParserCommandParser : ICommandParser
                                        {
                                            RefreshRouterArguments refresh => (IRouterCommand) GetFactory(refresh).CreateRefreshRouterCommand(),
                                            HealthCheckRouterArguments health => GetFactory(health).CreateHealthCheckCommand(),
+                                           GetWlanStatusArguments wlan => GetFactory(wlan).CreateGetWlanStatusCommand(),
                                            _ => throw new UnknownCommandException(commandLineArguments)
                                        },
                                 _ => throw new UnknownCommandException(commandLineArguments));
