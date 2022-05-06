@@ -21,6 +21,7 @@ public class TpLinkGetWlanStatusCommand : GetWlanStatusCommand
     {
         var wlan = await Router.GetWlanParametersAsync();
         await Output.WriteLineAsync($"Enabled: {wlan.IsActive}");
+        await Output.WriteLineAsync($"Password: {wlan.Password}");
         await Output.WriteLineAsync($"SSID: {wlan.SSID}");
     }
 }

@@ -9,26 +9,51 @@ using Router.Domain.RouterProperties;
 
 namespace Router.Commands.TpLink;
 
-public class TpLinkRouter
+public abstract class TpLinkRouter
 {
     public RouterParameters RouterParameters { get; }
 
-    public TpLinkRouter(RouterParameters routerParameters)
+    protected TpLinkRouter(RouterParameters routerParameters)
     {
         RouterParameters = routerParameters;
     }
 
-    private static string Base64Encode(string source)
+    /// <summary>
+    /// Send GET method to router and parse incoming html document
+    /// </summary>
+    /// <param name="path">Absolute path to page without router address</param>
+    /// <returns>Variables declared in received html document</returns>
+    protected async Task<List<JsVariable>> GetRouterStatusAsync(string path)
     {
-        return Convert.ToBase64String(Encoding.UTF8.GetBytes(source));
+        ArgumentNullException.ThrowIfNull(path);
+        using var client = new HttpClient();
+        var requestUri = new Uri(RouterParameters.GetAddress(), path);
+        using var message = new HttpRequestMessage(HttpMethod.Get, requestUri)
+                            {
+                                Headers = {Authorization = AuthorizationHeaderEncoded, Referrer = requestUri}
+                            };
+        using var response = await client.SendAsync(message);
+        if (response.StatusCode is HttpStatusCode.Unauthorized
+                                or HttpStatusCode.Forbidden)
+        {
+            throw new InvalidRouterCredentialsException(RouterParameters.Username, RouterParameters.Password);
+        }
+
+        var html = await response.Content.ReadAsStringAsync();
+        return new HtmlScriptVariableExtractor(new HtmlScriptExtractor(), new ScriptVariableExtractor(new Tokenizer()))
+              .ExtractVariables(html)
+              .ToList();
     }
+
+    private static string Base64Encode(string source) => 
+        Convert.ToBase64String(Encoding.UTF8.GetBytes(source));
 
     private AuthenticationHeaderValue AuthorizationHeaderEncoded =>
         new("Basic",
             Base64Encode($"{RouterParameters.Username}:{RouterParameters.Password}"));
 
     
-    private HttpRequestMessage GetRequestMessageBase(string path, string query = "", HttpMethod? method = null)
+    protected HttpRequestMessage CreateRequestMessageBase(string path, string query = "", HttpMethod? method = null)
     {
         var uri = new UriBuilder(RouterParameters.GetAddress()) {Path = path, Query = query}.Uri;
         return new HttpRequestMessage(method ?? HttpMethod.Get, uri)
@@ -44,7 +69,7 @@ public class TpLinkRouter
     public async Task RefreshAsync()
     {
         using var client = new HttpClient();
-        using var message = GetRequestMessageBase("/userRpm/SysRebootRpm.htm", "Reboot=Reboot");
+        using var message = CreateRequestMessageBase("/userRpm/SysRebootRpm.htm", "Reboot=Reboot");
         try
         {
             using var response = await client.SendAsync(message);
@@ -65,7 +90,7 @@ public class TpLinkRouter
         using var client = new HttpClient();
         try
         {
-            using var msg = GetRequestMessageBase(string.Empty);
+            using var msg = CreateRequestMessageBase(string.Empty);
             using var response = await client.SendAsync(msg);
             return true;
         }
@@ -75,29 +100,5 @@ public class TpLinkRouter
         }
     }
 
-    public async Task<WlanParameters> GetWlanParametersAsync()
-    {
-        using var client = new HttpClient();
-        var requestAddress = new Uri( $"http://{RouterParameters.Address}/userRpm/StatusRpm.htm" );
-        using var message =
-            new HttpRequestMessage(HttpMethod.Get, requestAddress)
-            {
-                Headers = {Authorization = AuthorizationHeaderEncoded, Referrer = requestAddress}
-            };
-        var response = await client.SendAsync(message);
-        if (response.StatusCode is HttpStatusCode.Forbidden 
-                                or HttpStatusCode.Unauthorized)
-        {
-            throw new InvalidRouterCredentialsException(RouterParameters.Username, RouterParameters.Password);
-        }
-        var html = await response.Content.ReadAsStringAsync();
-        var wlanPara =
-            new HtmlScriptVariableExtractor(new HtmlScriptExtractor(), new ScriptVariableExtractor(new Tokenizer()))
-               .ExtractVariables(html)
-               .First(v => v.Name is "wlanPara");
-        var array = ( JsArray ) wlanPara.Value;
-        var isActive = ( array[0] as JsNumber )!.Value == 1;
-        var ssid = ( array[1] as JsString )!.Value;
-        return new WlanParameters(ssid, string.Empty, isActive);
-    }
+    public abstract Task<WlanParameters> GetWlanParametersAsync();
 }

@@ -1,5 +1,6 @@
 using Router.Commands.Commands;
 using Router.Commands.TpLink.Commands;
+using Router.Commands.TpLink.Routers;
 using Router.Domain;
 
 namespace Router.Commands.TpLink;
@@ -10,7 +11,7 @@ public class TpLinkCommandFactory : RouterCommandFactory
     public TpLinkCommandFactory(RouterParameters routerParameters)
         : base(routerParameters)
     {
-        Router = new TpLinkRouter(RouterParameters);
+        Router = new TLWR741NDTpLinkRouter(RouterParameters);
     }
     
     public override HealthCheckCommand CreateHealthCheckCommand()
