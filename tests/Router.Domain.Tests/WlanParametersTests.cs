@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using Router.Domain.RouterProperties;
 using Xunit;
 
@@ -6,10 +7,11 @@ namespace Router.Domain.Tests;
 
 public class WlanParametersTests
 {
+    private static IPAddress SampleIpAddress => new IPAddress(new byte[] {192, 168, 0, 1});
     [Fact]
     public void Constructor_WithValidParameters_ShouldCreateNewInstance()
     {
-        var parameters = new WlanParameters("Hello, World", "Password", true);
+        var parameters = new WlanParameters("Hello, World", "Password", true, SampleIpAddress);
 
         Assert.True(true);
     }
@@ -17,13 +19,13 @@ public class WlanParametersTests
     [Fact]
     public void Constructor_WithNullInPasswordParameter_ShouldThrowArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => new WlanParameters("Hello, world", null, true));
+        Assert.Throws<ArgumentNullException>(() => new WlanParameters("Hello, world", null, true, SampleIpAddress));
     }
 
     [Fact]
     public void Constructor_WithNullInSSIDParameter_ShouldThrowArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => new WlanParameters(null, "Password", true));
+        Assert.Throws<ArgumentNullException>(() => new WlanParameters(null, "Password", true, SampleIpAddress));
     }
 
     [Fact]
@@ -32,7 +34,7 @@ public class WlanParametersTests
         const string OldPassword = "OLD_PASSWORD";
         const string NewPassword = "NEW_PASSWORD";
         // Arrange
-        var old = new WlanParameters("Hello, world", OldPassword, true);
+        var old = new WlanParameters("Hello, world", OldPassword, true, SampleIpAddress);
         // Act
         var newParams = old.WithPassword(NewPassword);
         // Assert
@@ -45,7 +47,7 @@ public class WlanParametersTests
         const string OldSSID = "OLD_SSID";
         const string NewSSID = "NEW_SSID";
         // Arrange
-        var old = new WlanParameters("Hello, world", OldSSID, true);
+        var old = new WlanParameters("Hello, world", OldSSID, true, SampleIpAddress);
         // Act
         var newParams = old.WithSSID(NewSSID);
         // Assert
@@ -58,7 +60,7 @@ public class WlanParametersTests
         const bool OldState = false;
         const bool NewState = true;
         // Arrange
-        var old = new WlanParameters("Hello, world", "Password", OldState);
+        var old = new WlanParameters("Hello, world", "Password", OldState, SampleIpAddress);
         // Act
         var newParams = old.WithActiveState(NewState);
         // Assert
@@ -74,7 +76,7 @@ public class WlanParametersTests
         const string OldPassword = "Password";
         const bool OldState = true;
         
-        var old = new WlanParameters(OldSSID, OldPassword, OldState);
+        var old = new WlanParameters(OldSSID, OldPassword, OldState, SampleIpAddress);
         // Act
         var modified1 = old.WithSSID(OldSSID + " something new");
         var modified2 = old.WithPassword(OldPassword + " something new");
