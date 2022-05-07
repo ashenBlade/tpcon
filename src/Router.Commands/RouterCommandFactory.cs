@@ -15,4 +15,5 @@ public abstract class RouterCommandFactory : IRouterCommandFactory
     public abstract HealthCheckCommand CreateHealthCheckCommand();
     public abstract RefreshRouterCommand CreateRefreshRouterCommand();
     public abstract GetWlanStatusCommand CreateGetWlanStatusCommand();
+    public abstract SetWlanSsidCommand CreateSetWlanSsidCommand(string ssid);
 }

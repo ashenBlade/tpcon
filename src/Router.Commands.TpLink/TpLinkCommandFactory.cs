@@ -28,4 +28,9 @@ public class TpLinkCommandFactory : RouterCommandFactory
     {
         return new TpLinkGetWlanStatusCommand(RouterParameters, Console.Out, Router);
     }
+
+    public override SetWlanSsidCommand CreateSetWlanSsidCommand(string ssid)
+    {
+        return new TpLinkSetWlanSsidCommand(Router, ssid);
+    }
 }

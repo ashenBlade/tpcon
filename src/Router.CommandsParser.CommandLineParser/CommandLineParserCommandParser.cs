@@ -1,6 +1,7 @@
 using System.Globalization;
 using CommandLine;
 using Router.Commands;
+using Router.Commands.Commands;
 using Router.Commands.Exceptions;
 using Router.CommandsParser.CommandLineParser.Options;
 using Router.Domain;
@@ -15,7 +16,8 @@ public class CommandLineParserCommandParser : ICommandParser
                                                {
                                                    typeof(RefreshRouterArguments), 
                                                    typeof(HealthCheckRouterArguments),
-                                                   typeof(GetWlanStatusArguments)
+                                                   typeof(GetWlanStatusArguments),
+                                                   typeof(SetWlanSsidRouterArguments)
                                                };
     
     public CommandLineParserCommandParser(IRouterCommandFactoryFactory factoryFactory, TextWriter? output = null)
@@ -53,6 +55,7 @@ public class CommandLineParserCommandParser : ICommandParser
                                            RefreshRouterArguments refresh => (IRouterCommand) GetFactory(refresh).CreateRefreshRouterCommand(),
                                            HealthCheckRouterArguments health => GetFactory(health).CreateHealthCheckCommand(),
                                            GetWlanStatusArguments wlan => GetFactory(wlan).CreateGetWlanStatusCommand(),
+                                           SetWlanSsidRouterArguments ssid => GetFactory(ssid).CreateSetWlanSsidCommand(ssid.Ssid),
                                            _ => throw new UnknownCommandException(commandLineArguments)
                                        },
                                 _ => throw new UnknownCommandException(commandLineArguments));
