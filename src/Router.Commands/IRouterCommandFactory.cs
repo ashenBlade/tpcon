@@ -4,8 +4,5 @@ namespace Router.Commands;
 
 public interface IRouterCommandFactory
 {
-    HealthCheckCommand CreateHealthCheckCommand();
-    RefreshRouterCommand CreateRefreshRouterCommand();
-    GetWlanStatusCommand CreateGetWlanStatusCommand();
-    SetWlanSsidCommand CreateSetWlanSsidCommand(string ssid);
+    IRouterCommand CreateRouterCommand(CommandContext context);
 }

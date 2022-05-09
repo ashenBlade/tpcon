@@ -1,36 +1,28 @@
 using Router.Commands.Commands;
+using Router.Commands.TpLink.CommandFactories;
+using Router.Commands.TpLink.CommandFactories.Wlan;
 using Router.Commands.TpLink.Commands;
 using Router.Commands.TpLink.Routers;
 using Router.Domain;
 
 namespace Router.Commands.TpLink;
 
-public class TpLinkCommandFactory : RouterCommandFactory
+public class TpLinkCommandFactory : IRouterCommandFactory
 {
-    private TpLinkRouter Router { get; }
-    public TpLinkCommandFactory(RouterParameters routerParameters)
-        : base(routerParameters)
+    private IEnumerable<InternalTpLinkCommand> Factories { get; }
+
+    public TpLinkCommandFactory()
+    : this(Array.Empty<InternalTpLinkCommand>())
+    { }
+
+    internal TpLinkCommandFactory(IEnumerable<InternalTpLinkCommand> factories)
     {
-        Router = new TLWR741NDTpLinkRouter(RouterParameters);
+        Factories = factories;
     }
     
-    public override HealthCheckCommand CreateHealthCheckCommand()
+    public IRouterCommand CreateRouterCommand(CommandContext context)
     {
-        return new TpLinkHealthCheckCommand(RouterParameters, Router);
-    }
-
-    public override RefreshRouterCommand CreateRefreshRouterCommand()
-    {
-        return new TpLinkRefreshRouterCommand(RouterParameters, Router);
-    }
-
-    public override GetWlanStatusCommand CreateGetWlanStatusCommand()
-    {
-        return new TpLinkGetWlanStatusCommand(RouterParameters, Console.Out, Router);
-    }
-
-    public override SetWlanSsidCommand CreateSetWlanSsidCommand(string ssid)
-    {
-        return new TpLinkSetWlanSsidCommand(Router, ssid);
+        return new RootTpLinkCommand()
+           .CreateRouterCommand(context);
     }
 }

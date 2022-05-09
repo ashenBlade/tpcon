@@ -5,14 +5,11 @@ using Router.Domain.Exceptions;
 
 namespace Router.Commands.TpLink.Commands;
 
-public class TpLinkRefreshRouterCommand : RefreshRouterCommand
+public class TpLinkRefreshRouterCommand : TpLinkBaseCommand
 {
-    private TpLinkRouter Router { get; }
-    public TpLinkRefreshRouterCommand(RouterParameters routerParameters, TpLinkRouter router)
-        : base(routerParameters)
-    {
-        Router = router;
-    }
+    public TpLinkRefreshRouterCommand(TpLinkRouter router)
+        : base(router)
+    { }
     
     public override async Task ExecuteAsync()
     {

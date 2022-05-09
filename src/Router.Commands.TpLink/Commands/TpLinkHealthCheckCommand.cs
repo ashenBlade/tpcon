@@ -4,20 +4,16 @@ using Router.Domain.Exceptions;
 
 namespace Router.Commands.TpLink.Commands;
 
-public class TpLinkHealthCheckCommand : HealthCheckCommand
+public class TpLinkHealthCheckCommand : TpLinkBaseCommand
 {
-    private readonly TpLinkRouter _router;
-
-    public TpLinkHealthCheckCommand(RouterParameters routerParameters,
-                                    TpLinkRouter router) : base(routerParameters)
+    public TpLinkHealthCheckCommand(TpLinkRouter router) : base(router)
     {
-        _router = router;
     }
     public override async Task ExecuteAsync()
     {
-        if (!await _router.CheckConnectionAsync())
+        if (!await Router.CheckConnectionAsync())
         {
-            throw new RouterUnreachableException(_router.RouterParameters.Address.ToString());
+            throw new RouterUnreachableException(RouterParameters.Address.ToString());
         }
     }
 }

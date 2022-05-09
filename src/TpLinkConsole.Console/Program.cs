@@ -5,11 +5,12 @@ using Router.CommandsParser.CommandLineParser;
 using Router.Domain.Exceptions;
 
 
-ICommandParser parser = new CommandLineParserCommandParser(new TpLinkRouterCommandFactoryFactory(), 
-                                                           Console.Out);
 try
 {
-    var command = parser.ParseCommand(args);
+    var parser = new TpLinkCommandLineContextParser();
+    var context = parser.ParseCommandContext(args);
+    var factory = new TpLinkCommandFactory();
+    var command = factory.CreateRouterCommand(context);
     await command.ExecuteAsync();
 }
 catch (InvalidRouterCredentialsException)

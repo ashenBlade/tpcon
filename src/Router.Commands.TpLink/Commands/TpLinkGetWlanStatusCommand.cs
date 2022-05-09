@@ -9,12 +9,14 @@ using Router.Domain.RouterProperties;
 
 namespace Router.Commands.TpLink.Commands;
 
-public class TpLinkGetWlanStatusCommand : GetWlanStatusCommand
+public class TpLinkGetWlanStatusCommand : TpLinkBaseCommand
 {
+    public TextWriter Output { get; }
     private TpLinkRouter Router { get; }
     
-    public TpLinkGetWlanStatusCommand(RouterParameters routerParameters, TextWriter output, TpLinkRouter router) : base(routerParameters, output)
+    public TpLinkGetWlanStatusCommand(TextWriter output, TpLinkRouter router) : base(router)
     {
+        Output = output;
         Router = router;
     }
     public override async Task ExecuteAsync()
