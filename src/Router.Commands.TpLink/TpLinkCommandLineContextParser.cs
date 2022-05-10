@@ -6,7 +6,7 @@ namespace Router.Commands.TpLink;
 public class TpLinkCommandLineContextParser : ICommandLineContextParser
 {
     private static bool IsArgumentName(string arg) => arg.StartsWith('-');
-    public CommandContext ParseCommandContext(string[] args)
+    public CommandLineContext ParseCommandLineContext(string[] args)
     {
         ArgumentNullException.ThrowIfNull(args);
         
@@ -42,7 +42,7 @@ public class TpLinkCommandLineContextParser : ICommandLineContextParser
             i++;
         }
 
-        return new CommandContext(command.ToArray(), ExtractRouterParameters(arguments));
+        return new CommandLineContext(command.ToArray(), ExtractRouterParameters(arguments));
     }
 
     private static RouterParameters ExtractRouterParameters(Dictionary<string, string> arguments)

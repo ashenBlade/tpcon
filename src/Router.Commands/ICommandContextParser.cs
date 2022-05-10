@@ -4,5 +4,5 @@ namespace Router.Commands;
 
 public interface ICommandLineContextParser
 {
-    public CommandContext ParseCommandContext(string[] args);
+    public CommandLineContext ParseCommandLineContext(string[] args);
 }

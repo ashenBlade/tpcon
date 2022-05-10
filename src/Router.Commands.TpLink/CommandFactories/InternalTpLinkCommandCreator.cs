@@ -1,0 +1,13 @@
+namespace Router.Commands.TpLink.CommandFactories;
+
+internal abstract class InternalTpLinkCommandCreator : IRouterCommandCreator
+{
+    public string Name { get; }
+
+    public InternalTpLinkCommandCreator(string name)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        Name = name;
+    }
+    public abstract IRouterCommand CreateRouterCommand(RouterCommandContext lineContext);
+}

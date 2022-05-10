@@ -8,7 +8,7 @@ using Router.Domain.Exceptions;
 try
 {
     var parser = new TpLinkCommandLineContextParser();
-    var context = parser.ParseCommandContext(args);
+    var context = parser.ParseCommandLineContext(args);
     var factory = new TpLinkCommandFactory();
     var command = factory.CreateRouterCommand(context);
     await command.ExecuteAsync();

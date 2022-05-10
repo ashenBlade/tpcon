@@ -7,8 +7,8 @@ namespace Router.Commands.TpLink.Commands;
 public class TpLinkHealthCheckCommand : TpLinkBaseCommand
 {
     public TpLinkHealthCheckCommand(TpLinkRouter router) : base(router)
-    {
-    }
+    { }
+    
     public override async Task ExecuteAsync()
     {
         if (!await Router.CheckConnectionAsync())

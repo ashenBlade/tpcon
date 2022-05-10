@@ -5,7 +5,7 @@ using Router.Domain;
 
 namespace Router.Commands;
 
-public record CommandContext(string[] Command, RouterParameters RouterParameters)
+public record CommandLineContext(string[] Command, RouterParameters RouterParameters)
 {
     public string CurrentCommand =>
         _currentCommandIndex < Command.Length
