@@ -93,12 +93,12 @@ public abstract class TpLinkRouter
     
     protected HttpRequestMessage CreateRequestMessageBase(string path, string query = "", HttpMethod? method = null)
     {
-        var uri = new UriBuilder(RouterParameters.GetAddress()) {Path = path, Query = query}.Uri;
+        var uri = new UriBuilder(RouterParameters.GetUriAddress()) {Path = path, Query = query}.Uri;
         return new HttpRequestMessage(method ?? HttpMethod.Get, uri)
                {
                    Headers =
                    {
-                       Referrer = RouterParameters.GetAddress(),
+                       Referrer = RouterParameters.GetUriAddress(),
                        Authorization = AuthorizationHeaderEncoded
                    }
                };
@@ -127,7 +127,7 @@ public abstract class TpLinkRouter
         }
         catch (HttpRequestException)
         {
-            throw new RouterUnreachableException(RouterParameters.GetAddress().ToString());
+            throw new RouterUnreachableException(RouterParameters.GetUriAddress().ToString());
         }
     }
     
