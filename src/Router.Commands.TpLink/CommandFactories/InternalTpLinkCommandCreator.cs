@@ -9,5 +9,5 @@ internal abstract class InternalTpLinkCommandCreator : IRouterCommandCreator
         ArgumentNullException.ThrowIfNull(name);
         Name = name;
     }
-    public abstract IRouterCommand CreateRouterCommand(RouterCommandContext lineContext);
+    public abstract IRouterCommand CreateRouterCommand(RouterCommandContext context);
 }

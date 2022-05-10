@@ -2,5 +2,5 @@ namespace Router.Commands;
 
 public interface IRouterCommandFactory
 {
-    IRouterCommand CreateRouterCommand(CommandLineContext lineContext);
+    IRouterCommand CreateRouterCommand(CommandLineContext context);
 }
