@@ -22,7 +22,7 @@ catch (RouterUnreachableException)
 {
     Console.WriteLine($"Could not connect to router");
 }
-catch (UnknownCommandException)
+catch (UnknownCommandLineException)
 {
     Console.WriteLine("Unknown command");
 }

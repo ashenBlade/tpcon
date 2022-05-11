@@ -21,7 +21,7 @@ internal class RootTpLinkCommandCreator : CompositeTpLinkCommandCreator
     {
         var currentCommand = lineContext.CurrentCommand;
         if (!Commands.TryGetValue(currentCommand, out var factory)) 
-            throw new UnknownCommandException();
+            throw new UnknownCommandLineException();
         lineContext.MoveNext();
         return factory.CreateRouterCommand(lineContext);
     }

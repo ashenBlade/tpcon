@@ -327,4 +327,49 @@ public class FSharpCommandLineContextParserTests
     {
         Assert.Throws<IncorrectArgumentValueException>(() => Parse("--address", incorrect));
     }
+
+    public static IEnumerable<object[]> DuplicatedArguments => new[]
+                                                               {
+                                                                   new object[]
+                                                                   {
+                                                                       new[]
+                                                                       {
+                                                                           "--password", "admin", "--password",
+                                                                           "adddddddd"
+                                                                       },
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       new[]
+                                                                       {
+                                                                           "--username", "admin", "--username", "ad"
+                                                                       },
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       new[] {"--output", "xml", "--output", "json"},
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       new[]
+                                                                       {
+                                                                           "--argument", "value", "--argument", "value"
+                                                                       },
+                                                                   },
+                                                                   new object[]
+                                                                   {
+                                                                       new[]
+                                                                       {
+                                                                           "--some-staff", "cool", "--some-staff",
+                                                                           "cooling"
+                                                                       },
+                                                                   },
+                                                               };
+
+    [Theory]
+    [MemberData(nameof(DuplicatedArguments))]
+    public void DuplicatedArguments_ThrowsDuplicatedArgumentsException(string[] duplicated)
+    {
+        Assert.Throws<DuplicatedArgumentsException>(() => Parse(duplicated));
+    }   
 }

@@ -13,6 +13,7 @@ type FSharpCommandLineParser() =
             match err with
             | ArgumentExpectedError expected -> raise (ArgumentValueExpectedException(expected, args))
             | IncorrectArgumentValueError(argument, actual) -> raise (IncorrectArgumentValueException(argument, actual, args))
+            | DuplicatedArgumentError argument -> raise (DuplicatedArgumentsException(argument, args))
             
     interface ICommandLineContextParser with
         member this.ParseCommandLineContext(args) = this.ParseCommandLineContext args

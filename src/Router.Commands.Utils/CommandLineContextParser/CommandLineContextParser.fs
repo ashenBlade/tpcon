@@ -8,6 +8,7 @@ open Router.Domain
 type ParsingError =
     | ArgumentExpectedError of Argument: string
     | IncorrectArgumentValueError of Argument: string * Actual: string
+    | DuplicatedArgumentError of Argument: string
 
 type Arguments = Map<string, string>
 type Command = string list
@@ -57,9 +58,13 @@ let parseArgumentsFromCommandsParsed: ParseArguments =
             | [] -> Ok ctx
             | [ arg ] -> Error(ParsingError.ArgumentExpectedError arg)
             | argument :: value :: rest ->
-                parseInner { ctx with
-                                Arguments = (Map.add (normalizeArgumentName argument) value ctx.Arguments)
-                                Rest = rest }
+                let normalized = normalizeArgumentName argument
+                match Map.containsKey normalized ctx.Arguments with
+                | true ->
+                    Error(ParsingError.DuplicatedArgumentError normalized)
+                | false ->
+                    parseInner { ctx with Arguments = (Map.add normalized value ctx.Arguments)
+                                          Rest = rest }
 
         parseInner context)
 
@@ -75,28 +80,24 @@ let fallback value defaultValue map =
 let extractRouterParameters: ParsingPipe =
     (fun ctx ->
         let args = ctx.Arguments
-        
-        let address =
-            fallback "address" "192.168.0.1" args
 
-        let username =
-            fallback "username" "admin" args
+        let address = fallback "address" "192.168.0.1" args
 
-        let password =
-            fallback "password" "admin" args
-            
+        let username = fallback "username" "admin" args
+
+        let password = fallback "password" "admin" args
+
         match IPAddress.TryParse address with
-                    | (true, ip) -> Ok {
-                            ctx with RouterParameters = RouterParameters(ip, username, password)
-                        }
-                    | _ -> Error (ParsingError.IncorrectArgumentValueError ("address", address)))
-    
+        | (true, ip) -> Ok { ctx with RouterParameters = RouterParameters(ip, username, password) }
+        | _ -> Error(ParsingError.IncorrectArgumentValueError("address", address)))
+
 
 let toUnparsedFromList (list: string list) : Result<CommandLineContextUnparsed, ParsingError> =
-    Ok { Rest = list
-         Command = List.empty
-         Arguments = Map.empty
-         RouterParameters = RouterParameters.Default }
+    Ok
+        { Rest = list
+          Command = List.empty
+          Arguments = Map.empty
+          RouterParameters = RouterParameters.Default }
 
 let toCommandLineContext (unparsed: CommandLineContextUnparsed) : Result<CommandLineContext, ParsingError> =
     Ok(CommandLineContext(unparsed.Command |> List.rev |> List.toArray, unparsed.RouterParameters, unparsed.Arguments))
