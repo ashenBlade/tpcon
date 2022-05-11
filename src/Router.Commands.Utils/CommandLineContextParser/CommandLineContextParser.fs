@@ -6,31 +6,36 @@ open Microsoft.FSharp.Collections
 open Router.Commands
 open Router.Domain
 
+type ParsingError =
+    | ArgumentExpectedError of string
+
+
 
 type Command = string list
 type CommandLineContextWithCommandsParsed = {
     Command: Command
     Arguments: string list
 }
-type ParseCommand = string list -> CommandLineContextWithCommandsParsed
+
+type ParseCommand = string list -> Result<CommandLineContextWithCommandsParsed, ParsingError>
 
 type Arguments = Map<string, string>
 type CommandLineContextWithCommandsAndArgumentsParsed = {
     Command: Command
     Arguments: Arguments
 }
-type ParseArguments = string list -> Arguments
+type ParseArguments = string list -> Result<Arguments, ParsingError> 
 
-type ParseCommandLineContext = string list -> CommandLineContext
+type ParseCommandLineContext = string list -> Result<CommandLineContext, ParsingError>
 
 let parseCommandFromCommandLineInput: ParseCommand =
     (fun list ->
-            let rec parseCommandFromCommandLineInputRec (result: CommandLineContextWithCommandsParsed) =
+            let rec parseCommandFromCommandLineInputRec (result: CommandLineContextWithCommandsParsed): Result<CommandLineContextWithCommandsParsed, ParsingError> =
                         match result.Arguments with
-                        | [] -> result
+                        | [] -> Ok result
                         | first::rest when not (first.StartsWith '-') ->
                                 parseCommandFromCommandLineInputRec { result with Arguments = rest; Command = first::result.Command}
-                        | _ -> result
+                        | _ -> Ok result
             parseCommandFromCommandLineInputRec {
                 Arguments = list
                 Command = []
@@ -41,11 +46,11 @@ let normalizeArgumentName (arg: string) = arg[2..]
     
 let parseArgumentsFromCommandsParsed: ParseArguments =
     (fun list ->
-         let rec parseInner (left: string list) (args: Arguments) =
+         let rec parseInner (left: string list) (args: Arguments): Result<Arguments,ParsingError> =
              match left with
-             | [] -> args
-             | [_] -> failwith "Argument is not provided"
-             | [argument; value] -> Map.add (normalizeArgumentName argument) value args
+             | [] -> Ok args
+             | [arg] -> Error (ParsingError.ArgumentExpectedError arg)
+             | [argument; value] -> Ok (Map.add (normalizeArgumentName argument) value args)
              | argument::value::rest -> parseInner rest (Map.add (normalizeArgumentName argument) value args)
          parseInner list Map.empty
     )
@@ -68,10 +73,13 @@ let getRouterParameters (args: Arguments): RouterParameters =
 let parseCommandLineContext: ParseCommandLineContext =
     (fun args ->
         let commandParsed = parseCommandFromCommandLineInput args
-        let argumentsParsed = parseArgumentsFromCommandsParsed commandParsed.Arguments
-        let parameters = getRouterParameters argumentsParsed
-        
-        let result = CommandLineContext(commandParsed.Command |> List.toArray |> Array.rev, parameters, Dictionary(argumentsParsed))
-        result)
-    
+        match commandParsed with
+        | Ok cmd -> 
+                let argumentsParsed = parseArgumentsFromCommandsParsed cmd.Arguments
+                match argumentsParsed with
+                | Ok args -> 
+                        let parameters = getRouterParameters args
+                        Ok (CommandLineContext(cmd.Command |> List.toArray |> Array.rev, parameters, Dictionary(args)))
+                | Error err -> Error err
+        | Error err -> Error err)
     
