@@ -2,10 +2,10 @@ namespace Router.Commands.Exceptions;
 
 public class ArgumentValueExpectedException: CommandParsingException
 {
-    public string Argument { get; }
+    public string Expected { get; }
 
-    public ArgumentValueExpectedException(string argument, string[] commands, string? message = null) : base(commands, message)
+    public ArgumentValueExpectedException(string expected, string[] commands, string? message = null) : base(commands, message)
     {
-        Argument = argument;
+        Expected = expected;
     }
 }

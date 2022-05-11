@@ -11,7 +11,8 @@ type FSharpCommandLineParser() =
         | Ok context -> context
         | Error err ->
             match err with
-            | ArgumentExpectedError s -> raise (ArgumentValueExpectedException(s, args))
+            | ArgumentExpectedError expected -> raise (ArgumentValueExpectedException(expected, args))
+            | IncorrectArgumentValueError(argument, actual) -> raise (IncorrectArgumentValueException(argument, actual, args))
             
     interface ICommandLineContextParser with
         member this.ParseCommandLineContext(args) = this.ParseCommandLineContext args

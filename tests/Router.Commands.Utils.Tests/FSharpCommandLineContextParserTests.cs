@@ -315,4 +315,16 @@ public class FSharpCommandLineContextParserTests
     {
         Assert.Throws<ArgumentValueExpectedException>(() => Parse(args));
     }
+
+    [Theory]
+    [InlineData("1922.168.0.1")]
+    [InlineData("192.168.01.")]
+    [InlineData("192.168.1000.1")]
+    [InlineData("256.256.256.256")]
+    [InlineData("19.2168.0.1")]
+    [InlineData("..145.120.45")]
+    public void IncorrectIpAddress_ThrowIncorrectArgumentValue(string incorrect)
+    {
+        Assert.Throws<IncorrectArgumentValueException>(() => Parse("--address", incorrect));
+    }
 }
