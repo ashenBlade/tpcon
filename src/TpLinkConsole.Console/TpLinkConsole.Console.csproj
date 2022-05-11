@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Router.Commands.TpLink\Router.Commands.TpLink.csproj" />
+      <ProjectReference Include="..\Router.Commands.Utils\Router.Commands.Utils.fsproj" />
       <ProjectReference Include="..\Router.CommandsParser.CommandLineParser\Router.CommandsParser.CommandLineParser.csproj" />
     </ItemGroup>
 </Project>

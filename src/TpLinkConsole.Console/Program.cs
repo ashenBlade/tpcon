@@ -1,13 +1,14 @@
 ﻿using Router.Commands;
 using Router.Commands.Exceptions;
 using Router.Commands.TpLink;
+using Router.Commands.Utils;
 using Router.CommandsParser.CommandLineParser;
 using Router.Domain.Exceptions;
 
 
 try
 {
-    var parser = new TpLinkCommandLineContextParser();
+    var parser = new FSharpCommandLineParser() as ICommandLineContextParser;
     var context = parser.ParseCommandLineContext(args);
     var factory = new TpLinkCommandFactory();
     var command = factory.CreateRouterCommand(context);

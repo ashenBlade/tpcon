@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="CommandLineContextParser\CommandLineContextParser.fs" />
+        <Compile Include="CommandLineContextParser\FSharpCommandLineParser.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Router.Commands\Router.Commands.csproj" />
+    </ItemGroup>
+
+</Project>

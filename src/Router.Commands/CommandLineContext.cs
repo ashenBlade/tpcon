@@ -5,7 +5,7 @@ using Router.Domain;
 
 namespace Router.Commands;
 
-public record CommandLineContext(string[] Command, RouterParameters RouterParameters)
+public record CommandLineContext(string[] Command, RouterParameters RouterParameters, IDictionary<string, string> Arguments)
 {
     public string CurrentCommand =>
         _currentCommandIndex < Command.Length
@@ -15,6 +15,7 @@ public record CommandLineContext(string[] Command, RouterParameters RouterParame
     public string NextCommand => _currentCommandIndex + 1 < Command.Length
                                       ? Command[_currentCommandIndex + 1]
                                       : string.Empty;
+    public bool HasNextCommand => _currentCommandIndex < Command.Length;
     
     private int _currentCommandIndex = 0;
     public bool MoveNext()
@@ -27,6 +28,4 @@ public record CommandLineContext(string[] Command, RouterParameters RouterParame
         _currentCommandIndex++;
         return true;
     }
-
-    public bool HasNextCommand => _currentCommandIndex < Command.Length;
 }

@@ -23,7 +23,7 @@ public class TpLinkCommandFactory : IRouterCommandFactory
     public IRouterCommand CreateRouterCommand(CommandLineContext context)
     {
         var router = new TLWR741NDTpLinkRouter(context.RouterParameters);
-        var routerContext = new RouterCommandContext(router, context.Command);
+        var routerContext = new RouterCommandContext(router, context.Command, context.Arguments);
         return new RootTpLinkCommandCreator()
            .CreateRouterCommand(routerContext);
     }

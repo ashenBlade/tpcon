@@ -2,8 +2,9 @@ using System.Net;
 
 namespace Router.Domain;
 
-public struct RouterParameters
+public struct RouterParameters: IEquatable<RouterParameters>
 {
+    public static RouterParameters Default => new();
     public static IPAddress DefaultAddress => new IPAddress(new byte[] {192, 168, 0, 1});
     public static string DefaultUsername => "admin";
     public static string DefaultPassword => "admin";
@@ -24,4 +25,27 @@ public struct RouterParameters
     public IPAddress Address { get; }
     public string Username { get; }
     public string Password { get; }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is RouterParameters routerParameters && 
+               Equals(routerParameters);
+    }
+
+    public override string ToString()
+    {
+        return $"{{ Username = \"{Username}\"; Password = \"{Password}\"; Address = \"{Address.ToString()}\"}}";
+    }
+
+    public bool Equals(RouterParameters other)
+    {
+        return Address.Equals(other.Address)
+            && Username == other.Username
+            && Password == other.Password;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Address, Username, Password);
+    }
 }

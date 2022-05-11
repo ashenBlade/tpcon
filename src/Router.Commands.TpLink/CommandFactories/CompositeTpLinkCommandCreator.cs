@@ -2,7 +2,7 @@ using Router.Commands.Exceptions;
 
 namespace Router.Commands.TpLink.CommandFactories;
 
-internal class CompositeTpLinkCommandCreator : InternalTpLinkCommandCreator
+internal abstract class CompositeTpLinkCommandCreator : InternalTpLinkCommandCreator
 {
     protected Dictionary<string, InternalTpLinkCommandCreator> Commands { get; }
 

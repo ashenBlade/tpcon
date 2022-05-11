@@ -3,12 +3,12 @@ using Router.Domain;
 
 namespace Router.Commands.TpLink;
 
-internal record RouterCommandContext(TpLinkRouter Router)
+internal record RouterCommandContext(TpLinkRouter Router, IDictionary<string, string> Arguments)
 {
     private readonly string[] _command;
     
-    public RouterCommandContext(TpLinkRouter router, string[] command) 
-    : this(router)
+    public RouterCommandContext(TpLinkRouter router, string[] command, IDictionary<string, string> arguments) 
+    : this(router, arguments)
     {
         ArgumentNullException.ThrowIfNull(command);
         _command = command;
