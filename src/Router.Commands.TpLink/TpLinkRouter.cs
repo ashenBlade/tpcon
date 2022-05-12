@@ -12,10 +12,13 @@ namespace Router.Commands.TpLink;
 
 public abstract class TpLinkRouter
 {
+    protected HttpClient Client { get; }
     public RouterParameters RouterParameters { get; }
 
-    protected TpLinkRouter(RouterParameters routerParameters)
+    protected TpLinkRouter(RouterParameters routerParameters, HttpClient client)
     {
+        ArgumentNullException.ThrowIfNull(client);
+        Client = client;
         RouterParameters = routerParameters;
     }
 
@@ -35,7 +38,6 @@ public abstract class TpLinkRouter
     
     private async Task<HttpResponseMessage> GetResponseFromRouterAsync(string path, IEnumerable<KeyValuePair<string, string>>? query = null)
     {
-        using var client = new HttpClient();
         var requestUri = GetUriForRouter(path, query);
         using var message = new HttpRequestMessage(HttpMethod.Get, requestUri)
                             {
@@ -46,7 +48,7 @@ public abstract class TpLinkRouter
                             };
         try
         {
-            using var response = await client.SendAsync(message);
+            using var response = await Client.SendAsync(message);
             if (response.StatusCode is HttpStatusCode.Unauthorized
                                     or HttpStatusCode.Forbidden)
             {
@@ -114,11 +116,10 @@ public abstract class TpLinkRouter
 
     public async Task RefreshAsync()
     {
-        using var client = new HttpClient();
         using var message = CreateRequestMessageBase("/userRpm/SysRebootRpm.htm", "Reboot=Reboot");
         try
         {
-            using var response = await client.SendAsync(message);
+            using var response = await Client.SendAsync(message);
             if (response.StatusCode is HttpStatusCode.Unauthorized 
                                     or HttpStatusCode.Forbidden)
             {
@@ -133,11 +134,10 @@ public abstract class TpLinkRouter
     
     public async Task<bool> CheckConnectionAsync()
     {
-        using var client = new HttpClient();
         try
         {
             using var msg = CreateRequestMessageBase(string.Empty);
-            using var response = await client.SendAsync(msg);
+            using var response = await Client.SendAsync(msg);
             return true;
         }
         catch (HttpRequestException)

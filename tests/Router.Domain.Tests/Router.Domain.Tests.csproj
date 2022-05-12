@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Router\Router.csproj" />
-      <ProjectReference Include="..\src\Router\Router.csproj" />
     </ItemGroup>
 
 </Project>

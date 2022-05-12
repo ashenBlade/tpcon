@@ -6,17 +6,9 @@ namespace Router.Commands.TpLink.CommandFactories;
 internal class RootTpLinkCommandCreator : CompositeTpLinkCommandCreator
 {
     public RootTpLinkCommandCreator(IEnumerable<InternalTpLinkCommandCreator> commands)
-        : base(commands, String.Empty)
+        : base(commands, string.Empty)
     { }
     
-    public RootTpLinkCommandCreator() 
-        : this(new InternalTpLinkCommandCreator[]
-               {
-                   new WlanCompositeTpLinkCommandCreator(),
-                   new RefreshTpLinkCommandCreator(),
-                   new CheckConnectionTpLinkCommandCreator()
-               }) 
-    { }
     public override IRouterCommand CreateRouterCommand(RouterCommandContext lineContext)
     {
         var currentCommand = lineContext.CurrentCommand;

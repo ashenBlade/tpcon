@@ -9,22 +9,31 @@ namespace Router.Commands.TpLink;
 
 public class TpLinkCommandFactory : IRouterCommandFactory
 {
+    private static IEnumerable<InternalTpLinkCommandCreator> DefaultCommands => new InternalTpLinkCommandCreator[]
+                                                                                {
+                                                                                    new CheckConnectionTpLinkCommandCreator(),
+                                                                                    new RefreshTpLinkCommandCreator(),
+                                                                                    new WlanCompositeTpLinkCommandCreator(),
+                                                                                };
+    public HttpClient Client { get; }
     private IEnumerable<InternalTpLinkCommandCreator> Factories { get; }
 
-    public TpLinkCommandFactory()
-    : this(Array.Empty<InternalTpLinkCommandCreator>())
+    public TpLinkCommandFactory(HttpClient client)
+    : this(client, null)
     { }
-
-    internal TpLinkCommandFactory(IEnumerable<InternalTpLinkCommandCreator> factories)
+    
+    internal TpLinkCommandFactory(HttpClient client, IEnumerable<InternalTpLinkCommandCreator>? factories)
     {
-        Factories = factories;
+        ArgumentNullException.ThrowIfNull(client);
+        Factories = factories ?? DefaultCommands;
+        Client = client;
     }
     
     public IRouterCommand CreateRouterCommand(CommandLineContext context)
     {
-        var router = new TLWR741NDTpLinkRouter(context.RouterParameters);
+        var router = new TLWR741NDTpLinkRouter(context.RouterParameters, Client);
         var routerContext = new RouterCommandContext(router, context.Command, context.Arguments);
-        return new RootTpLinkCommandCreator()
+        return new RootTpLinkCommandCreator(DefaultCommands)
            .CreateRouterCommand(routerContext);
     }
 }
