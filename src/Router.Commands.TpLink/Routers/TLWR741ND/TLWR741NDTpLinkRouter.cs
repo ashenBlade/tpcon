@@ -9,8 +9,8 @@ namespace Router.Commands.TpLink.Routers;
 
 public class TLWR741NDTpLinkRouter : TpLinkRouter
 {
-    public TLWR741NDTpLinkRouter(RouterParameters routerParameters, HttpClient client) 
-        : base(routerParameters, client) 
+    public TLWR741NDTpLinkRouter(IRouterHttpMessageSender sender) 
+        : base(sender) 
     { }
     
     public override async Task<WlanParameters> GetWlanParametersAsync()

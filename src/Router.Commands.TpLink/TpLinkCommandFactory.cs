@@ -1,3 +1,4 @@
+using JsUtils.Implementation;
 using Router.Commands.Commands;
 using Router.Commands.TpLink.CommandFactories;
 using Router.Commands.TpLink.CommandFactories.Wlan;
@@ -31,7 +32,7 @@ public class TpLinkCommandFactory : IRouterCommandFactory
     
     public IRouterCommand CreateRouterCommand(CommandLineContext context)
     {
-        var router = new TLWR741NDTpLinkRouter(context.RouterParameters, Client);
+        var router = new TLWR741NDTpLinkRouter(new TpLinkRouterHttpMessageSender(new HtmlScriptVariableExtractor(new HtmlScriptExtractor(), new ScriptVariableExtractor(new Tokenizer())), Client, context.RouterParameters));
         var routerContext = new RouterCommandContext(router, context.Command, context.Arguments);
         return new RootTpLinkCommandCreator(DefaultCommands)
            .CreateRouterCommand(routerContext);

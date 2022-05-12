@@ -13,13 +13,13 @@ namespace Router.Commands.TpLink;
 public abstract class TpLinkRouter
 {
     protected HttpClient Client { get; }
-    public RouterParameters RouterParameters { get; }
+    public RouterParameters RouterParameters => MessageSender.RouterParameters;
+    protected IRouterHttpMessageSender MessageSender { get; }
 
-    protected TpLinkRouter(RouterParameters routerParameters, HttpClient client)
+    protected TpLinkRouter(IRouterHttpMessageSender messageSender)
     {
-        ArgumentNullException.ThrowIfNull(client);
-        Client = client;
-        RouterParameters = routerParameters;
+        ArgumentNullException.ThrowIfNull(messageSender);
+        MessageSender = messageSender;
     }
 
     private Uri GetUriForRouter(string path, IEnumerable<KeyValuePair<string, string>>? query = null)
@@ -116,31 +116,17 @@ public abstract class TpLinkRouter
 
     public async Task RefreshAsync()
     {
-        using var message = CreateRequestMessageBase("/userRpm/SysRebootRpm.htm", "Reboot=Reboot");
-        try
-        {
-            using var response = await Client.SendAsync(message);
-            if (response.StatusCode is HttpStatusCode.Unauthorized 
-                                    or HttpStatusCode.Forbidden)
-            {
-                throw new InvalidRouterCredentialsException(RouterParameters.Username, RouterParameters.Password);
-            }
-        }
-        catch (HttpRequestException)
-        {
-            throw new RouterUnreachableException(RouterParameters.GetUriAddress().ToString());
-        }
+        await MessageSender.SendMessageAsync("/userRpm/SysRebootRpm.htm");
     }
     
     public async Task<bool> CheckConnectionAsync()
     {
         try
         {
-            using var msg = CreateRequestMessageBase(string.Empty);
-            using var response = await Client.SendAsync(msg);
+            await MessageSender.SendMessageAsync(string.Empty);
             return true;
         }
-        catch (HttpRequestException)
+        catch (RouterUnreachableException)
         {
             return false;
         }

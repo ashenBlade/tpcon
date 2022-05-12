@@ -5,7 +5,8 @@ namespace Router.Commands.TpLink.CommandFactories;
 
 internal class CheckConnectionTpLinkCommandCreator : SingleTpLinkCommandCreator
 {
-    public CheckConnectionTpLinkCommandCreator() : base("health") 
+    public CheckConnectionTpLinkCommandCreator() 
+        : base("health") 
     { }
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {

@@ -9,7 +9,7 @@ using Router.Domain.Exceptions;
 try
 {
     using var client = new HttpClient();
-    var parser = new FSharpCommandLineParser() as ICommandLineContextParser;
+    var parser = new FSharpCommandLineParser();
     var context = parser.ParseCommandLineContext(args);
     var factory = new TpLinkCommandFactory(client);
     var command = factory.CreateRouterCommand(context);
