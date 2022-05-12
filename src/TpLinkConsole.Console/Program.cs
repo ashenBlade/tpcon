@@ -1,9 +1,11 @@
-﻿using Router.Commands;
+﻿using JsUtils.Implementation;
+using Router.Commands;
 using Router.Commands.Exceptions;
-using Router.Commands.TpLink;
 using Router.Commands.Utils;
 using Router.CommandsParser.CommandLineParser;
 using Router.Domain.Exceptions;
+using Router.TpLink;
+using Router.TpLink.TLWR741ND;
 
 
 try
@@ -11,7 +13,11 @@ try
     using var client = new HttpClient();
     var parser = new FSharpCommandLineParser();
     var context = parser.ParseCommandLineContext(args);
-    var factory = new TpLinkCommandFactory(client);
+    var factory = new TpLinkCommandFactory(new TLWR741NDTpLinkRouterFactory(), 
+                                           new TLWR741NDTpLinkRouterHttpMessageSender(new HtmlScriptVariableExtractor(new HtmlScriptExtractor(), 
+                                                                                                                      new ScriptVariableExtractor(new Tokenizer())), 
+                                                                                      client,
+                                                                                      context.RouterParameters));
     var command = factory.CreateRouterCommand(context);
     await command.ExecuteAsync();
 }
