@@ -1,6 +1,6 @@
 namespace Router.Commands.Exceptions;
 
-public class ArgumentNotProvidedException : CommandLineParsingException
+public class ArgumentNotProvidedException : CommandLineException
 {
     public string Expected { get; }
 

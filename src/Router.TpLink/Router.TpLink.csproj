@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    
     <ItemGroup>
       <ProjectReference Include="..\JsTypes\JsTypes.csproj" />
       <ProjectReference Include="..\JsUtils.Implementation\JsUtils.Implementation.csproj" />

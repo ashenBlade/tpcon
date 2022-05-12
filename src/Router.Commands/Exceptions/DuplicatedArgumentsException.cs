@@ -1,6 +1,6 @@
 namespace Router.Commands.Exceptions;
 
-public class DuplicatedArgumentsException : CommandLineParsingException
+public class DuplicatedArgumentsException : CommandLineException
 {
     public string Duplicated { get; }
 

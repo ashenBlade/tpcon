@@ -1,6 +1,6 @@
 namespace Router.Commands.Exceptions;
 
-public class IncorrectArgumentValueException : CommandLineParsingException
+public class IncorrectArgumentValueException : CommandLineException
 {
     public string Argument { get; }
     public string Actual { get; }
