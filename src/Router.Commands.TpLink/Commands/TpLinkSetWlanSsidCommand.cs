@@ -1,20 +1,17 @@
-using Router.Commands.Commands;
-using Router.Domain;
-
 namespace Router.Commands.TpLink.Commands;
 
-public class TpLinkSetWlanSsidCommand : SetWlanSsidCommand
+public class TpLinkSetWlanSsidCommand : TpLinkBaseCommand
 {
-    public TpLinkRouter Router { get; }
+    private readonly string _ssid;
 
     public TpLinkSetWlanSsidCommand(TpLinkRouter router, string ssid)
-        : base(router.RouterParameters, ssid)
+        : base(router)
     {
-        Router = router;
+        _ssid = ssid;
     }
 
     public override Task ExecuteAsync()
     {
-        return Router.SetSsidAsync(Ssid);
+        return Router.SetSsidAsync(_ssid);
     }
 }

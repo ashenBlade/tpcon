@@ -1,7 +1,6 @@
 using Router.Commands.TpLink.Commands;
-using Router.Commands.TpLink.Routers;
 
-namespace Router.Commands.TpLink.CommandFactories;
+namespace Router.Commands.TpLink.CommandFactories.Root;
 
 internal class RefreshTpLinkCommandCreator : SingleTpLinkCommandCreator
 {

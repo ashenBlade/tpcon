@@ -7,7 +7,7 @@ public class RouterUnreachableException : RouterException
     public string Address { get; }
 
     public RouterUnreachableException(IPAddress address, string? message = null)
-        :this(address.ToString(), message)
+        : this(address.ToString(), message)
     { }
 
     

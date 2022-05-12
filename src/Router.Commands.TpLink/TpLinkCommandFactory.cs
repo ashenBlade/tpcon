@@ -1,10 +1,8 @@
 using JsUtils.Implementation;
-using Router.Commands.Commands;
 using Router.Commands.TpLink.CommandFactories;
+using Router.Commands.TpLink.CommandFactories.Root;
 using Router.Commands.TpLink.CommandFactories.Wlan;
-using Router.Commands.TpLink.Commands;
-using Router.Commands.TpLink.Routers;
-using Router.Domain;
+using Router.Commands.TpLink.Routers.TLWR741ND;
 
 namespace Router.Commands.TpLink;
 

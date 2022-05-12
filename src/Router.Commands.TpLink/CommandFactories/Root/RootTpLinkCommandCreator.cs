@@ -1,7 +1,6 @@
 using Router.Commands.Exceptions;
-using Router.Commands.TpLink.CommandFactories.Wlan;
 
-namespace Router.Commands.TpLink.CommandFactories;
+namespace Router.Commands.TpLink.CommandFactories.Root;
 
 internal class RootTpLinkCommandCreator : CompositeTpLinkCommandCreator
 {
