@@ -6,18 +6,28 @@ namespace Router.TpLink;
 
 public abstract class TpLinkRouter
 {
-    public RouterParameters RouterParameters => MessageSender.RouterParameters;
     protected IRouterHttpMessageSender MessageSender { get; }
+    public RouterParameters RouterParameters => MessageSender.RouterParameters;
+    public ILanConfigurator Lan { get; }
+    public IWlanConfigurator Wlan { get; }
 
-    protected TpLinkRouter(IRouterHttpMessageSender messageSender)
+    protected TpLinkRouter(IRouterHttpMessageSender messageSender, ILanConfigurator lan, IWlanConfigurator wlan)
     {
         ArgumentNullException.ThrowIfNull(messageSender);
+        ArgumentNullException.ThrowIfNull(lan);
+        ArgumentNullException.ThrowIfNull(wlan);
         MessageSender = messageSender;
+        Lan = lan;
+        Wlan = wlan;
     }
 
     public async Task RefreshAsync()
     {
-        await MessageSender.SendMessageAsync(new RouterHttpMessage( "/userRpm/SysRebootRpm.htm", new KeyValuePair<string, string>[] {new("Reboot", "Reboot")} ));
+        await MessageSender.SendMessageAsync(new RouterHttpMessage( "/userRpm/SysRebootRpm.htm", 
+                                                                    new KeyValuePair<string, string>[]
+                                                                    {
+                                                                        new("Reboot", "Reboot")
+                                                                    } ));
     }
     
     public virtual async Task<bool> CheckConnectionAsync()
@@ -32,11 +42,4 @@ public abstract class TpLinkRouter
             return false;
         }
     }
-
-    public abstract Task<WlanParameters> GetWlanParametersAsync();
-    
-    public abstract Task EnableWirelessRadioAsync();
-    public abstract Task DisableWirelessRadioAsync();
-    public abstract Task SetSsidAsync(string ssid);
-    public abstract Task SetPasswordAsync(string password);
 }

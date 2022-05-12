@@ -11,7 +11,7 @@ public abstract class TpLinkSetWirelessRadioCommand : TpLinkBaseCommand
     public override async Task ExecuteAsync()
     {
         await ( _enable
-                    ? Router.EnableWirelessRadioAsync()
-                    : Router.DisableWirelessRadioAsync() );
+                    ? Router.Wlan.EnableAsync()
+                    : Router.Wlan.DisableAsync() );
     }
 }

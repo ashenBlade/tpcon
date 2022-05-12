@@ -3,7 +3,7 @@ using System.Net;
 using Router.Domain.RouterProperties;
 using Xunit;
 
-namespace Router.Domain.Tests;
+namespace Router.Tests;
 
 public class WlanParametersTests
 {

@@ -1,9 +1,10 @@
 using System;
 using System.Net;
+using Router.Domain;
 using Xunit;
 using Xunit.Sdk;
 
-namespace Router.Domain.Tests;
+namespace Router.Tests;
 
 public class SubnetMaskTests
 {

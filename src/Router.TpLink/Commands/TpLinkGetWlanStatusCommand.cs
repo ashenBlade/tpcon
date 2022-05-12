@@ -10,7 +10,7 @@ public class TpLinkGetWlanStatusCommand : TpLinkBaseCommand
     }
     public override async Task ExecuteAsync()
     {
-        var wlan = await Router.GetWlanParametersAsync();
+        var wlan = await Router.Wlan.GetStatusAsync();
         await Output.WriteLineAsync($"Enabled: {wlan.IsActive}\nPassword: {wlan.Password}\nSSID: {wlan.SSID}\nRouter IP address: {wlan.RouterAddress}");
     }
 }

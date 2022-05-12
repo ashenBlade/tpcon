@@ -6,6 +6,8 @@ public class TLWR741NDTpLinkRouterFactory : ITpLinkRouterFactory
 {
     public TpLinkRouter CreateRouter(IRouterHttpMessageSender messageSender)
     {
-        return new TLWR741NDTpLinkRouter(messageSender);
+        return new TLWR741NDTpLinkRouter(messageSender, 
+                                         new TLWR741NDTpLinkWlanConfigurator(messageSender), 
+                                         new TLWR741NDTpLinkLanConfigurator(messageSender));
     }
 }

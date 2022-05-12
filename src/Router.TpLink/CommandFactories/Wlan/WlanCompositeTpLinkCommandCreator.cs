@@ -7,7 +7,9 @@ internal class WlanCompositeTpLinkCommandCreator : CompositeTpLinkCommandCreator
                {
                    new GetWlanStatusCompositeCommandCreator(),
                    new EnableWirelessRadioTpLinkCommandCreator(),
-                   new DisableWirelessRadioTpLinkCommandCreator()
+                   new DisableWirelessRadioTpLinkCommandCreator(),
+                   new SetWlanPasswordTpLinkCommandCreator(),
+                   new SetWlanSsidTpLinkCommandCreator()
                }, 
                "wlan") 
     { }

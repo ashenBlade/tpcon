@@ -1,9 +1,10 @@
 using System;
 using System.Net;
+using Router.Domain;
 using Router.Domain.RouterProperties;
 using Xunit;
 
-namespace Router.Domain.Tests;
+namespace Router.Tests;
 
 public class LanParametersTests
 {

@@ -12,6 +12,6 @@ public class TpLinkSetWlanSsidCommand : TpLinkBaseCommand
 
     public override Task ExecuteAsync()
     {
-        return Router.SetSsidAsync(_ssid);
+        return Router.Wlan.SetSsidAsync(_ssid);
     }
 }

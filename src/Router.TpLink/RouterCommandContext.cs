@@ -2,6 +2,7 @@ namespace Router.TpLink;
 
 internal record RouterCommandContext(TpLinkRouter Router, IDictionary<string, string> Arguments)
 {
+    public IEnumerable<string> Command => _command;
     private readonly string[] _command;
     
     public RouterCommandContext(TpLinkRouter router, string[] command, IDictionary<string, string> arguments) 
