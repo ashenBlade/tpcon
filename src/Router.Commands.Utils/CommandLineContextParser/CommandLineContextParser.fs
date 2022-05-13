@@ -17,6 +17,7 @@ type CommandLineContextUnparsed =
     { Command: Command
       RouterParameters: RouterParameters
       Arguments: Arguments
+      Output: OutputStyle
       Rest: string list }
 
 type ParsingPipe = CommandLineContextUnparsed -> Result<CommandLineContextUnparsed, ParsingError>
@@ -25,8 +26,6 @@ let (>=>) func1 func2 x =
     match (func1 x) with
     | Ok s -> func2 s
     | Error err -> Error err
-
-
 
 type ParseCommand = ParsingPipe
 type ParseArguments = ParsingPipe
@@ -97,15 +96,45 @@ let toUnparsedFromList (list: string list) : Result<CommandLineContextUnparsed, 
         { Rest = list
           Command = List.empty
           Arguments = Map.empty
-          RouterParameters = RouterParameters.Default }
+          RouterParameters = RouterParameters.Default
+          Output = OutputStyle.KeyValue}
 
 let toCommandLineContext (unparsed: CommandLineContextUnparsed) : Result<CommandLineContext, ParsingError> =
-    Ok(CommandLineContext(unparsed.Command |> List.rev |> List.toArray, unparsed.RouterParameters, unparsed.Arguments))
+    Ok(CommandLineContext(unparsed.Command |> List.rev |> List.toArray, unparsed.RouterParameters, unparsed.Arguments, unparsed.Output))
+
+let outputArgumentName = "output"
+
+let (|Json|Xml|KeyValue|Table|Invalid|) str =
+    match str with
+    | "json" ->  Json
+    | "xml" ->   Xml
+    | "plain" ->  KeyValue
+    | "table" -> Table
+    | _ -> Invalid
+
+let toOutputStyle (outputString: string): Result<OutputStyle, ParsingError> =
+    match outputString with
+    | Json -> Ok OutputStyle.Json
+    | Xml -> Ok OutputStyle.Xml
+    | KeyValue -> Ok OutputStyle.KeyValue
+    | Table -> Ok OutputStyle.Table
+    | _ -> Error (ParsingError.IncorrectArgumentValueError(outputArgumentName, outputString))
+
+let extractOutputStyle: ParsingPipe =
+    (fun context ->
+        match Map.tryFind outputArgumentName context.Arguments with
+        | Some outputString -> match toOutputStyle outputString with
+                                | Ok output -> Ok {context with Output = output}
+                                | Error parsingError -> Error parsingError
+        | None -> Ok context
+                            
+    )
 
 let parsingPipeline =
     parseCommandFromCommandLineInput
     >=> parseArgumentsFromCommandsParsed
     >=> extractRouterParameters
+    >=> extractOutputStyle
 
 
 let parseCommandLineContext: ParseCommandLineContext =

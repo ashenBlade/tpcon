@@ -34,7 +34,7 @@ public class TpLinkCommandFactory : IRouterCommandFactory
     public IRouterCommand CreateRouterCommand(CommandLineContext context)
     {
         var router = _routerFactory.CreateRouter(_messageSender);
-        var routerContext = new RouterCommandContext(router, context.Command, context.Arguments);
+        var routerContext = new RouterCommandContext(router, context.Command, context.Arguments, context.OutputStyle);
         return new RootTpLinkCommandCreator(_factories)
            .CreateRouterCommand(routerContext);
     }

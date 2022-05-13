@@ -1,3 +1,5 @@
+using System;
+
 namespace Router.Commands.Exceptions;
 
 public class CommandLineException : Exception

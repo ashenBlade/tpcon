@@ -309,14 +309,14 @@ public class FSharpCommandLineContextParserTests
                                                                               new object[] {new[] {"--argument"},},
                                                                           };
 
-    [Theory]
+    [Theory(DisplayName = "With only arguments; When: value not provided; Should throw argument value expected exception")]
     [MemberData(nameof(ArgumentsWithoutProvidedValues))]
     public void OnlyArguments_WithoutProvidedValue_ThrowArgumentValueExpectedException(string[] args)
     {
         Assert.Throws<ArgumentValueExpectedException>(() => Parse(args));
     }
 
-    [Theory]
+    [Theory(DisplayName = "With: incorrect ip address in arguments; Should: throw IncorrectArgumentValueException")]
     [InlineData("1922.168.0.1")]
     [InlineData("192.168.01.")]
     [InlineData("192.168.1000.1")]
@@ -366,10 +366,41 @@ public class FSharpCommandLineContextParserTests
                                                                    },
                                                                };
 
-    [Theory]
+    [Theory(DisplayName = "With: duplicated arguments; Should: throw DuplicatedArgumentsException")]
     [MemberData(nameof(DuplicatedArguments))]
     public void DuplicatedArguments_ThrowsDuplicatedArgumentsException(string[] duplicated)
     {
         Assert.Throws<DuplicatedArgumentsException>(() => Parse(duplicated));
-    }   
+    }
+
+    
+    
+    [Theory(DisplayName = "With: output style argument provided; Should: return expected output style")]
+    [InlineData("xml", OutputStyle.Xml)]
+    [InlineData("json", OutputStyle.Json)]
+    [InlineData("table", OutputStyle.Table)]
+    [InlineData("plain", OutputStyle.KeyValue)]
+    public void OutputStyle_WithCorrectOutputTypes(string output, OutputStyle expected)
+    {
+        var actual = Parse("--output", output);
+        Assert.Equal(expected, actual.OutputStyle);
+    }
+
+    [Fact(DisplayName = $"With: output style argument not provided; Should: return OutputStyle.KeyValue by default")]
+    public void OutputStyle_WithoutOutputStyleArgumentProvided()
+    {
+        var actual = Parse();
+        Assert.Equal(OutputStyle.KeyValue, actual.OutputStyle);
+    }
+
+    [Theory(DisplayName = "With: invalid output style argument value; Should: throw IncorrectArgumentValueException")]
+    [InlineData("xm")]
+    [InlineData("plan")]
+    [InlineData("none")]
+    [InlineData("file")]
+    [InlineData("simple")]
+    public void OutputStyle_WithInvalidValue_ThrowsInvalidArgumentValueException(string style)
+    {
+        Assert.Throws<IncorrectArgumentValueException>(() => Parse("--output", style));
+    }
 }

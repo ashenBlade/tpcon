@@ -1,12 +1,14 @@
+using Router.Commands;
+
 namespace Router.TpLink;
 
-public record RouterCommandContext(TpLinkRouter Router, IDictionary<string, string> Arguments)
+public record RouterCommandContext(TpLinkRouter Router, IDictionary<string, string> Arguments, OutputStyle OutputStyle = OutputStyle.KeyValue)
 {
     public IEnumerable<string> Command => _command;
     private readonly string[] _command;
     
-    public RouterCommandContext(TpLinkRouter router, string[] command, IDictionary<string, string> arguments) 
-    : this(router, arguments)
+    public RouterCommandContext(TpLinkRouter router, string[] command, IDictionary<string, string> arguments, OutputStyle outputStyle = OutputStyle.KeyValue) 
+    : this(router, arguments, outputStyle)
     {
         ArgumentNullException.ThrowIfNull(command);
         _command = command;

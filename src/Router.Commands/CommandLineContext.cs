@@ -1,11 +1,12 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Text;
 using Router.Domain;
 
 namespace Router.Commands;
 
-public record CommandLineContext(string[] Command, RouterParameters RouterParameters, IDictionary<string, string> Arguments)
+public record CommandLineContext(string[] Command, RouterParameters RouterParameters, IDictionary<string, string> Arguments, OutputStyle OutputStyle)
 {
     public string? CurrentCommand =>
         _currentCommandIndex < Command.Length
