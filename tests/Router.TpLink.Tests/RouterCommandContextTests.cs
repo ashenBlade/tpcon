@@ -10,11 +10,11 @@ public class RouterCommandContextTests
                                         RouterParameters routerParameters,
                                         Dictionary<string, string>? arguments = null) =>
         new(new FakeTpLinkRouter(routerParameters), command,
-            arguments ?? new Dictionary<string, string>());
+            arguments ?? new Dictionary<string, string>(), new FakeOutputFormatter());
     private RouterCommandContext Create(string[] command,
                                         Dictionary<string, string>? arguments = null) =>
         new(new FakeTpLinkRouter(RouterParameters.Default), command,
-            arguments ?? new Dictionary<string, string>());
+            arguments ?? new Dictionary<string, string>(), new FakeOutputFormatter());
 
     public static IEnumerable<object[]> SingleCommands => new[]
                                                           {

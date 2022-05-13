@@ -1,18 +1,27 @@
 using Router.Commands;
+using Router.Commands.Utils;
 
 namespace Router.TpLink;
 
-public record RouterCommandContext(TpLinkRouter Router, IDictionary<string, string> Arguments, OutputStyle OutputStyle = OutputStyle.KeyValue)
+public record RouterCommandContext(TpLinkRouter Router, 
+                                   IDictionary<string, string> Arguments, 
+                                   IOutputFormatter OutputFormatter,
+                                   OutputStyle OutputStyle = OutputStyle.KeyValue)
 {
     public IEnumerable<string> Command => _command;
     private readonly string[] _command;
     
-    public RouterCommandContext(TpLinkRouter router, string[] command, IDictionary<string, string> arguments, OutputStyle outputStyle = OutputStyle.KeyValue) 
-    : this(router, arguments, outputStyle)
+    public RouterCommandContext(TpLinkRouter router, 
+                                string[] command, 
+                                IDictionary<string, string> arguments,
+                                IOutputFormatter formatter,
+                                OutputStyle outputStyle = OutputStyle.KeyValue) 
+        : this(router, arguments, formatter, outputStyle)
     {
         ArgumentNullException.ThrowIfNull(command);
         _command = command;
     }
+    
     public string? CurrentCommand =>
         _currentCommandIndex < _command.Length
             ? _command[_currentCommandIndex]

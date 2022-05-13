@@ -1,16 +1,21 @@
+using Router.Commands;
+
 namespace Router.TpLink.Commands;
 
 public class TpLinkGetWlanStatusCommand : TpLinkBaseCommand
 {
-    public TextWriter Output { get; }
+    private readonly IOutputFormatter _formatter;
+    private readonly TextWriter _output;
     
-    public TpLinkGetWlanStatusCommand(TextWriter output, TpLinkRouter router) : base(router)
+    public TpLinkGetWlanStatusCommand(TextWriter output, TpLinkRouter router, IOutputFormatter formatter) : base(router)
     {
-        Output = output;
+        _formatter = formatter;
+        _output = output;
     }
     public override async Task ExecuteAsync()
     {
         var wlan = await Router.Wlan.GetStatusAsync();
-        await Output.WriteLineAsync($"Enabled: {wlan.IsActive}\nPassword: {wlan.Password}\nSSID: {wlan.SSID}\nRouter IP address: {wlan.RouterAddress}");
+        var result = _formatter.Format(wlan);
+        await _output.WriteLineAsync(result);
     }
 }

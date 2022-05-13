@@ -10,6 +10,6 @@ internal class GetWlanStatusCompositeCommandCreator : SingleTpLinkCommandCreator
     { }
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        return new TpLinkGetWlanStatusCommand(Console.Out, context.Router);
+        return new TpLinkGetWlanStatusCommand(Console.Out, context.Router, context.OutputFormatter);
     }
 }

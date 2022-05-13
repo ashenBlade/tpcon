@@ -10,6 +10,7 @@
     <ItemGroup>
       <ProjectReference Include="..\JsTypes\JsTypes.csproj" />
       <ProjectReference Include="..\JsUtils.Implementation\JsUtils.Implementation.csproj" />
+      <ProjectReference Include="..\Router.Commands.Utils\Router.Commands.Utils.fsproj" />
       <ProjectReference Include="..\Router.Commands\Router.Commands.csproj" />
     </ItemGroup>
 
