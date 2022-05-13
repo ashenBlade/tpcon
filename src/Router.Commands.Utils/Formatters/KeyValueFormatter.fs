@@ -13,10 +13,11 @@ type KeyValueFormatter(delimiter: string) =
      interface IOutputFormatter with
           member this.Format(formattable) =
                let state = Formatting.extractState formattable
-               let x = Seq.toList state
                str {
-                    many (state
+                    string (state
                           |> Seq.map (fun p -> $"{p.Key}{this._delimiter}{p.Value}")
-                          |> Seq.reduce (fun s n -> $"{s}\n{n}"))
+                          |> (fun s -> match Seq.isEmpty s with
+                                       | true -> String.Empty
+                                       | false -> Seq.reduce (fun t n -> $"{t}\n{n}") s))
                     build
                }
