@@ -8,6 +8,9 @@
     <ItemGroup>
         <Compile Include="CommandLineContextParser\CommandLineContextParser.fs" />
         <Compile Include="CommandLineContextParser\FSharpCommandLineParser.fs" />
+        <Compile Include="Formatters\CustomStringBuilder.fs" />
+        <Compile Include="Formatters\Formatting.fs" />
+        <Compile Include="Formatters\KeyValueFormatter.fs" />
     </ItemGroup>
 
     <ItemGroup>
