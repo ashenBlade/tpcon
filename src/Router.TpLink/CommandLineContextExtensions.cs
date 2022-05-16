@@ -17,7 +17,8 @@ public static class CommandLineContextExtensions
                                                                      : ": "),
                    OutputStyle.Json => new JsonFormatter(),
                    OutputStyle.Xml => new XmlFormatter(),
-                   _ => throw new ArgumentNotSupportedException(context.Command, "Only plain style supported for now"),
+                   OutputStyle.Table => new TableFormatter(),
+                   _ => throw new ArgumentNotSupportedException(context.Command, "Unknown output enum style"),
                };
     }
 }

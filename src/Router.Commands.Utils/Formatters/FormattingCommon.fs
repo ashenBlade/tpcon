@@ -1,4 +1,4 @@
-module Router.Commands.Utils.Formatters.Formatting
+module Router.Commands.Utils.Formatters.FormattingCommon
 
 open System
 open System.Collections.Generic

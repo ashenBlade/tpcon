@@ -4,6 +4,6 @@ public class WlanStatusDTO
 {
     public string Password { get; set; }
     public string SSID { get; set; }
-    public bool IsActive { get; set; }
+    public bool Enabled { get; set; }
     public string Address { get; set; }
 }

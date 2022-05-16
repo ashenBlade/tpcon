@@ -12,7 +12,7 @@ type KeyValueFormatter(delimiter: string) =
      
      interface IOutputFormatter with
           member this.Format formattable =
-               let state = Formatting.extractState formattable
+               let state = FormattingCommon.extractState formattable
                str {
                     string (state
                           |> Seq.map (fun p -> $"{p.Key}{this._delimiter}{p.Value}")

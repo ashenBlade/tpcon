@@ -21,7 +21,7 @@ public class TpLinkGetWlanStatusCommand : TpLinkBaseCommand
                   {
                       Password = wlan.Password,
                       SSID = wlan.SSID,
-                      IsActive = wlan.IsActive,
+                      Enabled = wlan.IsActive,
                       Address = wlan.RouterAddress.ToString()
                   };
         var result = _formatter.Format(dto);
