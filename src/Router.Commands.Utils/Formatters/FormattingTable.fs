@@ -21,11 +21,7 @@ let getMaxWidth (row: TableRow): int =
     getMaxWidthInner row 0
 
 let fillLength (len: int) (str: string): string =
-    if str.Length < (len / 2)
-    then
-        $"{str}\t" // ??????
-    else
-        str
+    str.PadRight len
 
 let fillLengthPair (max: int) (pair: KeyValuePair<ColumnName, Value>): KeyValuePair<ColumnName, Value> =
     KeyValuePair(fillLength max pair.Key, fillLength max pair.Value)
