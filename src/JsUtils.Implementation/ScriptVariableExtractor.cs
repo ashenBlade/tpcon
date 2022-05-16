@@ -59,9 +59,23 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                 return false;
             }
 
-            while (TryReadStatement(out variable) 
-                && variable is null)
-            { }
+            var exception = false;
+            try
+            {
+                while (TryReadStatement(out variable) 
+                    && variable is null)
+                { }
+            }
+            catch (UnexpectedTokenException)
+            {
+                exception = true;
+            }
+
+            if (exception)
+            {
+                return NextVariable(out variable);
+            }
+            // return NextVariable(out variable);
 
             return variable is not null;
         }
@@ -75,15 +89,16 @@ public class ScriptVariableExtractor : IJsVariableExtractor
             }
 
             variable = Current switch
-                        {
-                            Word w => w.Lexeme switch
-                                      {
-                                          "var"      => ReadVariableAssignment(),
-                                          "function" => ReadFunctionDeclaration(),
-                                          _          => ReadSingleStatement(),
-                                      },
-                            _ => SkipOne()
-                        };
+                       {
+                           Word w => w.Lexeme switch
+                                     {
+                                         "var"      => ReadVariableAssignment(),
+                                         "function" => ReadFunctionDeclaration(),
+                                         "if"       => ReadIfElse(),
+                                         _          => ReadSingleStatement(),
+                                     },
+                           _ => SkipOne()
+                       };
             return !SequenceEnded;
         }
 
@@ -193,15 +208,16 @@ public class ScriptVariableExtractor : IJsVariableExtractor
         {
             var type = Current switch
                        {
-                           StringLiteral => ReadStringLiteral(),
-                           NumberLiteral => ReadNumberLiteral(),
+                           StringLiteral => ReadString(),
+                           NumberLiteral => ReadNumber(),
                            BoolLiteral   => ReadBool(),
+                           RegexLiteral  => ReadRegex(),
                            Word w => w.Lexeme switch
                                      {
                                          "null"      => ReadNull(),
                                          "undefined" => ReadUndefined(),
                                          "new"       => ReadNewObjectDeclaration(),
-                                         "if" => ReadIfElse(),
+                                         "if"        => ReadIfElse(),
                                          _           => ReadIdentifierOrFunctionCall()
                                      },
                            _ => null
@@ -212,6 +228,16 @@ public class ScriptVariableExtractor : IJsVariableExtractor
             }
 
             return type;
+        }
+
+        private JsRegex ReadRegex()
+        {
+            if (Current is not RegexLiteral regex)
+            {
+                throw new UnexpectedTokenException($"Expected regex. Given: {Current}", RegexLiteral.Token, Current);
+            }
+
+            return new JsRegex(regex.Value);
         }
 
         private JsVariable? ReadIfElse()
@@ -326,7 +352,7 @@ public class ScriptVariableExtractor : IJsVariableExtractor
             throw new UnexpectedTokenException($"Expected bool literal, given: {Current}", BoolLiteral.Token, Current);
         }
 
-        private JsNumber ReadNumberLiteral()
+        private JsNumber ReadNumber()
         {
             if (Current is NumberLiteral literal)
             {
@@ -337,7 +363,7 @@ public class ScriptVariableExtractor : IJsVariableExtractor
             throw new UnexpectedTokenException($"Expected number literal, given: {Current}", NumberLiteral.Token, Current);
         }
 
-        private JsString ReadStringLiteral()
+        private JsString ReadString()
         {
             if (Current is StringLiteral literal)
             {

@@ -27,12 +27,7 @@ catch (RouterUnreachableException)
 {
     Console.WriteLine($"Could not connect to router");
 }
-catch (UnknownCommandLineException)
-{
-    Console.WriteLine("Unknown command");
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"Could not execute command. Unknown error.");
-    Console.WriteLine(ex.Message);
-}
+// catch (UnknownCommandLineException)
+// {
+//     Console.WriteLine("Unknown command");
+// }

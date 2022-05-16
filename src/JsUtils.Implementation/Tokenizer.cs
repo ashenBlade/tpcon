@@ -44,7 +44,6 @@ public class Tokenizer : ITokenizer
                            _ when char.IsDigit(Current)                   => ReadNumber(),
                            _ when IsCorrectIdentifierStartLetter(Current) => ReadWord(),
                            '\'' or '\"'                                   => ReadStringLiteral(),
-                           _ when Current is '/'                          => ReadCommentOrRegexOrDivisor(),
                            _ when IsMathOperator(Current)                 => ReadOperator(),
                            _                                              => ReadAsSingleToken()
                        };
@@ -55,16 +54,17 @@ public class Tokenizer : ITokenizer
 
         private Token? ReadCommentOrRegexOrDivisor()
         {
-            if (!TryPeekNext(out var next))
+            if (Current is not '/' || !TryPeekNext(out var next))
                 throw new UnexpectedCharacterException(_source, Position, '/', "Unexpected end of stream");
-
+        
             Token ReadDivisor()
             {
                 ReadChar('/');
                 return new Token('/');
             }
+            
             return next is '/' or '*'
-                       ? ReadComment()
+                       ? ReadCommentAndReturnNextToken()
                        : next is ' ' 
                            ? ReadDivisor()
                            : ReadRegexLiteral();
@@ -162,6 +162,11 @@ public class Tokenizer : ITokenizer
                 while (MoveNext() && Current is not '\n')
                 { }
 
+                if (!EndOfFile)
+                {
+                    MoveNext();
+                }
+
                 return Token.Comment;
             }
             // /*  */
@@ -176,6 +181,12 @@ public class Tokenizer : ITokenizer
 
                 MoveNext();
             }
+        }
+
+        private Token? ReadCommentAndReturnNextToken()
+        {
+            ReadComment();
+            return Read();
         }
 
         private bool TryPeekNext(out char next)
@@ -227,7 +238,7 @@ public class Tokenizer : ITokenizer
 
         private bool SkipWhitespaces()
         {
-            bool ShouldSkip(char ch) => ch is ' ' or '\t' or '\n';
+            bool ShouldSkip(char ch) => ch is ' ' or '\t' or '\n' or '\r';
             while (!EndOfFile)
             {
                 if (!ShouldSkip(Current))
