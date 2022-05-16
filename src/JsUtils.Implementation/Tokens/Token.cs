@@ -27,6 +27,7 @@ public class Token: IEquatable<Token>
 
     public static Token Undefined => new(Tags.Undefined);
     public static Token Null => new(Tags.Null);
+    public static Token Comment => new(Tags.Comment);
     
     public int Tag { get; }
 

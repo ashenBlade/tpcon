@@ -33,5 +33,6 @@ public static class Tags
                      Null = 284,
                      If = 285,
                      Bool = 286,
-                     Type = 287;
+                     Type = 287,
+                     Comment = 288;
 }

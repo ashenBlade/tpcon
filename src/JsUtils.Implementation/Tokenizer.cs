@@ -40,16 +40,34 @@ public class Tokenizer : ITokenizer
             while (SkipWhitespaces() && !EndOfFile)
             {
                 return Current switch
-                        {
-                            _ when char.IsDigit(Current) => ReadNumber(),
-                            _ when IsCorrectIdentifierStartLetter(Current) => ReadWord(),
-                            '\'' or '\"' => ReadStringLiteral(),
-                            _ when IsMathOperator(Current) => ReadOperator(),
-                            _ => ReadAsSingleToken()
-                        };
+                       {
+                           _ when char.IsDigit(Current)                   => ReadNumber(),
+                           _ when IsCorrectIdentifierStartLetter(Current) => ReadWord(),
+                           '\'' or '\"'                                   => ReadStringLiteral(),
+                           _ when Current is '/'                          => ReadCommentOrRegexOrDivisor(),
+                           _ when IsMathOperator(Current)                 => ReadOperator(),
+                           _                                              => ReadAsSingleToken()
+                       };
             }
 
             return null;
+        }
+
+        private Token? ReadCommentOrRegexOrDivisor()
+        {
+            if (!TryPeekNext(out var next))
+                throw new UnexpectedCharacterException(_source, Position, '/', "Unexpected end of stream");
+
+            Token ReadDivisor()
+            {
+                ReadChar('/');
+                return new Token('/');
+            }
+            return next is '/' or '*'
+                       ? ReadComment()
+                       : next is ' ' 
+                           ? ReadDivisor()
+                           : ReadRegexLiteral();
         }
 
         private Token ReadAsSingleToken()
@@ -135,6 +153,77 @@ public class Tokenizer : ITokenizer
                    };
         }
 
+        private Token ReadComment()
+        {
+            ReadChar('/');
+            // // 
+            if (Current is '/')
+            {
+                while (MoveNext() && Current is not '\n')
+                { }
+
+                return Token.Comment;
+            }
+            // /*  */
+            ReadChar('*');
+            while (true)
+            {
+                if (Current is '*' && MoveNext() && Current is '/')
+                {
+                    MoveNext();
+                    return Token.Comment;
+                }
+
+                MoveNext();
+            }
+        }
+
+        private bool TryPeekNext(out char next)
+        {
+            next = char.MinValue;
+            if (EndOfFile)
+            {
+                return false;
+            }
+
+            if (_position + 1 >= _source.Length) 
+                return false;
+            
+            next = _source[_position + 1];
+            return true;
+        }
+
+
+        private RegexLiteral ReadRegexLiteral()
+        {
+            ReadChar('/');
+            var builder = new StringBuilder();
+            var escaped = false;
+            while (Current is not '/' && !escaped)
+            {
+                if (Current is '\\')
+                {
+                    escaped = true;
+                    MoveNext();
+                    continue;
+                }
+                builder.Append(Current);
+                escaped = false;
+                MoveNext();
+            }
+            ReadChar('/');
+            return new RegexLiteral(builder.ToString());
+        }
+
+        private void ReadChar(char c)
+        {
+            if (Current != c)
+            {
+                throw new UnexpectedCharacterException(_source, Position, c);
+            }
+
+            MoveNext();
+        }
 
         private bool SkipWhitespaces()
         {
@@ -172,7 +261,7 @@ public class Tokenizer : ITokenizer
             var builder = new StringBuilder();
             if (!IsCorrectIdentifierStartLetter(Current))
             {
-                throw new UnexpectedCharacterException(_source, _position, $"Expected letter. Got: {Current}");
+                throw new UnexpectedCharacterException(_source, _position, "letter");
             }
 
             builder.Append(Current);
@@ -206,8 +295,7 @@ public class Tokenizer : ITokenizer
             var opener = Current;
             if (opener is not ('\'' or '"'))
             {
-                throw new UnexpectedCharacterException(_source, _position,
-                                                   $"Expected \" or \' at start of string literal. Got: {Current}");
+                throw new UnexpectedCharacterException(_source, _position, "\" or \'");
             }
 
             var builder = new StringBuilder();
@@ -244,7 +332,7 @@ public class Tokenizer : ITokenizer
             var builder = new StringBuilder();
             if (!char.IsDigit(Current))
             {
-                throw new UnexpectedCharacterException(_source, _position, $"Expected number. Given: {Current}");
+                throw new UnexpectedCharacterException(_source, _position, "digit", $"Expected number. Given: {Current}");
             }
 
             builder.Append(Current);
