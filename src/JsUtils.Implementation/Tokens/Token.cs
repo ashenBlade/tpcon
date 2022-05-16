@@ -24,6 +24,10 @@ public class Token: IEquatable<Token>
     public static Token Xor => new('^');
 
     #endregion
+
+    public static Token Undefined => new(Tags.Undefined);
+    public static Token Null => new(Tags.Null);
+    
     public int Tag { get; }
 
     public Token(int tag)

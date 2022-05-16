@@ -30,5 +30,8 @@ public static class Tags
                      Decrement = 281,
                      New = 282,
                      Undefined = 283,
-                     Null = 284;
+                     Null = 284,
+                     If = 285,
+                     Bool = 286,
+                     Type = 287;
 }

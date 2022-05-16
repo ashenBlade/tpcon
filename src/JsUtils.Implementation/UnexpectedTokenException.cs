@@ -5,25 +5,17 @@ namespace JsUtils.Implementation;
 public class UnexpectedTokenException : ParsingException
 {
     public string Description { get; }
-    public int Expected { get; }
-    public int Actual { get; }
+    public Token Expected { get; }
+    public Token Actual { get; }
 
-    public UnexpectedTokenException(Token given, Token expected) : this(given.Tag, expected.Tag)
+    public UnexpectedTokenException(Token expected, Token actual) : this($"Expected: {expected.Tag}\nGiven: {actual.Tag}", actual, expected)
+    { }
+    
+    public UnexpectedTokenException(string description, Token expected, Token actual)
     {
-        Expected = expected.Tag;
-        Actual = given.Tag;
-    }
-
-    public UnexpectedTokenException(int actualTag, int expectedTag) :
-        this($"Expected token tag: '{actualTag}'. Given tag: '{expectedTag}'")
-    {
-        Expected = expectedTag;
-        Actual = actualTag;
-    }
-
-    public UnexpectedTokenException(string description)
-    {
-        Description = description;
+        Description = description ?? string.Empty;
+        Expected = expected;
+        Actual = actual;
     }
 
 

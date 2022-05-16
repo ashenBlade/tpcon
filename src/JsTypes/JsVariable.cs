@@ -1,31 +1,31 @@
 namespace JsTypes;
 
-public class JsVariable : ICloneable, IEquatable<JsVariable>
+public class JsVariable : JsType, ICloneable, IEquatable<JsVariable>
 {
-    private JsType _value;
     public string Name { get; }
-    public JsType Value
-    {
-        get => _value;
-        set => _value = value ?? JsNull.Instance;
-    }
+    public JsType Value { get; }
 
-    public JsVariable(string name, JsType? value = null)
+    public JsVariable(string name, JsType value)
     {
         Name = name;
-        _value = value ?? JsNull.Instance;
+        Value = value ?? throw new ArgumentNullException(nameof(value), "To use null as value of js variable use JsNull type");
     }
 
-    public object Clone()
+    public override object Clone()
     {
-        return new JsVariable(Name, ( JsType ) _value.Clone());
+        return new JsVariable(Name, ( JsType ) Value.Clone());
+    }
+
+    public override bool Equals(JsType? other)
+    {
+        return other is JsVariable variable && Equals(variable);
     }
 
     public bool Equals(JsVariable? other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        return _value.Equals(other._value)
+        return Value.Equals(other.Value)
             && Name == other.Name;
     }
 
@@ -33,12 +33,12 @@ public class JsVariable : ICloneable, IEquatable<JsVariable>
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (obj.GetType() != GetType()) return false;
         return Equals(( JsVariable ) obj);
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_value, Name);
+        return HashCode.Combine(Value, Name);
     }
 }

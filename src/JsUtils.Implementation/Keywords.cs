@@ -18,6 +18,6 @@ public static class Keywords
                                 Const = new("const", Tags.Const),
                                 New = new("new", Tags.New),
                                 Undefined = new("undefined", Tags.Undefined),
-                                Null = new("null", Tags.Null);
-
+                                Null = new("null", Tags.Null),
+                                If = new("if", Tags.If);
 }

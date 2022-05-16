@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-using System.Xml;
 using JsTypes;
 using JsUtils.Implementation.Tokens;
 
@@ -22,35 +20,34 @@ public class ScriptVariableExtractor : IJsVariableExtractor
             yield return variable!;
         }
     }
-    
-    private class InnerVariableExtractor: IDisposable
+
+    private class InnerVariableExtractor : IDisposable
     {
         private readonly IEnumerator<Token> _enumerator;
         private bool _sequenceEnded;
         private bool SequenceEnded => _sequenceEnded;
-        private bool MoveNext() {
-            if (_enumerator.MoveNext())
-            {
-                return true;
-            }
-
-            _sequenceEnded = true;
-            return false;
-        }
-        
         private Token Current => _enumerator.Current;
 
-        private Token ReadCurrent()
+        private bool MoveNext()
         {
-            var current = Current;
-            MoveNext();
-            return current;
+            if (SequenceEnded)
+            {
+                return false;
+            }
+
+            _sequenceEnded = !_enumerator.MoveNext();
+            return !_sequenceEnded;
         }
-        
+
         public InnerVariableExtractor(ITokenizer tokenizer, string source)
-        { 
+        {
             _enumerator = tokenizer.Tokenize(source)
                                    .GetEnumerator();
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             _sequenceEnded = !_enumerator.MoveNext();
         }
 
@@ -62,170 +59,342 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                 return false;
             }
 
-            while (Current.Tag != Tags.Var && MoveNext())
-            {
-                // Skip until sequence end or found 'var' keyword
-            }
+            while (TryReadStatement(out variable) 
+                && variable is null)
+            { }
 
+            return variable is not null;
+        }
+
+        private bool TryReadStatement(out JsVariable? variable)
+        {
+            variable = null;
             if (SequenceEnded)
             {
                 return false;
             }
-            // Found var tag
-            try
+
+            variable = Current switch
+                        {
+                            Word w => w.Lexeme switch
+                                      {
+                                          "var"      => ReadVariableAssignment(),
+                                          "function" => ReadFunctionDeclaration(),
+                                          _          => ReadSingleStatement(),
+                                      },
+                            _ => SkipOne()
+                        };
+            return !SequenceEnded;
+        }
+
+        private JsVariable? SkipOne()
+        {
+            MoveNext();
+            return null;
+        }
+
+        private JsVariable? ReadSingleStatement()
+        {
+            while (Current is not {Tag:';'} && MoveNext())
+            { }
+
+            if (!SequenceEnded)
             {
-                variable = ReadVariable();
-                return true;
+                MoveNext();
             }
-            // Skip every strange assignment
-            catch (UnexpectedTokenException)
+
+            return null;
+        }
+
+
+        private JsVariable? ReadFunctionDeclaration()
+        {
+            ReadWord(Keywords.Function);
+            TryReadIdentifier(out _);
+            ReadFunctionDeclarationArguments();
+            ReadBlock();
+            return null;
+        }
+
+        private bool TryReadIdentifier(out Identifier? identifier)
+        {
+            identifier = null;
+            if (Current is Identifier id)
             {
-                return NextVariable(out variable);
+                MoveNext();
+                identifier = id;
+            }
+
+            return identifier is not null;
+        }
+
+        private void ReadFunctionDeclarationArguments()
+        {
+            ReadToken('(');
+            while (Current is not {Tag: ')'})
+            {
+                ReadIdentifier();
+                if (Current is {Tag: ','})
+                {
+                    ReadToken(',');
+                }
+            }
+
+            ReadToken(')');
+        }
+
+        private void ReadBlock()
+        {
+            if (Current is {Tag: '{'})
+            {
+                var innerBlocksCount = 1;
+                while (MoveNext())
+                {
+                    switch (Current.Tag)
+                    {
+                        case '{':
+                            innerBlocksCount++;
+                            break;
+                        case '}':
+                            innerBlocksCount--;
+                            break;
+                    }
+                    if (innerBlocksCount == 0)
+                    {
+                        MoveNext();
+                        break;
+                    }
+                }
+
+                return;
+            }
+
+            while (MoveNext())
+            {
+                if (Current is {Tag: ';'})
+                {
+                    MoveNext();
+                    break;
+                }
             }
         }
 
-        private JsVariable ReadVariable()
-        { 
-            ReadTag(Tags.Var);
+        private JsVariable? ReadVariableAssignment()
+        {
+            ReadWord(Keywords.Var);
             var id = ReadIdentifier();
-            ReadTag('=');
-            var type = ReadType();
-            ReadTag(';');
-            return new JsVariable(id.Lexeme, type);
+            ReadToken(Token.Equal);
+            var value = ReadType();
+            ReadToken(';');
+            return new JsVariable(id.Lexeme, value);
         }
 
         private JsType ReadType()
         {
-            return Current switch
-                   {
-                       NumberLiteral _ => ReadNumber(),
-                       StringLiteral _ => ReadString(),
-                       BoolLiteral _   => ReadBool(),
-                       Word w          => w.Lexeme switch
-                                          {
-                                              "undefined" => ReadUndefined(),
-                                              "null" => ReadNull(),
-                                              _ => ReadObjectDeclaration(),
-                                          },
-                       _ => throw new UnexpectedTokenException("Expected literal or word")
-                   };
-        }
-
-        private JsUndefined ReadUndefined()
-        {
-            if (Current is not Word {Lexeme: "undefined"})
+            var type = Current switch
+                       {
+                           StringLiteral => ReadStringLiteral(),
+                           NumberLiteral => ReadNumberLiteral(),
+                           BoolLiteral   => ReadBool(),
+                           Word w => w.Lexeme switch
+                                     {
+                                         "null"      => ReadNull(),
+                                         "undefined" => ReadUndefined(),
+                                         "new"       => ReadNewObjectDeclaration(),
+                                         "if" => ReadIfElse(),
+                                         _           => ReadIdentifierOrFunctionCall()
+                                     },
+                           _ => null
+                       };
+            if (type is null)
             {
-                throw new UnexpectedTokenException($"Expected \"undefined\". Got: {Current}");
+                throw new UnexpectedTokenException($"Expected type, but given {Current}", new Token(Tags.Type), Current);
             }
 
-            MoveNext();
-            return JsUndefined.Instance;
+            return type;
         }
 
-        private JsNull ReadNull()
+        private JsVariable? ReadIfElse()
         {
-            if (Current is not Word {Lexeme: "null"})
+            ReadWord(Keywords.If);
+            ReadBlock();
+            if (TryReadWord(Keywords.Else))
             {
-                throw new UnexpectedTokenException($"Expected \"null\". Got: {Current}");
+                ReadBlock();
             }
 
-            MoveNext();
-            return JsNull.Instance;
+            return null;
         }
 
-        private JsObject ReadObjectDeclaration()
+        private bool TryReadToken(int tag)
         {
-            TryReadToken(Tags.New);
-            var identifier = ReadIdentifier();
+            if (Current.Tag == tag)
+            {
+                MoveNext();
+                return true;
+            }
+            return false;
+        }
+
+        private bool TryReadToken(Token token) => TryReadToken(token.Tag);
+
+        private bool TryReadWord(Word w)
+        {
+            if (Current is Word word && word.Lexeme == w.Lexeme)
+            {
+                MoveNext();
+                return true;
+            }
+
+            return false;
+        }
+
+        private JsType ReadIdentifierOrFunctionCall()
+        {
+            var id = ReadIdentifier();
+            if (Current is {Tag: '('})
+            {
+                ReadFunctionArguments();
+            }
+
+            // For our purposes we do not want to execute and see what's in it
+            // Just read
+            return new JsVariable(id.Lexeme, JsUndefined.Instance);
+        }
+
+        private JsObject ReadNewObjectDeclaration()
+        {
+            ReadWord(Keywords.New);
+            var id = ReadIdentifier();
             var arguments = ReadFunctionArguments();
-            return identifier.Lexeme == "Array"
+            return id.Lexeme is "Array"
                        ? new JsArray(arguments)
                        : new JsObject();
         }
 
         private List<JsType> ReadFunctionArguments()
         {
-            var types = new List<JsType>();
-            ReadTag('(');
-            while (Current.Tag != ')')
+            var list = new List<JsType>();
+            ReadToken('(');
+            while (Current is not {Tag: ')'})
             {
                 var type = ReadType();
-                types.Add(type);
-                if (Current.Tag == ')')
+                if (Current is {Tag: ','})
                 {
-                    break;
+                    ReadToken(',');
                 }
-                ReadTag(',');
+
+                list.Add(type);
             }
-            ReadTag(')');
-            return types;
+
+            ReadToken(')');
+            return list;
         }
 
-        private void TryReadToken(int tag)
+        private JsUndefined ReadUndefined()
         {
-            if (Current.Tag == tag)
+            if (Current is Word {Lexeme: "undefined"})
             {
                 MoveNext();
+                return JsUndefined.Instance;
             }
+
+            throw new UnexpectedTokenException($"Expected \"undefined\", but given: {Current}", Token.Undefined, Current);
         }
 
-        private JsNumber ReadNumber()
+        private JsNull ReadNull()
         {
-            if (Current is NumberLiteral numberLiteral)
+            if (Current is Word {Lexeme: "null"})
             {
                 MoveNext();
-                return new JsNumber(numberLiteral.Value);
+                return JsNull.Instance;
             }
 
-            throw new UnexpectedTokenException($"Expected number. Given: {Current}");
-        }
-
-        private JsString ReadString()
-        {
-            if (Current is StringLiteral stringLiteral)
-            {
-                MoveNext();
-                return new JsString(stringLiteral.Value);
-            }
-
-            throw new UnexpectedTokenException($"Expected string. Given: {Current}");
+            throw new UnexpectedTokenException($"Expected \"null\", but given {Current}", Token.Null, Current);
         }
 
         private JsBool ReadBool()
         {
-            if (Current is BoolLiteral boolLiteral)
+            if (Current is BoolLiteral literal)
             {
                 MoveNext();
-                return new JsBool(boolLiteral.Value);
+                return literal.Value
+                           ? JsBool.True
+                           : JsBool.False;
             }
 
-            throw new UnexpectedTokenException($"Expected bool. Given: {Current}");
+            throw new UnexpectedTokenException($"Expected bool literal, given: {Current}", BoolLiteral.Token, Current);
+        }
+
+        private JsNumber ReadNumberLiteral()
+        {
+            if (Current is NumberLiteral literal)
+            {
+                MoveNext();
+                return new JsNumber(literal.Value);
+            }
+
+            throw new UnexpectedTokenException($"Expected number literal, given: {Current}", NumberLiteral.Token, Current);
+        }
+
+        private JsString ReadStringLiteral()
+        {
+            if (Current is StringLiteral literal)
+            {
+                MoveNext();
+                return new JsString(literal.Value);
+            }
+
+            throw new UnexpectedTokenException($"Expected string literal, given: {Current}", StringLiteral.Token, Current);
+        }
+
+        private Token ReadToken(int tag)
+        {
+            if (Current is { } token && token.Tag == tag)
+            {
+                MoveNext();
+                return token;
+            }
+
+            throw new UnexpectedTokenException(new Token(tag), Current);
+        }
+
+        private Token ReadToken(Token token)
+        {
+            if (Current is { } t && t.Tag == token.Tag)
+            {
+                MoveNext();
+                return t;
+            }
+
+            throw new UnexpectedTokenException(token, Current);
         }
 
         private Identifier ReadIdentifier()
         {
-            if (Current.Tag != Tags.Id || Current is not Identifier id)
+            if (Current is Word word)
             {
-                throw new UnexpectedTokenException($"Expected identifier. Given: {Current}");
+                MoveNext();
+                return new Identifier(word.Lexeme);
             }
 
-            MoveNext();
-            return id;
+            throw new UnexpectedTokenException($"Expected identifier, given: {Current.Tag}", Identifier.Token, Current);
         }
 
-        private void ReadTag(int expected)
+        private Word ReadWord(Word w)
         {
-            if (Current.Tag != expected)
+            if (Current is Word word && word.Lexeme == w.Lexeme)
             {
-                throw new UnexpectedTokenException(Current.Tag, expected);
+                MoveNext();
+                return word;
             }
 
-            MoveNext();
+            throw new UnexpectedTokenException($"Expected \"{w.Lexeme}\", but given {Current}", w, Current);
         }
 
         public void Dispose()
         {
-            _enumerator.Dispose();
+            _enumerator?.Dispose();
         }
     }
 }

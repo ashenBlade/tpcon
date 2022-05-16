@@ -11,6 +11,8 @@ public class JsArray : JsObject, IEnumerable<JsType>, IEquatable<JsArray>
         _values = initials?.ToList() ?? new List<JsType>();
     }
     
+    public JsArray(params JsType[] types) : this((IEnumerable<JsType>) types) { }
+    
     public void Add(JsType type)
     {
         _values.Add(type);

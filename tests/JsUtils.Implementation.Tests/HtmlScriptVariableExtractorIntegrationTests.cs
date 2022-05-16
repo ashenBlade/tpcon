@@ -270,7 +270,7 @@ public class HtmlScriptVariableExtractorIntegrationTests
                                                                                    new[] {"var wlanPara = new Array(90, 0, 1, \"192.168.0.1\", 11, null);", "var delay = 150000;\n function doReboot() \n{ \nsend(); \n}"},
                                                                                    new JsVariable[]
                                                                                    {
-                                                                                       new("wlanPara", new JsArray(new JsType[]{new JsNumber(90), new JsNumber(0), new JsNumber(1), new JsString("192.168.0.1"), new JsNumber(11), JsNull.Instance})),
+                                                                                       new("wlanPara", new JsArray(new JsNumber(90), new JsNumber(0), new JsNumber(1), new JsString("192.168.0.1"), new JsNumber(11), JsNull.Instance)),
                                                                                        new("delay", new JsNumber(150000)),
                                                                                    }
                                                                                },
