@@ -1,4 +1,4 @@
-namespace Router.Commands.Utils
+namespace Router.Commands.Utils.Formatters
 
 open System
 open System.Text
@@ -11,7 +11,7 @@ type KeyValueFormatter(delimiter: string) =
      member private this._delimiter = delimiter
      
      interface IOutputFormatter with
-          member this.Format(formattable) =
+          member this.Format formattable =
                let state = Formatting.extractState formattable
                str {
                     string (state

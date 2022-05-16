@@ -14,7 +14,9 @@ public class TLWR741NDTpLinkRouterHttpMessageSender : IRouterHttpMessageSender
     private readonly IJsVariableExtractor _jsVariableExtractor;
     private readonly HttpClient _client;
 
-    public TLWR741NDTpLinkRouterHttpMessageSender(IJsVariableExtractor jsVariableExtractor, HttpClient client, RouterParameters routerParameters)
+    public TLWR741NDTpLinkRouterHttpMessageSender(IJsVariableExtractor jsVariableExtractor, 
+                                                  HttpClient client, 
+                                                  RouterParameters routerParameters)
     {
         _jsVariableExtractor = jsVariableExtractor;
         _client = client;

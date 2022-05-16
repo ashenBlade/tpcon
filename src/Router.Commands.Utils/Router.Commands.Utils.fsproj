@@ -11,6 +11,8 @@
         <Compile Include="Formatters\CustomStringBuilder.fs" />
         <Compile Include="Formatters\Formatting.fs" />
         <Compile Include="Formatters\KeyValueFormatter.fs" />
+        <Compile Include="Formatters\JsonFormatter.fs" />
+        <Compile Include="Formatters\XmlFormatter.fs" />
     </ItemGroup>
 
     <ItemGroup>
