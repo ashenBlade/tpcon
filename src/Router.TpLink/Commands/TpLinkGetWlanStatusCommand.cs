@@ -8,7 +8,8 @@ public class TpLinkGetWlanStatusCommand : TpLinkBaseCommand
     private readonly IOutputFormatter _formatter;
     private readonly TextWriter _output;
     
-    public TpLinkGetWlanStatusCommand(TextWriter output, TpLinkRouter router, IOutputFormatter formatter) : base(router)
+    public TpLinkGetWlanStatusCommand(TextWriter output, TpLinkRouter router, IOutputFormatter formatter) 
+        : base(router)
     {
         _formatter = formatter;
         _output = output;
@@ -17,14 +18,8 @@ public class TpLinkGetWlanStatusCommand : TpLinkBaseCommand
     public override async Task ExecuteAsync()
     {
         var wlan = await Router.Wlan.GetStatusAsync();
-        var dto = new WlanStatusDTO()
-                  {
-                      Password = wlan.Password,
-                      SSID = wlan.SSID,
-                      Enabled = wlan.IsActive,
-                      Address = wlan.RouterAddress.ToString()
-                  };
-        var result = _formatter.Format(dto);
+        var display = new WlanDisplayStatus(wlan.Password, wlan.SSID, wlan.IsActive);
+        var result = _formatter.Format(display);
         await _output.WriteLineAsync(result);
     }
 }

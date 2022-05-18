@@ -31,6 +31,13 @@ public class JsArray : JsObject, IEnumerable<JsType>, IEquatable<JsArray>
     }
 
 
+    public JsType[] ToArray()
+    {
+        return _values
+              .Select(v => (JsType)v.Clone())
+              .ToArray();
+    }
+    
     public bool Equals(JsArray? other)
     {
         if (ReferenceEquals(null, other)) return false;
