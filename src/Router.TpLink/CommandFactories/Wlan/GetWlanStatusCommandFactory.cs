@@ -3,9 +3,9 @@ using Router.TpLink.Commands;
 
 namespace Router.TpLink.CommandFactories.Wlan;
 
-internal class GetWlanStatusCompositeCommandCreator : SingleTpLinkCommandCreator
+internal class GetWlanStatusCommandFactory : SingleTpLinkCommandFactory
 {
-    public GetWlanStatusCompositeCommandCreator() 
+    public GetWlanStatusCommandFactory() 
         : base("status") 
     { }
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)

@@ -4,9 +4,9 @@ using Router.TpLink.Commands;
 
 namespace Router.TpLink.CommandFactories.Wlan;
 
-internal class SetWlanPasswordTpLinkCommandCreator : SingleTpLinkCommandCreator
+internal class SetWlanPasswordCommandFactory : SingleTpLinkCommandFactory
 {
-    public SetWlanPasswordTpLinkCommandCreator() : base("password")
+    public SetWlanPasswordCommandFactory() : base("password")
     { }
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)

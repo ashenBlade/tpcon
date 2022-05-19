@@ -3,11 +3,11 @@ using Router.Commands.Exceptions;
 
 namespace Router.TpLink.CommandFactories;
 
-internal abstract class CompositeTpLinkCommandCreator : InternalTpLinkCommandCreator
+internal abstract class CompositeTpLinkCommandFactory : InternalTpLinkCommandFactory
 {
-    protected Dictionary<string, InternalTpLinkCommandCreator> Commands { get; }
+    protected Dictionary<string, InternalTpLinkCommandFactory> Commands { get; }
 
-    protected CompositeTpLinkCommandCreator(IEnumerable<InternalTpLinkCommandCreator> commands, string rootName)
+    protected CompositeTpLinkCommandFactory(IEnumerable<InternalTpLinkCommandFactory> commands, string rootName)
         : base(rootName)
     {
         ArgumentNullException.ThrowIfNull(commands);

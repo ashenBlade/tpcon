@@ -4,9 +4,9 @@ using Router.TpLink.Commands;
 
 namespace Router.TpLink.CommandFactories.Wlan;
 
-internal class SetWlanSsidTpLinkCommandCreator : SingleTpLinkCommandCreator
+internal class SetWlanSsidCommandFactory : SingleTpLinkCommandFactory
 {
-    public SetWlanSsidTpLinkCommandCreator() : base("ssid")
+    public SetWlanSsidCommandFactory() : base("ssid")
     { }
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)

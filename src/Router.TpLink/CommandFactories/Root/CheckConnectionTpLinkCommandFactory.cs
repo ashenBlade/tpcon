@@ -3,9 +3,9 @@ using Router.TpLink.Commands;
 
 namespace Router.TpLink.CommandFactories.Root;
 
-internal class CheckConnectionTpLinkCommandCreator : SingleTpLinkCommandCreator
+internal class CheckConnectionTpLinkCommandFactory : SingleTpLinkCommandFactory
 {
-    public CheckConnectionTpLinkCommandCreator() 
+    public CheckConnectionTpLinkCommandFactory() 
         : base("health") 
     { }
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)

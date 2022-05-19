@@ -6,5 +6,4 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Router.Domain</RootNamespace>
     </PropertyGroup>
-
 </Project>

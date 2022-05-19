@@ -3,9 +3,9 @@ using Router.TpLink.Commands;
 
 namespace Router.TpLink.CommandFactories.Wlan;
 
-internal class EnableWirelessRadioTpLinkCommandCreator : SingleTpLinkCommandCreator
+internal class EnableWirelessRadioCommandFactory : SingleTpLinkCommandFactory
 {
-    public EnableWirelessRadioTpLinkCommandCreator() : base("enable") { }
+    public EnableWirelessRadioCommandFactory() : base("enable") { }
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
         return new TpLinkEnableWirelessRadioCommand(context.Router);

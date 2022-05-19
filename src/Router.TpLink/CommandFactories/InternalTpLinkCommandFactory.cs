@@ -2,11 +2,11 @@ using Router.Commands;
 
 namespace Router.TpLink.CommandFactories;
 
-internal abstract class InternalTpLinkCommandCreator : IRouterCommandCreator
+internal abstract class InternalTpLinkCommandFactory : IRouterCommandFactory
 {
     public string Name { get; }
 
-    public InternalTpLinkCommandCreator(string name)
+    public InternalTpLinkCommandFactory(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
         Name = name;

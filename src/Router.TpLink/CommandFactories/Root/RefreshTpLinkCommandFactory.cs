@@ -3,9 +3,9 @@ using Router.TpLink.Commands;
 
 namespace Router.TpLink.CommandFactories.Root;
 
-internal class RefreshTpLinkCommandCreator : SingleTpLinkCommandCreator
+internal class RefreshTpLinkCommandFactory : SingleTpLinkCommandFactory
 {
-    public RefreshTpLinkCommandCreator() : base("refresh") { }
+    public RefreshTpLinkCommandFactory() : base("refresh") { }
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
         return new TpLinkRefreshRouterCommand(context.Router);

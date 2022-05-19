@@ -28,10 +28,4 @@ public class LanParametersTests
     {
         Assert.Throws<ArgumentNullException>(() => new LanParameters(MacAddress.Parse("11-11-11-11-11-11"), null, new SubnetMask(0)));
     }
-    
-    [Fact]
-    public void Constructor_WithNullAsSubnetMask_ShouldThrowArgumentNullException()
-    {
-        Assert.Throws<ArgumentNullException>(() => new LanParameters(MacAddress.Parse("11-11-11-11-11-11"), IPAddress.Any, null));
-    }
 }

@@ -2,7 +2,7 @@ using Router.Commands;
 
 namespace Router.TpLink;
 
-internal interface IRouterCommandCreator
+internal interface IRouterCommandFactory
 {
     IRouterCommand CreateRouterCommand(RouterCommandContext context);
 }

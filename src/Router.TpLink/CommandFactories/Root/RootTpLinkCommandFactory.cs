@@ -3,9 +3,9 @@ using Router.Commands.Exceptions;
 
 namespace Router.TpLink.CommandFactories.Root;
 
-internal class RootTpLinkCommandCreator : CompositeTpLinkCommandCreator
+internal class RootTpLinkCommandFactory : CompositeTpLinkCommandFactory
 {
-    public RootTpLinkCommandCreator(IEnumerable<InternalTpLinkCommandCreator> commands)
+    public RootTpLinkCommandFactory(IEnumerable<InternalTpLinkCommandFactory> commands)
         : base(commands, string.Empty)
     { }
     
