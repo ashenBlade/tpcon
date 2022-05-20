@@ -1,8 +1,8 @@
 # TpCon
 
-tpcon - is a **CLI** tool to manage TpLink routers without using web interface
+tpcon - is a **CLI** tool for managing TpLink routers without using web interface
 
-You don't need web browser no more, just command line
+You don't need to use web browser anymore, just use command line
 
 <hr>
 
