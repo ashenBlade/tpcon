@@ -18,7 +18,7 @@ In order to run application you need .NET Framework 4.6+ installed
 
 ```
 cd src/TpLinkConsole.Console
-dotnet build -c Release -o tpcon
+dotnet publish -c Release
 ```
 Then copy content of build into your folder with Software
 On linux:
