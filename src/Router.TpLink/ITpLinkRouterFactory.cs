@@ -4,5 +4,5 @@ namespace Router.TpLink;
 
 public interface ITpLinkRouterFactory
 {
-    TpLinkRouter CreateRouter(IRouterHttpMessageSender messageSender);
+    TpLinkRouter CreateRouter(RouterParameters messageSender);
 }

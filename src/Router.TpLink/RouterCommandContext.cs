@@ -6,17 +6,18 @@ namespace Router.TpLink;
 public record RouterCommandContext(TpLinkRouter Router, 
                                    IDictionary<string, string> Arguments, 
                                    IOutputFormatter OutputFormatter,
+                                   TextWriter OutputWriter,
                                    OutputStyle OutputStyle = OutputStyle.KeyValue)
 {
     public IEnumerable<string> Command => _command;
     private readonly string[] _command;
-    
+
     public RouterCommandContext(TpLinkRouter router, 
                                 string[] command, 
                                 IDictionary<string, string> arguments,
                                 IOutputFormatter formatter,
                                 OutputStyle outputStyle = OutputStyle.KeyValue) 
-        : this(router, arguments, formatter, outputStyle)
+        : this(router, arguments, formatter, Console.Out, outputStyle)
     {
         ArgumentNullException.ThrowIfNull(command);
         _command = command;

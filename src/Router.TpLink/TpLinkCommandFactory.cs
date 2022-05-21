@@ -16,26 +16,23 @@ public class TpLinkCommandFactory : Router.Commands.IRouterCommandFactory
                                                                                     new LanCompositeCommandFactory(),
                                                                                 };
     private readonly ITpLinkRouterFactory _routerFactory;
-    private readonly IRouterHttpMessageSender _messageSender;
     private readonly List<InternalTpLinkCommandFactory> _factories;
     
-    public TpLinkCommandFactory(ITpLinkRouterFactory routerFactory, IRouterHttpMessageSender messageSender)
-        : this(routerFactory, null, messageSender)
+    public TpLinkCommandFactory(ITpLinkRouterFactory routerFactory)
+        : this(routerFactory, null)
     { }
     
     internal TpLinkCommandFactory(ITpLinkRouterFactory routerFactory, 
-                                  IEnumerable<InternalTpLinkCommandFactory>? factories, 
-                                  IRouterHttpMessageSender messageSender)
+                                  IEnumerable<InternalTpLinkCommandFactory>? factories)
     {
         ArgumentNullException.ThrowIfNull(routerFactory);
         _routerFactory = routerFactory;
-        _messageSender = messageSender;
         _factories = ( factories ?? DefaultCommands ).ToList();
     }
     
     public IRouterCommand CreateRouterCommand(CommandLineContext context)
     {
-        var router = _routerFactory.CreateRouter(_messageSender);
+        var router = _routerFactory.CreateRouter(context.RouterParameters);
         var formatter = context.GetOutputFormatter();
         var routerContext = new RouterCommandContext(router, context.Command, context.Arguments, formatter, context.OutputStyle);
         return new RootTpLinkCommandFactory(_factories)

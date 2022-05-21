@@ -7,16 +7,17 @@ namespace Router.TpLink;
 public abstract class TpLinkRouter
 {
     protected IRouterHttpMessageSender MessageSender { get; }
-    public RouterParameters RouterParameters => MessageSender.RouterParameters;
+    public RouterParameters RouterParameters { get; }
     public ILanConfigurator Lan { get; }
     public IWlanConfigurator Wlan { get; }
 
-    protected TpLinkRouter(IRouterHttpMessageSender messageSender, ILanConfigurator lan, IWlanConfigurator wlan)
+    protected TpLinkRouter(IRouterHttpMessageSender messageSender, RouterParameters routerParameters, ILanConfigurator lan, IWlanConfigurator wlan)
     {
-        ArgumentNullException.ThrowIfNull(messageSender);
         ArgumentNullException.ThrowIfNull(lan);
+        ArgumentNullException.ThrowIfNull(messageSender);
         ArgumentNullException.ThrowIfNull(wlan);
         MessageSender = messageSender;
+        RouterParameters = routerParameters;
         Lan = lan;
         Wlan = wlan;
     }

@@ -18,7 +18,7 @@ internal abstract class CompositeTpLinkCommandFactory : InternalTpLinkCommandFac
     {
         var currentCommand = context.CurrentCommand;
         if (!Commands.TryGetValue(currentCommand, out var factory))
-            throw new UnknownCommandLineException();
+            throw new UnknownCommandException();
         context.MoveNext();
         return factory.CreateRouterCommand(context);
 

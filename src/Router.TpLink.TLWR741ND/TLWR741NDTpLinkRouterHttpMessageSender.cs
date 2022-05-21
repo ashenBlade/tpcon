@@ -12,21 +12,19 @@ namespace Router.TpLink.TLWR741ND;
 public class TLWR741NDTpLinkRouterHttpMessageSender : IRouterHttpMessageSender
 {
     private readonly IJsVariableExtractor _jsVariableExtractor;
-    private readonly HttpClient _client;
 
     public TLWR741NDTpLinkRouterHttpMessageSender(IJsVariableExtractor jsVariableExtractor, 
-                                                  HttpClient client, 
                                                   RouterParameters routerParameters)
     {
         _jsVariableExtractor = jsVariableExtractor;
-        _client = client;
-        RouterParameters = routerParameters;
+        _routerParameters = routerParameters;
     }
-    public RouterParameters RouterParameters { get; set; }
 
-    private Uri GetUri(RouterHttpMessage message) => new UriBuilder()
+    private readonly RouterParameters _routerParameters;
+
+    private Uri GetUri(RouterHttpMessage message) => new UriBuilder
                                                      {
-                                                         Host = RouterParameters.Address.ToString(),
+                                                         Host = _routerParameters.Address.ToString(),
                                                          Path = message.Path,
                                                          Query = message.Query?
                                                                         .Select(p => $"{HttpUtility.UrlEncode(p.Key)}={HttpUtility.UrlEncode(p.Value)}")
@@ -39,7 +37,7 @@ public class TLWR741NDTpLinkRouterHttpMessageSender : IRouterHttpMessageSender
     
     private AuthenticationHeaderValue AuthorizationHeaderEncoded =>
         new("Basic",
-            Base64Encode($"{RouterParameters.Username}:{RouterParameters.Password}"));
+            Base64Encode($"{_routerParameters.Username}:{_routerParameters.Password}"));
     
     private async Task<HttpResponseMessage> GetResponseFromRouterAsync(RouterHttpMessage routerMessage)
     {
@@ -51,11 +49,12 @@ public class TLWR741NDTpLinkRouterHttpMessageSender : IRouterHttpMessageSender
                             };
         try
         {
-            var response = await _client.SendAsync(message);
+            using var client = new HttpClient();
+            var response = await client.SendAsync(message);
             if (response.StatusCode is HttpStatusCode.Forbidden 
                                     or HttpStatusCode.Unauthorized)
             {
-                throw new InvalidRouterCredentialsException(RouterParameters.Username, RouterParameters.Password);
+                throw new InvalidRouterCredentialsException(_routerParameters.Username, _routerParameters.Password);
             }
 
             response.EnsureSuccessStatusCode();
@@ -63,7 +62,7 @@ public class TLWR741NDTpLinkRouterHttpMessageSender : IRouterHttpMessageSender
         }
         catch (HttpRequestException)
         {
-            throw new RouterUnreachableException(RouterParameters.Address);
+            throw new RouterUnreachableException(_routerParameters.Address);
         }
     }
 

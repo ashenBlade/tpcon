@@ -13,7 +13,7 @@ internal class RootTpLinkCommandFactory : CompositeTpLinkCommandFactory
     {
         var currentCommand = lineContext.CurrentCommand;
         if (!Commands.TryGetValue(currentCommand, out var factory)) 
-            throw new UnknownCommandLineException();
+            throw new UnknownCommandException();
         lineContext.MoveNext();
         return factory.CreateRouterCommand(lineContext);
     }
