@@ -1,6 +1,6 @@
 using Router.Domain;
 
-namespace Router.TpLink.Tests;
+namespace Router.TpLink.Tests.Mocks;
 
 public class FakeTpLinkRouter : TpLinkRouter
 {

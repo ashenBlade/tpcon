@@ -52,7 +52,7 @@ let normalizeArgumentName (arg: string) = arg[2..]
 
 let parseArgumentsFromCommandsParsed: ParseArguments =
     (fun context ->
-        let rec parseInner (ctx: CommandLineContextUnparsed) : Result<CommandLineContextUnparsed, ParsingError> =
+        let rec parseInner (ctx: CommandLineContextUnparsed) =
             match ctx.Rest with
             | [] -> Ok ctx
             | [ arg ] -> Error(ParsingError.ArgumentExpectedError arg)
@@ -92,15 +92,19 @@ let extractRouterParameters: ParsingPipe =
 
 
 let toUnparsedFromList (list: string list) : Result<CommandLineContextUnparsed, ParsingError> =
-    Ok
-        { Rest = list
+    Ok  { Rest = list
           Command = List.empty
           Arguments = Map.empty
           RouterParameters = RouterParameters.Default
           Output = OutputStyle.KeyValue}
 
 let toCommandLineContext (unparsed: CommandLineContextUnparsed) : Result<CommandLineContext, ParsingError> =
-    Ok(CommandLineContext(unparsed.Command |> List.rev |> List.toArray, unparsed.RouterParameters, unparsed.Arguments, unparsed.Output))
+    Ok(CommandLineContext(unparsed.Command
+                          |> List.rev
+                          |> List.toArray,
+                          unparsed.RouterParameters,
+                          unparsed.Arguments,
+                          unparsed.Output))
 
 let outputArgumentName = "output"
 

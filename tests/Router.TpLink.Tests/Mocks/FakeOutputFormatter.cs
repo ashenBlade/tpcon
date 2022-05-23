@@ -1,6 +1,6 @@
 using Router.Commands;
 
-namespace Router.TpLink.Tests;
+namespace Router.TpLink.Tests.Mocks;
 
 public class FakeOutputFormatter : IOutputFormatter
 {

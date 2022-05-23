@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Router.Domain.RouterProperties;
 
-namespace Router.TpLink.Tests;
+namespace Router.TpLink.Tests.Mocks;
 
 public class FakeWlanConfigurator : IWlanConfigurator
 {

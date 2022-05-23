@@ -5,7 +5,8 @@ namespace Router.Domain;
 public struct RouterParameters: IEquatable<RouterParameters>
 {
     public static RouterParameters Default => new(DefaultAddress, DefaultUsername, DefaultPassword);
-    public static IPAddress DefaultAddress => new(new byte[] {192, 168, 0, 1});
+    public static string DefaultAddressString => "192.168.0.1";
+    public static IPAddress DefaultAddress => IPAddress.Parse(DefaultAddressString);
     public static string DefaultUsername => "admin";
     public static string DefaultPassword => "admin";
     public RouterParameters()
