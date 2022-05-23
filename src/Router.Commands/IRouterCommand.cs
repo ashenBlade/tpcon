@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Router.Commands;
+﻿namespace Router.Commands;
 
 public interface IRouterCommand
 {

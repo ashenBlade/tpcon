@@ -17,8 +17,12 @@ internal abstract class CompositeTpLinkCommandFactory : InternalTpLinkCommandFac
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
         var currentCommand = context.CurrentCommand;
+        if (currentCommand is null)
+        {
+            throw new IncompleteCommandException(context.Command.ToArray());
+        }
         if (!Commands.TryGetValue(currentCommand, out var factory))
-            throw new UnknownCommandException();
+            throw new UnknownCommandException(currentCommand, context.Command.ToArray());
         context.MoveNext();
         return factory.CreateRouterCommand(context);
 
