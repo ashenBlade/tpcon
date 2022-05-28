@@ -2,7 +2,7 @@ using Router.Commands;
 using Router.TpLink.CommandCreators;
 using Router.TpLink.TLWR741ND.Commands;
 
-namespace Router.TpLink.TLWR741ND.CommandCreators.Root;
+namespace Router.TpLink.TLWR741ND.CommandCreator.Root;
 
 internal class RefreshTpLinkCommandCreator : SingleTpLinkCommandCreator
 {

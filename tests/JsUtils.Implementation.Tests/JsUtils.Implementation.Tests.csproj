@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\JsUtils.Implementation\JsUtils.Implementation.csproj" />
+      <ProjectReference Include="..\..\src\Parser\JsUtils.Implementation\JsUtils.Implementation.csproj" />
     </ItemGroup>
 
     <ItemGroup>

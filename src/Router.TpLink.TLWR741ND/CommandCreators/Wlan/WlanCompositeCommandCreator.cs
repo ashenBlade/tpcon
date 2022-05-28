@@ -1,6 +1,6 @@
 using Router.TpLink.CommandCreators;
 
-namespace Router.TpLink.TLWR741ND.CommandCreators.Wlan;
+namespace Router.TpLink.TLWR741ND.CommandCreator.Wlan;
 
 internal class WlanCompositeCommandCreator : CompositeTpLinkCommandCreator
 {

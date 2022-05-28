@@ -3,7 +3,7 @@ using Router.Commands.Exceptions;
 using Router.TpLink.CommandCreators;
 using Router.TpLink.TLWR741ND.Commands;
 
-namespace Router.TpLink.TLWR741ND.CommandCreators.Wlan;
+namespace Router.TpLink.TLWR741ND.CommandCreator.Wlan;
 
 internal class SetWlanSsidCommandCreator : SingleTpLinkCommandCreator
 {
