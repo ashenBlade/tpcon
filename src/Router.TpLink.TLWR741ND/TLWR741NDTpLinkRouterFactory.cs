@@ -2,6 +2,7 @@ using JsUtils.Implementation;
 using Router.Domain;
 using Router.TpLink.TLWR741ND.Status.Lan.NetworkCfg;
 using Router.TpLink.TLWR741ND.Status.Wlan;
+using Router.TpLink.TLWR741ND.Status.Wlan.Network;
 using Router.TpLink.TLWR741ND.Status.Wlan.Security;
 
 namespace Router.TpLink.TLWR741ND;
@@ -25,14 +26,14 @@ public class TLWR741NDTpLinkRouterFactory : ITpLinkRouterFactory
         return new TLWR741NDTpLinkLanConfigurator(messageSender, LanNetworkStatusExtractor);
     }
 
-    private static TLWR741NDLanRouterStatusExtractor LanNetworkStatusExtractor => new();
+    private static LanNetworkRouterStatusExtractor LanNetworkStatusExtractor => new();
 
     private static TLWR741NDTpLinkWlanConfigurator CreateWlanConfigurator(IRouterHttpMessageSender messageSender)
     {
         return new TLWR741NDTpLinkWlanConfigurator(messageSender, WlanNetworkStatusExtractor, WlanSecurityStatusExtractor);
     }
 
-    private static TLWR741NDWlanSecurityRouterStatusExtractor WlanSecurityStatusExtractor => new();
+    private static WlanSecurityRouterStatusExtractor WlanSecurityStatusExtractor => new();
 
-    private static TLWR741NDWlanNetworkRouterStatusExtractor WlanNetworkStatusExtractor => new();
+    private static WlanNetworkRouterStatusExtractor WlanNetworkStatusExtractor => new();
 }

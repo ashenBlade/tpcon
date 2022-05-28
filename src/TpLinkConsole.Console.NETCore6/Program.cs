@@ -9,7 +9,7 @@ using TpLinkConsole.Infrastructure;
 
 using var client = new HttpClient();
 var parser = new FSharpCommandLineParser();
-var factory = new TpLinkCommandFactory(new TLWR741NDTpLinkRouterFactory());
+var factory = new TLWR741NDTpLinkCommandFactory();
 var application = new RouterApplication(parser, factory);
 try
 {

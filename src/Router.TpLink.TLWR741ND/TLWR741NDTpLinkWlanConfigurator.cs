@@ -4,10 +4,9 @@ using JsTypes;
 using Router.Domain.Exceptions;
 using Router.Domain.RouterProperties;
 using Router.TpLink.Exceptions;
-using Router.TpLink.Status;
-using Router.TpLink.Status.Wlan.Network;
-using Router.TpLink.Status.Wlan.Security;
+using Router.TpLink.TLWR741ND.Status;
 using Router.TpLink.TLWR741ND.Status.Wlan;
+using Router.TpLink.TLWR741ND.Status.Wlan.Network;
 using Router.TpLink.TLWR741ND.Status.Wlan.Security;
 
 namespace Router.TpLink.TLWR741ND;
@@ -15,12 +14,12 @@ namespace Router.TpLink.TLWR741ND;
 internal class TLWR741NDTpLinkWlanConfigurator : IWlanConfigurator
 {
     private readonly IRouterHttpMessageSender _messageSender;
-    private readonly IRouterStatusExtractor<TLWR741NDWlanNetworkPageStatus, TLWR741NDWlanNetworkRouterStatus> _networkExtractor;
-    private readonly IRouterStatusExtractor<TLWR741NDWlanSecurityPageStatus, TLWR741NDWlanSecurityRouterStatus> _securityExtractor;
+    private readonly IRouterStatusExtractor<WlanNetworkPageStatus, WlanNetworkRouterStatus> _networkExtractor;
+    private readonly IRouterStatusExtractor<WlanSecurityPageStatus, WlanSecurityRouterStatus> _securityExtractor;
 
     public TLWR741NDTpLinkWlanConfigurator(IRouterHttpMessageSender messageSender, 
-                                           IRouterStatusExtractor<TLWR741NDWlanNetworkPageStatus, TLWR741NDWlanNetworkRouterStatus> networkExtractor, 
-                                           IRouterStatusExtractor<TLWR741NDWlanSecurityPageStatus, TLWR741NDWlanSecurityRouterStatus> securityExtractor)
+                                           IRouterStatusExtractor<WlanNetworkPageStatus, WlanNetworkRouterStatus> networkExtractor, 
+                                           IRouterStatusExtractor<WlanSecurityPageStatus, WlanSecurityRouterStatus> securityExtractor)
     {
         _messageSender = messageSender;
         _networkExtractor = networkExtractor;
@@ -36,9 +35,9 @@ internal class TLWR741NDTpLinkWlanConfigurator : IWlanConfigurator
         var securityWlanPara = security.FirstOrDefault(v => v.Name == "wlanPara")?.Value
                             ?? throw new MissingVariableInRouterResponseException("wlanPara", WlanSecurityPagePath);
 
-        var networkPageStatus = new TLWR741NDWlanNetworkPageStatus(networkWlanPara as JsArray
+        var networkPageStatus = new WlanNetworkPageStatus(networkWlanPara as JsArray
                                                                 ?? throw new ExpectedVariableTypeMismatchException("wlanPara", typeof(JsArray), networkWlanPara.GetType()));
-        var securityPageStatus = new TLWR741NDWlanSecurityPageStatus(securityWlanPara as JsArray
+        var securityPageStatus = new WlanSecurityPageStatus(securityWlanPara as JsArray
                                                                   ?? throw new ExpectedVariableTypeMismatchException("wlanPara", typeof(JsArray), securityWlanPara.GetType()));
         
         var networkStatus = _networkExtractor.ExtractStatus(networkPageStatus);
