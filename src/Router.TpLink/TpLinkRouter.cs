@@ -10,7 +10,10 @@ public abstract class TpLinkRouter
     public ILanConfigurator Lan { get; }
     public IWlanConfigurator Wlan { get; }
 
-    protected TpLinkRouter(IRouterHttpMessageSender messageSender, RouterParameters routerParameters, ILanConfigurator lan, IWlanConfigurator wlan)
+    protected TpLinkRouter(IRouterHttpMessageSender messageSender, 
+                           RouterParameters routerParameters, 
+                           ILanConfigurator lan, 
+                           IWlanConfigurator wlan)
     {
         ArgumentNullException.ThrowIfNull(lan);
         ArgumentNullException.ThrowIfNull(messageSender);
@@ -21,25 +24,6 @@ public abstract class TpLinkRouter
         Wlan = wlan;
     }
 
-    public async Task RefreshAsync()
-    {
-        await MessageSender.SendMessageAsync(new RouterHttpMessage( "/userRpm/SysRebootRpm.htm", 
-                                                                    new KeyValuePair<string, string>[]
-                                                                    {
-                                                                        new("Reboot", "Reboot")
-                                                                    } ));
-    }
-    
-    public virtual async Task<bool> CheckConnectionAsync()
-    {
-        try
-        {
-            await MessageSender.SendMessageAsync(string.Empty);
-            return true;
-        }
-        catch (RouterUnreachableException)
-        {
-            return false;
-        }
-    }
+    public abstract Task RefreshAsync();
+    public abstract Task<bool> CheckConnectionAsync();
 }
