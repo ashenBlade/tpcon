@@ -1,7 +1,6 @@
 namespace Router.Commands.Utils.Formatters
 
 open System
-open System.Text
 open Router.Commands
 open Router.Commands.Utils.Formatters
 open Router.Commands.Utils.Formatters.StringBuilderFunctions

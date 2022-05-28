@@ -8,10 +8,10 @@ using TpLinkConsole.Infrastructure;
 using var client = new HttpClient();
 var parser = new FSharpCommandLineParser();
 var factory = new TLWR741NDTpLinkCommandFactory();
-var application = new RouterApplication(parser, factory);
+var app = new RouterApplication(parser, factory);
 try
 {
-    await application.RunAsync(args);
+    await app.RunAsync(args);
 }
 catch (InvalidRouterCredentialsException)
 {

@@ -21,8 +21,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Router.Commands.Utils\Router.Commands.Utils.fsproj" />
-      <ProjectReference Include="..\..\src\Router.Commands\Router.Commands.csproj" />
+      <ProjectReference Include="..\..\src\Router\Router.Commands.Utils\Router.Commands.Utils.fsproj" />
+      <ProjectReference Include="..\..\src\Router\Router.Commands\Router.Commands.csproj" />
     </ItemGroup>
 
 </Project>

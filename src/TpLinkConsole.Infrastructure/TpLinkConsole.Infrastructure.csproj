@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Router.Commands\Router.Commands.csproj" />
+      <ProjectReference Include="..\Router\Router.Commands\Router.Commands.csproj" />
     </ItemGroup>
 
 </Project>

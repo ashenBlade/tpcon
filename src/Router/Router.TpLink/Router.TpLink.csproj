@@ -8,10 +8,9 @@
 
     
     <ItemGroup>
-      <ProjectReference Include="..\Parser\JsTypes\JsTypes.csproj" />
-      <ProjectReference Include="..\Parser\JsUtils.Implementation\JsUtils.Implementation.csproj" />
+      <ProjectReference Include="..\..\Parser\JsTypes\JsTypes.csproj" />
+      <ProjectReference Include="..\..\Parser\JsUtils.Implementation\JsUtils.Implementation.csproj" />
       <ProjectReference Include="..\Router.Commands.Utils\Router.Commands.Utils.fsproj" />
-      <ProjectReference Include="..\Router.Commands\Router.Commands.csproj" />
     </ItemGroup>
 
 </Project>

@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Router.TpLink\Router.TpLink.csproj" />
+      <ProjectReference Include="..\..\src\Router\Router.TpLink\Router.TpLink.csproj" />
     </ItemGroup>
 
 </Project>

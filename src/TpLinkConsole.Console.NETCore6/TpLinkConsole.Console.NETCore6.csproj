@@ -9,9 +9,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Router.Commands.Utils\Router.Commands.Utils.fsproj" />
-      <ProjectReference Include="..\Router.TpLink.TLWR741ND\Router.TpLink.TLWR741ND.csproj" />
-      <ProjectReference Include="..\Router.TpLink\Router.TpLink.csproj" />
+      <ProjectReference Include="..\Router\Router.Commands.Utils\Router.Commands.Utils.fsproj" />
+      <ProjectReference Include="..\Router\Router.TpLink.TLWR741ND\Router.TpLink.TLWR741ND.csproj" />
+      <ProjectReference Include="..\Router\Router.TpLink\Router.TpLink.csproj" />
       <ProjectReference Include="..\TpLinkConsole.Infrastructure\TpLinkConsole.Infrastructure.csproj" />
     </ItemGroup>
 </Project>
