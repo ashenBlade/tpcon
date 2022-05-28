@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TpLinkConsole.Console.NETCo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E884FE8B-7274-4D2A-ABE3-0354BF4DBD62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router", "src\Router\Router.csproj", "{F485B695-1088-40EA-B6D4-14403501A8B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router.Domain", "src\Router.Domain\Router.Domain.csproj", "{F485B695-1088-40EA-B6D4-14403501A8B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router.Commands", "src\Router.Commands\Router.Commands.csproj", "{8CE3FC7D-ED90-416C-8403-B98FE767E184}"
 EndProject
@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Parser", "Parser", "{8B9775
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsUtils.Implementation.Tests", "tests\JsUtils.Implementation.Tests\JsUtils.Implementation.Tests.csproj", "{75BD5824-101C-4DB8-A042-40D68B4B9A21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router.Tests", "tests\Router.Tests\Router.Tests.csproj", "{DC5707C5-1793-4CE4-A1AC-F50179F1C169}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router.Domain.Tests", "tests\Router.Domain.Tests\Router.Domain.Tests.csproj", "{DC5707C5-1793-4CE4-A1AC-F50179F1C169}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router.TpLink", "src\Router.TpLink\Router.TpLink.csproj", "{10BC3CC6-2C95-410F-87F3-9570E082EB49}"
 EndProject

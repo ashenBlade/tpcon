@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <RootNamespace>Router.Domain.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Router\Router.csproj" />
+      <ProjectReference Include="..\..\src\Router.Domain\Router.Domain.csproj" />
     </ItemGroup>
 
 </Project>

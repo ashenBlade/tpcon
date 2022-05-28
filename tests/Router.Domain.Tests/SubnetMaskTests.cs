@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Router.Domain;
 using Xunit;
 
-namespace Router.Tests;
+namespace Router.Domain.Tests;
 
 public class SubnetMaskTests
 {

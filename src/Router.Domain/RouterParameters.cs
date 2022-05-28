@@ -2,7 +2,7 @@ using System.Net;
 
 namespace Router.Domain;
 
-public struct RouterParameters: IEquatable<RouterParameters>
+public readonly struct RouterParameters: IEquatable<RouterParameters>
 {
     public static RouterParameters Default => new(DefaultAddress, DefaultUsername, DefaultPassword);
     public static string DefaultAddressString => "192.168.0.1";
@@ -48,5 +48,15 @@ public struct RouterParameters: IEquatable<RouterParameters>
     public override int GetHashCode()
     {
         return HashCode.Combine(Address, Username, Password);
+    }
+
+    public static bool operator ==(RouterParameters left, RouterParameters right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(RouterParameters left, RouterParameters right)
+    {
+        return !(left == right);
     }
 }

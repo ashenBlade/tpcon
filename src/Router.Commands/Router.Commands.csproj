@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Router\Router.csproj" />
+      <ProjectReference Include="..\Router.Domain\Router.Domain.csproj" />
     </ItemGroup>
 
 </Project>

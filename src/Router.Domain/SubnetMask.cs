@@ -1,7 +1,7 @@
 using System.Net;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Router.Tests")]
+[assembly: InternalsVisibleTo("Router.Domain.Tests")]
 namespace Router.Domain;
 
 public struct SubnetMask
