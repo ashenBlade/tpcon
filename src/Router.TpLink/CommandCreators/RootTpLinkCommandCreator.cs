@@ -1,4 +1,4 @@
-namespace Router.TpLink.CommandCreator;
+namespace Router.TpLink.CommandCreators;
 
 internal class RootTpLinkCommandCreator : CompositeTpLinkCommandCreator
 {

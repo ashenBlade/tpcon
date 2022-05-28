@@ -1,8 +1,8 @@
 using Router.Commands;
-using Router.TpLink.CommandCreator;
+using Router.TpLink.CommandCreators;
 using Router.TpLink.TLWR741ND.Commands;
 
-namespace Router.TpLink.TLWR741ND.CommandCreator.Lan;
+namespace Router.TpLink.TLWR741ND.CommandCreators.Lan;
 
 internal class GetLanStatusCommandCreator : SingleTpLinkCommandCreator
 {

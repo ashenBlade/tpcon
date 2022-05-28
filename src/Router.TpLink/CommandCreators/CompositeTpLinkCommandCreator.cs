@@ -1,8 +1,7 @@
 using Router.Commands;
 using Router.Commands.Exceptions;
 
-
-namespace Router.TpLink.CommandCreator;
+namespace Router.TpLink.CommandCreators;
 
 public abstract class CompositeTpLinkCommandCreator : TpLinkCommandCreator
 {

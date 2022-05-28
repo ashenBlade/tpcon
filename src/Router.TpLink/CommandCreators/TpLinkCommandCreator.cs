@@ -1,6 +1,6 @@
 using Router.Commands;
 
-namespace Router.TpLink.CommandCreator;
+namespace Router.TpLink.CommandCreators;
 
 public abstract class TpLinkCommandCreator : IRouterCommandFactory
 {
