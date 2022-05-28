@@ -1,6 +1,5 @@
 using Router.Domain;
 using Router.Domain.Exceptions;
-using Router.Domain.RouterProperties;
 
 namespace Router.TpLink;
 

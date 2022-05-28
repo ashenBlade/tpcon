@@ -1,5 +1,3 @@
-using System;
-
 namespace Router.Commands.Exceptions;
 
 public class UnknownCommandException : CommandLineException

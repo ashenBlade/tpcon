@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Net;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 
 [assembly: InternalsVisibleTo("Router.Tests")]
 namespace Router.Domain;

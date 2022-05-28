@@ -1,8 +1,7 @@
 using Router.Commands;
-using Router.TpLink.Commands.DisplayStatus;
-using Router.TpLink.Commands.DTO;
+using Router.TpLink.TLWR741ND.Commands.DisplayStatus;
 
-namespace Router.TpLink.Commands;
+namespace Router.TpLink.TLWR741ND.Commands;
 
 public class TpLinkGetLanStatusCommand : TpLinkBaseCommand
 {

@@ -1,4 +1,6 @@
-namespace Router.TpLink.CommandCreator.Lan;
+using Router.TpLink.CommandCreator;
+
+namespace Router.TpLink.TLWR741ND.CommandCreator.Lan;
 
 internal class LanCompositeCommandCreator : CompositeTpLinkCommandCreator
 {

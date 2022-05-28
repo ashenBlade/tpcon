@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Net;
 using Router.Domain;
 
-namespace Router.TpLink.Commands.DisplayStatus;
+namespace Router.TpLink.TLWR741ND.Commands.DisplayStatus;
 
 public class LanDisplayStatus
 {

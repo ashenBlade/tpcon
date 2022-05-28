@@ -1,11 +1,8 @@
-using System.Net;
 using System.Web;
 using JsTypes;
-using Router.Domain.Exceptions;
 using Router.Domain.RouterProperties;
 using Router.TpLink.Exceptions;
 using Router.TpLink.TLWR741ND.Status;
-using Router.TpLink.TLWR741ND.Status.Wlan;
 using Router.TpLink.TLWR741ND.Status.Wlan.Network;
 using Router.TpLink.TLWR741ND.Status.Wlan.Security;
 

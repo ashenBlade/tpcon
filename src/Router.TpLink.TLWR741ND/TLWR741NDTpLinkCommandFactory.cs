@@ -1,7 +1,7 @@
 using Router.TpLink.CommandCreator;
-using Router.TpLink.CommandCreator.Lan;
-using Router.TpLink.CommandCreator.Root;
-using Router.TpLink.CommandCreator.Wlan;
+using Router.TpLink.TLWR741ND.CommandCreator.Lan;
+using Router.TpLink.TLWR741ND.CommandCreator.Root;
+using Router.TpLink.TLWR741ND.CommandCreator.Wlan;
 
 namespace Router.TpLink.TLWR741ND;
 

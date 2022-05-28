@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Router.TpLink.Commands.DTO;
+namespace Router.TpLink.TLWR741ND.Commands.DisplayStatus;
 
 public class WlanDisplayStatus
 {

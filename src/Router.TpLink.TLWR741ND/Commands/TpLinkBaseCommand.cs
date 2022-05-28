@@ -1,7 +1,7 @@
 using Router.Commands;
 using Router.Domain;
 
-namespace Router.TpLink.Commands;
+namespace Router.TpLink.TLWR741ND.Commands;
 
 public abstract class TpLinkBaseCommand : IRouterCommand
 {

@@ -1,6 +1,6 @@
 using Router.Domain.Exceptions;
 
-namespace Router.TpLink.Commands;
+namespace Router.TpLink.TLWR741ND.Commands;
 
 public class TpLinkHealthCheckCommand : TpLinkBaseCommand
 {

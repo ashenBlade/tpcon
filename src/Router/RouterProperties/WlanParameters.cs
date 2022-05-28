@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace Router.Domain.RouterProperties;
 
 public class WlanParameters

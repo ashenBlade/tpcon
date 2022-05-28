@@ -1,6 +1,5 @@
 using Router.Commands;
 using Router.Commands.Exceptions;
-using Router.Commands.Utils;
 using Router.Commands.Utils.Formatters;
 
 namespace Router.TpLink;
