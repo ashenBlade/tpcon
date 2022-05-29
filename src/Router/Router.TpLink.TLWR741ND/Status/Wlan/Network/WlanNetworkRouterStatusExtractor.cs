@@ -12,7 +12,10 @@ public class WlanNetworkRouterStatusExtractor
     public const int Rate = 12;
     public const int ChannelNumber = 10;
     public const int ChannelWidth = 11;
+    
+    
     private const int ChannelNumberAuto = 15;
+    private const int ChannelWidthAuto = 2;
     
     public WlanNetworkRouterStatus ExtractStatus(WlanNetworkPageStatus status)
     {
@@ -27,7 +30,8 @@ public class WlanNetworkRouterStatusExtractor
     private static Channel GetChannel(JsArray wlanPara)
     {
         var (number, width) = ( wlanPara[ChannelNumber].GetInt(), wlanPara[ChannelWidth].GetInt() );
-        return new Channel(number, width);
+        return new Channel(number is ChannelNumberAuto ? Domain.ChannelNumber.Auto :  new ChannelNumber(number), 
+                           width is ChannelWidthAuto ? Domain.ChannelWidth.Auto : new ChannelWidth(width));
     }
     
     private static Rate GetRate(JsArray wlanPara, JsArray rateTable)
