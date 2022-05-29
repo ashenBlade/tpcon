@@ -1,5 +1,6 @@
 using Router.Commands;
 using Router.TpLink.TLWR741ND.Commands.DisplayStatus;
+using Router.TpLink.TLWR741ND.Utils;
 
 namespace Router.TpLink.TLWR741ND.Commands;
 
@@ -18,7 +19,7 @@ public class TpLinkGetWlanStatusCommand : TpLinkBaseCommand
     public override async Task ExecuteAsync()
     {
         var wlan = await Router.Wlan.GetStatusAsync();
-        var display = new WlanDisplayStatus(wlan.Password, wlan.SSID, wlan.IsActive);
+        var display = wlan.ToDisplayStatus();
         var result = _formatter.Format(display);
         await _output.WriteLineAsync(result);
     }

@@ -24,22 +24,31 @@ internal class TLWR741NDTpLinkWlanConfigurator : IWlanConfigurator
     }
     public async Task<WlanParameters> GetStatusAsync()
     {
-        var network = await _messageSender.SendMessageAndParseAsync(WlanNetworkPagePath);
-        var security = await _messageSender.SendMessageAndParseAsync(WlanSecurityPagePath);
-        var networkWlanPara = network.FirstOrDefault(v => v.Name == "wlanPara")?.Value! 
+        var network = ( await _messageSender.SendMessageAndParseAsync(WlanNetworkPagePath) )
+           .ToDictionary(v => v.Name, v => v.Value);
+        var security = ( await _messageSender.SendMessageAndParseAsync(WlanSecurityPagePath) )
+           .ToDictionary(v => v.Name, v => v.Value);
+        var networkWlanPara = network["wlanPara"] 
                            ?? throw new MissingVariableInRouterResponseException("wlanPara", WlanNetworkPagePath);
-
-        var securityWlanPara = security.FirstOrDefault(v => v.Name == "wlanPara")?.Value
+        var rateTable = network["rateTable"]
+                     ?? throw new MissingVariableInRouterResponseException("rateTable", WlanNetworkPagePath);
+        var securityWlanPara = security["wlanPara"]
                             ?? throw new MissingVariableInRouterResponseException("wlanPara", WlanSecurityPagePath);
 
         var networkPageStatus = new WlanNetworkPageStatus(networkWlanPara as JsArray
-                                                                ?? throw new ExpectedVariableTypeMismatchException("wlanPara", typeof(JsArray), networkWlanPara.GetType()));
+                                                       ?? throw new ExpectedVariableTypeMismatchException("wlanPara", typeof(JsArray), networkWlanPara.GetType()),
+                                                          rateTable as JsArray
+                                                       ?? throw new ExpectedVariableTypeMismatchException("rateTable", typeof(JsArray), rateTable.GetType()));
         var securityPageStatus = new WlanSecurityPageStatus(securityWlanPara as JsArray
-                                                                  ?? throw new ExpectedVariableTypeMismatchException("wlanPara", typeof(JsArray), securityWlanPara.GetType()));
+                                                         ?? throw new ExpectedVariableTypeMismatchException("wlanPara", typeof(JsArray), securityWlanPara.GetType()));
         
         var networkStatus = _networkExtractor.ExtractStatus(networkPageStatus);
         var securityStatus = _securityExtractor.ExtractStatus(securityPageStatus);
-        return new WlanParameters(networkStatus.SSID, securityStatus.Password, networkStatus.Enabled);
+        return new WlanParameters(networkStatus.SSID, 
+                                  securityStatus.Password, 
+                                  networkStatus.Enabled, 
+                                  networkStatus.Channel, 
+                                  networkStatus.Rate);
     }
 
     private static string WlanNetworkPagePath =>
