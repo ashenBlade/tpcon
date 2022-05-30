@@ -2,10 +2,9 @@ namespace Router.TpLink.TLWR741ND.Status.Wlan.Security;
 
 public class WlanSecurityRouterStatus : WlanRouterStatus
 {
-    public WlanSecurityRouterStatus(string password)
+    public WlanSecurityRouterStatus(Domain.Security security)
     {
-        Password = password;
+        Security = security;
     }
-
-    public string Password { get; }
+    public Domain.Security Security { get; }
 }

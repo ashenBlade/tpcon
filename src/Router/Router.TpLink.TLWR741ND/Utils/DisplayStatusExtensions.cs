@@ -8,7 +8,7 @@ public static class DisplayStatusExtensions
 {
     public static WlanDisplayStatus ToDisplayStatus(this WlanParameters wlan)
     {
-        return new WlanDisplayStatus(wlan.Password, wlan.SSID, wlan.IsActive, wlan.Channel.Number.ToString(),
+        return new WlanDisplayStatus(string.Empty, wlan.SSID, wlan.IsActive, wlan.Channel.Number.ToString(),
                                      FormatRate(wlan.Rate), wlan.Channel.Width.ToString());
     }
 

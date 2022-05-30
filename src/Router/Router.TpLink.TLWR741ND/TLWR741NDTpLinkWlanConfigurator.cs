@@ -1,5 +1,6 @@
 using System.Web;
 using JsTypes;
+using Router.Domain.Infrastructure.Security;
 using Router.Domain.RouterProperties;
 using Router.TpLink.Exceptions;
 using Router.TpLink.TLWR741ND.Status;
@@ -45,10 +46,10 @@ internal class TLWR741NDTpLinkWlanConfigurator : IWlanConfigurator
         var networkStatus = _networkExtractor.ExtractStatus(networkPageStatus);
         var securityStatus = _securityExtractor.ExtractStatus(securityPageStatus);
         return new WlanParameters(networkStatus.SSID, 
-                                  securityStatus.Password, 
                                   networkStatus.Enabled, 
                                   networkStatus.Channel, 
-                                  networkStatus.Rate);
+                                  networkStatus.Rate,
+                                  new NoneSecurity());
     }
 
     private static string WlanNetworkPagePath =>
