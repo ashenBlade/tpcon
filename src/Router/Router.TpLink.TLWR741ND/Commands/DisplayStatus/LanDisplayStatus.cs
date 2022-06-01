@@ -4,7 +4,7 @@ using Router.Domain;
 
 namespace Router.TpLink.TLWR741ND.Commands.DisplayStatus;
 
-public class LanDisplayStatus
+public class LanDisplayStatus : BaseDisplayStatus
 {
     public LanDisplayStatus(IPAddress routerAddress, MacAddress macAddress, SubnetMask subnetMask)
     {

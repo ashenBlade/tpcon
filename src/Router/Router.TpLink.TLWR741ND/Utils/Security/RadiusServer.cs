@@ -4,7 +4,7 @@ namespace Router.Domain.Infrastructure.Security;
 
 public class RadiusServer
 {
-    private const int DefaultPort = 1812;
+    public const int DefaultPort = 1812;
     
     public RadiusServer(IPAddress address, int port, string password)
     {

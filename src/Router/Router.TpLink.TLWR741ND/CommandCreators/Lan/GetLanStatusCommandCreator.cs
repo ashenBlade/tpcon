@@ -11,6 +11,6 @@ internal class GetLanStatusCommandCreator : SingleTpLinkCommandCreator
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        return new TpLinkGetLanStatusCommand(context.Router, context.OutputFormatter, Console.Out);
+        return new TpLinkGetLanStatusCommand(context.Router, Console.Out, context.OutputFormatter);
     }
 }

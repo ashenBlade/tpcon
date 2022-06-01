@@ -3,23 +3,15 @@ using Router.TpLink.TLWR741ND.Commands.DisplayStatus;
 
 namespace Router.TpLink.TLWR741ND.Commands;
 
-public class TpLinkGetLanStatusCommand : TpLinkBaseCommand
+public class TpLinkGetLanStatusCommand : TpLinkBaseDisplayCommand
 {
-    private readonly IOutputFormatter _formatter;
-    private readonly TextWriter _output;
+    public TpLinkGetLanStatusCommand(TpLinkRouter router, TextWriter writer, IOutputFormatter formatter) 
+        : base(router, writer, formatter)
+    { }
 
-    public TpLinkGetLanStatusCommand(TpLinkRouter router, IOutputFormatter formatter, TextWriter output) 
-        : base(router)
-    {
-        _formatter = formatter;
-        _output = output;
-    }
-
-    public override async Task ExecuteAsync()
+    protected override async Task<BaseDisplayStatus> GetStatusAsync()
     {
         var lan = await Router.Lan.GetStatusAsync();
-        var display = new LanDisplayStatus(lan.IpAddress, lan.MacAddress, lan.SubnetMask);
-        var formatted = _formatter.Format(display);
-        await _output.WriteLineAsync(formatted);
+        return new LanDisplayStatus(lan.IpAddress, lan.MacAddress, lan.SubnetMask);
     }
 }

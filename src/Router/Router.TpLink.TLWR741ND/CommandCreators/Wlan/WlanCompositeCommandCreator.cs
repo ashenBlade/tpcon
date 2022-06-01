@@ -11,7 +11,8 @@ internal class WlanCompositeCommandCreator : CompositeTpLinkCommandCreator
                    new EnableWirelessRadioCommandCreator(),
                    new DisableWirelessRadioTpLinkCommandCreator(),
                    new SetWlanPasswordCommandCreator(),
-                   new SetWlanSsidCommandCreator()
+                   new SetWlanSsidCommandCreator(),
+                   new WlanSecurityCompositeCommandCreator()
                },
                "wlan")
     { }

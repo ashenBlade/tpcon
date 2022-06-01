@@ -2,7 +2,7 @@ using Router.Domain.RouterProperties;
 
 namespace Router.TpLink;
 
-public interface IWlanConfigurator
+public interface IWlanConfigurator : IConfigurator
 {
     public Task<WlanParameters> GetStatusAsync();
     public Task EnableAsync();

@@ -37,7 +37,7 @@ let createTable (pairs: KeyValuePair<ColumnName, Value> list): string =
     
 
 let formatTable (formattable: 'a): string =
-    let pairs = FormattingCommon.extractState formattable |> Seq.toList
+    let pairs = Formatting.extractState formattable |> Seq.toList
     let maxWidth = getMaxWidth pairs
     pairs
     |> List.map (fillLengthPair maxWidth)

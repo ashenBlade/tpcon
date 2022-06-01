@@ -1,7 +1,12 @@
+using System.ComponentModel;
+using Router.TpLink.TLWR741ND.Commands.DisplayStatus;
+
 namespace Router.Domain.Infrastructure.Security;
 
 public class PersonalSecurity : WPASecurity
 {
+    public override string Name => "WPA/WPA2 Personal";
+
     public PersonalSecurity(string password, EncryptionType encryption, SecurityVersion version, int groupKeyUpdatePeriod)
     : base(version, encryption, groupKeyUpdatePeriod)
     {
@@ -16,5 +21,11 @@ public class PersonalSecurity : WPASecurity
         
         Password = password;
     }
+    [DisplayName("Password")]
     public string Password { get; }
+
+    public override SecurityDisplayStatus ToDisplayStatus()
+    {
+        return new PersonalSecurityDisplayStatus(Password, Version, EncryptionType, GroupKeyUpdatePeriod);
+    }
 }

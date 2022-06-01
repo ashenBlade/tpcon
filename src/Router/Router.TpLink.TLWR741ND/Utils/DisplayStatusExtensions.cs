@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using Router.Domain;
+using Router.Domain.Infrastructure.Security;
 using Router.Domain.RouterProperties;
 using Router.TpLink.TLWR741ND.Commands.DisplayStatus;
 
@@ -8,8 +10,9 @@ public static class DisplayStatusExtensions
 {
     public static WlanDisplayStatus ToDisplayStatus(this WlanParameters wlan)
     {
-        return new WlanDisplayStatus(string.Empty, wlan.SSID, wlan.IsActive, wlan.Channel.Number.ToString(),
-                                     FormatRate(wlan.Rate), wlan.Channel.Width.ToString());
+        return new WlanDisplayStatus(wlan.SSID, wlan.IsActive, wlan.Channel.Number.ToString(),
+                                     FormatRate(wlan.Rate), wlan.Channel.Width.ToString(),
+                                     wlan.Security.Name);
     }
 
     private static string FormatRate(Rate rate) => $"{rate.Speed} {FormatNetworkSpeedMeasurement(rate.Measurement)}";

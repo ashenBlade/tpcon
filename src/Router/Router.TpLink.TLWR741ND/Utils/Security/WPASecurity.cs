@@ -1,6 +1,9 @@
+using System.ComponentModel;
+using Router.TpLink.TLWR741ND.Utils.Security;
+
 namespace Router.Domain.Infrastructure.Security;
 
-public abstract class WPASecurity : Domain.Security
+public abstract class WPASecurity : CustomSecurity
 {
     protected WPASecurity(SecurityVersion version, EncryptionType encryptionType, int groupKeyUpdatePeriod)
     {
@@ -14,7 +17,10 @@ public abstract class WPASecurity : Domain.Security
         GroupKeyUpdatePeriod = groupKeyUpdatePeriod;
     }
 
+    [DisplayName("WPA Version")]
     public SecurityVersion Version { get; }
+    [DisplayName("Encryption type")]
     public EncryptionType EncryptionType { get; }
+    [DisplayName("Group key update period")]
     public int GroupKeyUpdatePeriod { get; }
 }

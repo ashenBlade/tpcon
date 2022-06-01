@@ -2,20 +2,17 @@ using System.ComponentModel;
 
 namespace Router.TpLink.TLWR741ND.Commands.DisplayStatus;
 
-public class WlanDisplayStatus
+public class WlanDisplayStatus : BaseDisplayStatus
 {
-    public WlanDisplayStatus(string password, string ssid, bool enabled, string channelNumber, string rate, string channelWidth)
+    public WlanDisplayStatus(string ssid, bool enabled, string channelNumber, string rate, string channelWidth, string security)
     {
-        Password = password;
         SSID = ssid;
         Enabled = enabled;
         ChannelNumber = channelNumber;
         Rate = rate;
         ChannelWidth = channelWidth;
+        Security = security;
     }
-    
-    [DisplayName("WPA/WPA2 password")]
-    public string Password { get; }
     
     [DisplayName("SSID")]
     public string SSID { get; }
@@ -28,6 +25,9 @@ public class WlanDisplayStatus
     
     [DisplayName("Channel width")]
     public string ChannelWidth { get; }
+
+    [DisplayName("Security")]
+    public string Security { get; }
 
     [DisplayName("Rate")]
     public string Rate { get; }

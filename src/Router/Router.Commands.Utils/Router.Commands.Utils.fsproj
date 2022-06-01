@@ -9,7 +9,7 @@
         <Compile Include="CommandLineContextParser\CommandLineContextParser.fs" />
         <Compile Include="CommandLineContextParser\FSharpCommandLineParser.fs" />
         <Compile Include="Formatters\CustomStringBuilder.fs" />
-        <Compile Include="Formatters\FormattingCommon.fs" />
+        <Compile Include="Formatters\Formatting.fs" />
         <Compile Include="Formatters\KeyValueFormatter.fs" />
         <Compile Include="Formatters\JsonFormatter.fs" />
         <Compile Include="Formatters\XmlFormatter.fs" />
