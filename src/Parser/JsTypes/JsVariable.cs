@@ -41,4 +41,9 @@ public class JsVariable : JsType, ICloneable, IEquatable<JsVariable>
     {
         return HashCode.Combine(Value, Name);
     }
+
+    public override string? ToString()
+    {
+        return Value.ToString();
+    }
 }

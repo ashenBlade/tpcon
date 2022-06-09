@@ -13,4 +13,9 @@ public class JsNull : JsType
     {
         return other is JsNull;
     }
+
+    public override string ToString()
+    {
+        return "null";
+    }
 }

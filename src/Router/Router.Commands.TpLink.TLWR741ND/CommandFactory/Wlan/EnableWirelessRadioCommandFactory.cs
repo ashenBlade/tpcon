@@ -1,0 +1,16 @@
+using Router.Commands.TpLink.Configurators.Wlan;
+using Router.Commands.TpLink.TLWR741ND.Commands.Wlan;
+
+namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
+
+internal class EnableWirelessRadioCommandFactory : WlanSingleCommandFactory
+{
+    public EnableWirelessRadioCommandFactory(IWlanConfigurator wlan) 
+        : base(wlan, "enable")
+    { }
+
+    public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
+    {
+        return new TpLinkEnableWirelessRadioCommand(Wlan);
+    }
+}

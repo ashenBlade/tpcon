@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace JsTypes;
 
 public class JsArray : JsObject, IEnumerable<JsType>, IEquatable<JsArray>
@@ -56,5 +58,10 @@ public class JsArray : JsObject, IEnumerable<JsType>, IEquatable<JsArray>
     public override int GetHashCode()
     {
         return _values.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize<object>(_values);
     }
 }

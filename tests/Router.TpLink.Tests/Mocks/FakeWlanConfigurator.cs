@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Router.Domain.RouterProperties;
+using Router.Domain.Properties;
 
 namespace Router.TpLink.Tests.Mocks;
 

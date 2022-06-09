@@ -13,4 +13,9 @@ public class JsUndefined : JsType
     {
         return ReferenceEquals(this, other);
     }
+
+    public override string ToString()
+    {
+        return "undefined";
+    }
 }

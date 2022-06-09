@@ -17,4 +17,9 @@ public class JsRegex : JsType
     {
         return other is JsRegex regex && regex.Regex == Regex;
     }
+
+    public override string ToString()
+    {
+        return Regex;
+    }
 }

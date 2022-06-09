@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Router.Domain.Infrastructure\Router.Domain.Infrastructure.csproj" />
+      <ProjectReference Include="..\Router.TpLink\Router.TpLink.csproj" />
+      <ProjectReference Include="..\Router.Utils\Router.Utils.csproj" />
+    </ItemGroup>
+
+</Project>

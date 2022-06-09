@@ -2,7 +2,8 @@
 
 open System
 open Router.Commands
-open Router.Commands.Exceptions
+open Router.Commands.CommandLine
+open Router.Commands.CommandLine.Exceptions
 open Router.Commands.Utils.CommandLineContextParser.CommandLineContextParser
 
 [<CLSCompliant(true)>]

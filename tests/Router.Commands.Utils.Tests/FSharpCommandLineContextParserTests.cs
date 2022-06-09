@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using Router.Commands.Exceptions;
+using Router.Commands.CommandLine;
+using Router.Commands.CommandLine.Exceptions;
 using Router.Domain;
 using Xunit;
 
@@ -21,7 +22,7 @@ public class FSharpCommandLineContextParserTests
     {
         var actual = Parse(Array.Empty<string>());
         Assert.Empty(actual.Command);
-        Assert.Equal(RouterParameters.Default, actual.RouterParameters);
+        Assert.Equal(RouterConnectionParameters.Default, actual.RouterConnectionParameters);
     }
     
     [Fact(DisplayName = "With: empty input; Should: return false on HasNextCommand")]
@@ -153,13 +154,13 @@ public class FSharpCommandLineContextParserTests
         return dict;
     }
 
-    private static RouterParameters GetRouterParametersFromArgs(string[] args)
+    private static RouterConnectionParameters GetRouterParametersFromArgs(string[] args)
     {
         var dict = ArgsToDict(args);
         dict.TryGetValue("username", out var username);
         dict.TryGetValue("address", out var address);
         dict.TryGetValue("password", out var password);
-        return new RouterParameters(address is null ? null : IPAddress.Parse(address), username, password);
+        return new RouterConnectionParameters(address is null ? null : IPAddress.Parse(address), username, password);
     }
 
     public static IEnumerable<object?[]> UsernamePasswordAddressSequences => new[]
@@ -207,7 +208,7 @@ public class FSharpCommandLineContextParserTests
         
         var actual = Parse(args);
         
-        Assert.Equal(expected, actual.RouterParameters);
+        Assert.Equal(expected, actual.RouterConnectionParameters);
     }
 
     public static IEnumerable<object[]> CommandsAndRouterParameters => new[] 
@@ -248,7 +249,7 @@ public class FSharpCommandLineContextParserTests
         var strings = commandsRaw.Concat(routerParametersArgsRaw).ToArray();
         var actual = Parse(strings);
         
-        Assert.Equal(routerParameters, actual.RouterParameters);
+        Assert.Equal(routerParameters, actual.RouterConnectionParameters);
         Assert.Equal(commandsRaw, actual.Command);
     }
 

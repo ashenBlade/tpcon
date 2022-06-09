@@ -5,7 +5,7 @@ namespace Router.TpLink.Tests.Mocks;
 
 public class FakeTpLinkRouter : TpLinkRouter
 {
-    public new RouterParameters RouterParameters { get; }
+    public new RouterConnectionParameters RouterConnectionParameters { get; }
     public override Task RefreshAsync()
     {
         throw new MustNotBeCalledException();
@@ -16,8 +16,8 @@ public class FakeTpLinkRouter : TpLinkRouter
         throw new MustNotBeCalledException();
     }
 
-    public FakeTpLinkRouter(RouterParameters routerParameters) : base(new FakeRouterHttpMessageSender(), RouterParameters.Default,  new FakeLanConfigurator(), new FakeWlanConfigurator())
+    public FakeTpLinkRouter(RouterConnectionParameters routerConnectionParameters) : base(new FakeRouterHttpMessageSender(), RouterConnectionParameters.Default,  new FakeLanConfigurator(), new FakeWlanConfigurator())
     {
-        RouterParameters = routerParameters;
+        RouterConnectionParameters = routerConnectionParameters;
     }
 }

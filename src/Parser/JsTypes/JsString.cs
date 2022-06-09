@@ -16,4 +16,9 @@ public class JsString : JsType
     {
         return other is JsString jsString && jsString.Value == Value;
     }
+
+    public override string ToString()
+    {
+        return Value;
+    }
 }

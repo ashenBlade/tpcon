@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Router.Commands.CommandLine\Router.Commands.CommandLine.csproj" />
       <ProjectReference Include="..\Router.Commands\Router.Commands.csproj" />
     </ItemGroup>
 

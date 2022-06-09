@@ -3,6 +3,7 @@ module Router.Commands.Utils.CommandLineContextParser.CommandLineContextParser
 open System.Net
 open Microsoft.FSharp.Collections
 open Router.Commands
+open Router.Commands.CommandLine
 open Router.Domain
 
 type ParsingError =
@@ -15,7 +16,7 @@ type Command = string list
 
 type CommandLineContextUnparsed =
     { Command: Command
-      RouterParameters: RouterParameters
+      RouterParameters: RouterConnectionParameters
       Arguments: Arguments
       Output: OutputStyle
       Rest: string list }
@@ -87,7 +88,7 @@ let extractRouterParameters: ParsingPipe =
         let password = fallback "password" "admin" args
 
         match IPAddress.TryParse address with
-        | (true, ip) -> Ok { ctx with RouterParameters = RouterParameters(ip, username, password) }
+        | (true, ip) -> Ok { ctx with RouterParameters = RouterConnectionParameters(ip, username, password) }
         | _ -> Error(ParsingError.IncorrectArgumentValueError("address", address)))
 
 
@@ -95,7 +96,7 @@ let toUnparsedFromList (list: string list) : Result<CommandLineContextUnparsed, 
     Ok  { Rest = list
           Command = List.empty
           Arguments = Map.empty
-          RouterParameters = RouterParameters.Default
+          RouterParameters = RouterConnectionParameters.Default
           Output = OutputStyle.KeyValue}
 
 let toCommandLineContext (unparsed: CommandLineContextUnparsed) : Result<CommandLineContext, ParsingError> =

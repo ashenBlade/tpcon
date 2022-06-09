@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Router.Commands;
 using Router.Domain;
 using Router.TpLink.Tests.Mocks;
 using Xunit;
@@ -8,13 +9,13 @@ namespace Router.TpLink.Tests;
 public class RouterCommandContextTests
 {
     private RouterCommandContext Create(string[] command,
-                                        RouterParameters routerParameters,
+                                        RouterConnectionParameters routerConnectionParameters,
                                         Dictionary<string, string>? arguments = null) =>
-        new(new FakeTpLinkRouter(routerParameters), command,
+        new(new FakeTpLinkRouter(routerConnectionParameters), command,
             arguments ?? new Dictionary<string, string>(), new FakeOutputFormatter());
     private RouterCommandContext Create(string[] command,
                                         Dictionary<string, string>? arguments = null) =>
-        new(new FakeTpLinkRouter(RouterParameters.Default), command,
+        new(new FakeTpLinkRouter(RouterConnectionParameters.Default), command,
             arguments ?? new Dictionary<string, string>(), new FakeOutputFormatter());
 
     public static IEnumerable<object[]> SingleCommands => new[]

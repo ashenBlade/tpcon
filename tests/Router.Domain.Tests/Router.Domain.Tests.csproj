@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Router\Router.Domain\Router.Domain.csproj" />
+      <ProjectReference Include="..\..\src\Router\Router\Router.csproj" />
     </ItemGroup>
 
 </Project>

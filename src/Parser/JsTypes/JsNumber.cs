@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace JsTypes;
 
 public class JsNumber : JsType
@@ -16,5 +18,10 @@ public class JsNumber : JsType
     public override bool Equals(JsType? other)
     {
         return other is JsNumber number && number.Value == Value;
+    }
+
+    public override string ToString()
+    {
+        return Value.ToString(CultureInfo.InvariantCulture);
     }
 }

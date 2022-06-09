@@ -20,4 +20,9 @@ public class JsBool : JsType
     {
         return other is JsBool jsBool && jsBool.Value == Value;
     }
+
+    public override string ToString()
+    {
+        return Value ? "true" : "false";
+    }
 }

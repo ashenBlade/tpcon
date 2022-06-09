@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Router.Domain.Lan;
 using Xunit;
 
 namespace Router.Domain.Tests;

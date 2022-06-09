@@ -1,3 +1,4 @@
+using Router.Domain.Lan;
 using Xunit;
 
 namespace Router.Domain.Tests;

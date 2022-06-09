@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace JsTypes;
 
@@ -67,5 +69,10 @@ public class JsObject : JsType, IEnumerable<KeyValuePair<string, JsType>>, IEqua
     public override int GetHashCode()
     {
         return _types.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(_types);
     }
 }

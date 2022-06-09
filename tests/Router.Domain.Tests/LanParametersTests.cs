@@ -1,6 +1,6 @@
 using System;
 using System.Net;
-using Router.Domain.RouterProperties;
+using Router.Domain.Lan;
 using Xunit;
 
 namespace Router.Domain.Tests;
@@ -10,7 +10,6 @@ public class LanParametersTests
     [Fact]
     public void Constructor_WithValidParameters_ShouldCreateNewInstance()
     {
-        // Arrange
         var record = Record.Exception( () => new LanParameters(MacAddress.Parse("11-11-11-11-11-11"), IPAddress.Any, new SubnetMask(0)) );
         
         Assert.Null(record);
