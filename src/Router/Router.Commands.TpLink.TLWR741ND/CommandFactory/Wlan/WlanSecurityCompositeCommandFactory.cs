@@ -5,14 +5,17 @@ namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
 
 public class WlanSecurityCompositeCommandFactory : CompositeTpLinkCommandFactory
 {
-    private static IEnumerable<TpLink.CommandFactory.TpLinkCommandFactory> GetWlanSecurityCommands(IWlanConfigurator wlan) => 
+    private static IEnumerable<TpLink.CommandFactory.TpLinkCommandFactory> GetWlanSecurityCommands(
+        IWlanConfigurator wlan) =>
         new TpLink.CommandFactory.TpLinkCommandFactory[]
         {
-            new GetWlanSecurityStatusCommandFactory(wlan),
-            new SetPersonalSecurityCommandFactory(wlan)
+            new GetWlanSecurityStatusCommandFactory(wlan), new SetPersonalSecurityCommandFactory(wlan),
+            new SetEnterpriseSecurityCommandFactory(wlan), new SetWepSecurityCommandFactory(wlan),
+            new SetNoneSecurityCommandFactory(wlan)
         };
 
-    public WlanSecurityCompositeCommandFactory(IWlanConfigurator wlan) 
+    public WlanSecurityCompositeCommandFactory(IWlanConfigurator wlan)
         : base(GetWlanSecurityCommands(wlan), "security")
-    { }
+    {
+    }
 }

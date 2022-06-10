@@ -6,7 +6,9 @@ public class JsString : JsType
     {
         Value = value ?? throw new ArgumentNullException();
     }
+
     public string Value { get; }
+
     public override object Clone()
     {
         return new JsString(Value);
@@ -19,6 +21,6 @@ public class JsString : JsType
 
     public override string ToString()
     {
-        return Value;
+        return $"\"{Value}\"";
     }
 }

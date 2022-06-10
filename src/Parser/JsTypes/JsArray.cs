@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 
 namespace JsTypes;
@@ -6,21 +7,24 @@ public class JsArray : JsObject, IEnumerable<JsType>, IEquatable<JsArray>
 {
     public int Count => _values.Count;
     public IEnumerable<JsType> Values => _values;
-    
+
     private readonly List<JsType> _values;
+
     public JsArray(IEnumerable<JsType>? initials = null)
     {
         _values = initials?.ToList() ?? new List<JsType>();
     }
-    
-    public JsArray(params JsType[] types) : this((IEnumerable<JsType>) types) { }
-    
+
+    public JsArray(params JsType[] types) : this(( IEnumerable<JsType> ) types)
+    {
+    }
+
     public void Add(JsType type)
     {
         _values.Add(type);
     }
 
-    
+
     public JsType this[int index]
     {
         get => _values[index];
@@ -36,10 +40,10 @@ public class JsArray : JsObject, IEnumerable<JsType>, IEquatable<JsArray>
     public JsType[] ToArray()
     {
         return _values
-              .Select(v => (JsType)v.Clone())
+              .Select(v => ( JsType ) v.Clone())
               .ToArray();
     }
-    
+
     public bool Equals(JsArray? other)
     {
         if (ReferenceEquals(null, other)) return false;
@@ -62,6 +66,19 @@ public class JsArray : JsObject, IEnumerable<JsType>, IEquatable<JsArray>
 
     public override string ToString()
     {
-        return JsonSerializer.Serialize<object>(_values);
+        var builder = new StringBuilder("[");
+        foreach (var value in _values)
+        {
+            builder.Append(value);
+            builder.Append(',');
+        }
+
+        if (_values.Count > 0)
+        {
+            builder.Remove(builder.Length - 1, 1);
+        }
+
+        builder.Append(']');
+        return builder.ToString();
     }
 }

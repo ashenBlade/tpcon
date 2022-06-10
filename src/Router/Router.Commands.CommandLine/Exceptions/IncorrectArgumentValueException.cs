@@ -6,15 +6,23 @@ public class IncorrectArgumentValueException : CommandLineException
     public string Actual { get; }
     public string? Expected { get; }
 
-    public IncorrectArgumentValueException(string argument, string actual, string? expected, string[] commands, string? message = null) 
+    public IncorrectArgumentValueException(string argument,
+                                           string actual,
+                                           string? expected,
+                                           IEnumerable<string> commands,
+                                           string? message = null)
         : base(commands, message)
     {
         Argument = argument;
         Actual = actual;
         Expected = expected;
     }
-    
-    public IncorrectArgumentValueException(string argument, string actual, string[] commands, string? message = null)
-        : this(argument, actual, null, commands, message) 
-    { }
+
+    public IncorrectArgumentValueException(string argument,
+                                           string actual,
+                                           IEnumerable<string> commands,
+                                           string? message = null)
+        : this(argument, actual, null, commands, message)
+    {
+    }
 }

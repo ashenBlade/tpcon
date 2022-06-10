@@ -4,9 +4,9 @@ public class CommandLineException : Exception
 {
     public string[] Commands { get; }
 
-    public CommandLineException(string[] commands, string? message = null)
+    public CommandLineException(IEnumerable<string> commands, string? message = null)
         : base(message)
     {
-        Commands = commands;
+        Commands = commands.ToArray();
     }
 }

@@ -10,24 +10,32 @@ try
     var parser = new FSharpCommandLineParser();
     var cmd = parser.ParseCommandLineContext(args);
     var formatter = cmd.GetOutputFormatter();
-    var context = new RouterCommandContext(cmd.Command, cmd.Arguments, formatter, Console.Out, cmd.RouterConnectionParameters);
+    var context = new RouterCommandContext(cmd.Command,
+                                           cmd.Arguments,
+                                           formatter,
+                                           Console.Out,
+                                           cmd.RouterConnectionParameters);
     var factory = new TLWR741NDTpLinkCommandFactory(cmd.RouterConnectionParameters);
     var command = factory.CreateRouterCommand(context);
     await command.ExecuteAsync();
 }
 catch (InvalidRouterCredentialsException)
 {
-    Console.WriteLine($"Invalid credentials provided");
+    Console.WriteLine($"Could not connect to router: Invalid credentials provided");
 }
 catch (RouterUnreachableException)
 {
-    Console.WriteLine($"Could not connect to router");
+    Console.WriteLine($"Could not connect to router: Router unreachable");
 }
-catch (UnknownCommandException)
+catch (UnknownCommandException unknown)
 {
-    Console.WriteLine("Unknown command");
+    Console.WriteLine($"Unknown command \"{unknown.Unknown}\"");
 }
-catch (RouterException)
+catch (RouterException router)
 {
-    Console.WriteLine($"Something went wrong");
+    Console.WriteLine(router.Message);
+}
+catch (CommandLineException cmd)
+{
+    Console.WriteLine(cmd.Message);
 }
