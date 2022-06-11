@@ -4,7 +4,7 @@ using System.Linq;
 using Router.Domain.Lan;
 using Xunit;
 
-namespace Router.Domain.Tests;
+namespace Router.Tests;
 
 public class SubnetMaskTests
 {
@@ -13,25 +13,22 @@ public class SubnetMaskTests
         public string IP { get; set; }
         public int Length { get; set; }
     }
+
     public static IEnumerable<object[]> AllMasks => GetAllMasks();
 
-    private static MaskTempStruct ToStruct(object[] array) 
-        => new()
-           {
-               IP = ( string ) array[0], Length = ( int ) array[1],
-           };
-    
+    private static MaskTempStruct ToStruct(object[] array)
+        => new() {IP = ( string ) array[0], Length = ( int ) array[1],};
+
     private static IEnumerable<object[]> GetAllMasks()
     {
-        string ToIpString(long first, long second, long third, long fourth) 
+        string ToIpString(long first, long second, long third, long fourth)
             => $"{first}.{second}.{third}.{fourth}";
-        
+
         for (int length = 0; length < 33; length++)
         {
             var (first, second, third, fourth) = SubnetMask.GetMaskBytes(length);
             yield return new object[] {ToIpString(first, second, third, fourth), length};
         }
-        
     }
 
     [Fact]
@@ -77,22 +74,24 @@ public class SubnetMaskTests
         // Arrange
         var expected = "240.0.0.0";
         var mask = new SubnetMask(4);
-        
+
         // Act
         var actual = mask.ToString();
-        
+
         // Assert
         Assert.Equal(expected, actual);
     }
 
     [Theory(DisplayName = "Constructor; With valid mask length; Should create new instance")]
     [MemberData(nameof(AllMasks))]
-    public void ToString_WithValidLengthInConstructor_ShouldReturnValidStringIPRepresentation(string expected, int length)
+    public void ToString_WithValidLengthInConstructor_ShouldReturnValidStringIPRepresentation(
+        string expected,
+        int length)
     {
         var mask = new SubnetMask(length);
 
         var actual = mask.ToString();
-        
+
         Assert.Equal(expected, actual);
     }
 
@@ -103,7 +102,7 @@ public class SubnetMaskTests
         var actual = SubnetMask.Parse("255.255.255.255").MaskLength;
         Assert.Equal(expectedMaxLength, actual);
     }
-    
+
     [Fact(DisplayName = "Parse; With 0.0.0.0; Should return 0.0.0.0 mask")]
     public void Parse_WithZeroMask()
     {

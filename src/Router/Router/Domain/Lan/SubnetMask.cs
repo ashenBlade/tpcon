@@ -1,14 +1,17 @@
 using System.Net;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Router.Domain.Tests")]
+[assembly: InternalsVisibleTo("Router.Tests")]
+
 namespace Router.Domain.Lan;
 
 public struct SubnetMask
 {
     private readonly string _string;
-    public IPAddress ToIpAddress() 
+
+    public IPAddress ToIpAddress()
         => IPAddress.Parse(_string);
+
     public int MaskLength { get; }
 
     public SubnetMask()
@@ -66,14 +69,14 @@ public struct SubnetMask
             leftLength = len - byteMaskLength;
             return ByteMaskFromLength(byteMaskLength);
         }
-        
+
         var firstMask = GetMask(length, out length);
         var secondMask = GetMask(length, out length);
         var thirdMask = GetMask(length, out length);
         var fourthMask = GetMask(length, out length);
         return ( firstMask, secondMask, thirdMask, fourthMask );
     }
-    
+
     private static long IpLongFromLength(int length)
     {
         if (length is < 0 or > 32)
@@ -82,7 +85,7 @@ public struct SubnetMask
         }
 
         var (first, second, third, fourth) = GetMaskBytes(length);
-        
+
         // Long represented in big-endian form
         return fourth << 24 | third << 16 | second << 8 | first;
     }
@@ -99,8 +102,7 @@ public struct SubnetMask
     private const byte MaskEight = 0b1111_1111;
 
 
-
-    private static int GetLengthForMask(byte mask) 
+    private static int GetLengthForMask(byte mask)
         => mask switch
            {
                MaskEight => 8,
@@ -146,8 +148,8 @@ public struct SubnetMask
             {
                 ended = true;
             }
-
         }
+
         return new SubnetMask(length);
     }
 
@@ -157,6 +159,7 @@ public struct SubnetMask
         {
             throw new ArgumentException(null, nameof(ip));
         }
+
         var i = int.Parse(ip);
         if (i is < 0 or > 255)
         {
@@ -165,10 +168,9 @@ public struct SubnetMask
 
         return ( byte ) i;
     }
-    
+
     public override string ToString()
     {
         return _string;
     }
-    
 }

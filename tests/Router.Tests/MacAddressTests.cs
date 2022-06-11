@@ -1,7 +1,7 @@
 using Router.Domain.Lan;
 using Xunit;
 
-namespace Router.Domain.Tests;
+namespace Router.Tests;
 
 public class MacAddressTests
 {

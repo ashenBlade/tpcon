@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Parser", "Parser", "{8B9775
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsUtils.Implementation.Tests", "tests\JsUtils.Implementation.Tests\JsUtils.Implementation.Tests.csproj", "{75BD5824-101C-4DB8-A042-40D68B4B9A21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router.Domain.Tests", "tests\Router.Domain.Tests\Router.Domain.Tests.csproj", "{DC5707C5-1793-4CE4-A1AC-F50179F1C169}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router.Tests", "tests\Router.Tests\Router.Tests.csproj", "{DC5707C5-1793-4CE4-A1AC-F50179F1C169}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Router.Commands.Utils.Tests", "tests\Router.Commands.Utils.Tests\Router.Commands.Utils.Tests.csproj", "{18D5B5B7-4070-4070-A69F-F0DEACC8547B}"
 EndProject
