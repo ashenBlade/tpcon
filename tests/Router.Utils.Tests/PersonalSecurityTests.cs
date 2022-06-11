@@ -82,6 +82,6 @@ public class PersonalSecurityTests
     [Fact(DisplayName = "Constructor; With null is password; Should throw exception")]
     public void Constructor_WithPasswordNull_ShouldThrowException()
     {
-        Assert.ThrowsAny<Exception>(() => new PersonalSecurity(null, EncryptionType.Auto, SecurityVersion.Automatic));
+        Assert.ThrowsAny<Exception>(() => new PersonalSecurity(null!, EncryptionType.Auto, SecurityVersion.Automatic));
     }
 }

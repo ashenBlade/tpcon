@@ -4,13 +4,18 @@ namespace Router.Utils.Security;
 
 public abstract class WPASecurity : Domain.Wlan.Security
 {
-    protected WPASecurity(SecurityVersion version, EncryptionType encryptionType, int groupKeyUpdatePeriod)
+    public const int NoGroupKeyUpdatePeriod = 0;
+
+    protected WPASecurity(SecurityVersion version,
+                          EncryptionType encryptionType,
+                          int groupKeyUpdatePeriod = NoGroupKeyUpdatePeriod)
     {
-        if (GroupKeyUpdatePeriod is < 30 and not 0)
+        if (groupKeyUpdatePeriod is < 30 and not NoGroupKeyUpdatePeriod)
         {
             throw new ArgumentOutOfRangeException(nameof(groupKeyUpdatePeriod),
                                                   "Group key update period must be greater than 30 or 0");
         }
+
         Version = version;
         EncryptionType = encryptionType;
         GroupKeyUpdatePeriod = groupKeyUpdatePeriod;
@@ -18,8 +23,10 @@ public abstract class WPASecurity : Domain.Wlan.Security
 
     [DisplayName("WPA Version")]
     public SecurityVersion Version { get; }
+
     [DisplayName("Encryption type")]
     public EncryptionType EncryptionType { get; }
+
     [DisplayName("Group key update period")]
     public int GroupKeyUpdatePeriod { get; }
 }

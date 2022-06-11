@@ -70,7 +70,7 @@ public class SetEnterpriseSecurityCommandFactory : WlanSingleCommandFactory
                                                                              context.Command.ToArray(),
                                                                              "Group key update interval must be integer")
                            : DefaultUpdateInterval;
-        var radius = new RadiusServer(ip, port, password);
+        var radius = new RadiusServer(password, ip, port);
         var security = new EnterpriseSecurity(radius, version, encryption, interval);
         return new TpLinkSetEnterpriseSecurityCommand(Wlan, security);
     }

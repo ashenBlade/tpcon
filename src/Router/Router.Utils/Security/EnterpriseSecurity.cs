@@ -4,7 +4,10 @@ public class EnterpriseSecurity : WPASecurity
 {
     public override string Name => "WPA/WPA2 Enterprise";
 
-    public EnterpriseSecurity(RadiusServer radius, SecurityVersion version, EncryptionType encryptionType, int groupKeyUpdatePeriod) 
+    public EnterpriseSecurity(RadiusServer radius,
+                              SecurityVersion version,
+                              EncryptionType encryptionType,
+                              int groupKeyUpdatePeriod = 0)
         : base(version, encryptionType, groupKeyUpdatePeriod)
     {
         ArgumentNullException.ThrowIfNull(radius);

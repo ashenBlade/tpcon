@@ -124,7 +124,7 @@ public class WlanSecurityRouterStatusExtractor
         var version = GetSecurityVersion(wlan, EncryptionTypeWpa);
         var encryption = GetEncryptionType(wlan, WpaCipher);
         var groupKeyUpdatePeriod = wlan[WpaInterval].GetInt();
-        return new EnterpriseSecurity(new RadiusServer(radiusIp, radiusPort, radiusSecret),
+        return new EnterpriseSecurity(new RadiusServer(radiusSecret, radiusIp, radiusPort),
                                       version,
                                       encryption,
                                       groupKeyUpdatePeriod);
