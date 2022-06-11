@@ -24,8 +24,8 @@ public class ScriptVariableExtractor : IJsVariableExtractor
     private class InnerVariableExtractor : IDisposable
     {
         private readonly IEnumerator<Token> _enumerator;
-        private bool _sequenceEnded;
-        private bool SequenceEnded => _sequenceEnded;
+        private bool SequenceEnded { get; set; }
+
         private Token Current => _enumerator.Current;
 
         private bool MoveNext()
@@ -35,8 +35,8 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                 return false;
             }
 
-            _sequenceEnded = !_enumerator.MoveNext();
-            return !_sequenceEnded;
+            SequenceEnded = !_enumerator.MoveNext();
+            return !SequenceEnded;
         }
 
         public InnerVariableExtractor(ITokenizer tokenizer, string source)
@@ -48,7 +48,7 @@ public class ScriptVariableExtractor : IJsVariableExtractor
 
         private void Initialize()
         {
-            _sequenceEnded = !_enumerator.MoveNext();
+            SequenceEnded = !_enumerator.MoveNext();
         }
 
         public bool NextVariable(out JsVariable? variable)
@@ -62,9 +62,10 @@ public class ScriptVariableExtractor : IJsVariableExtractor
             var exception = false;
             try
             {
-                while (TryReadStatement(out variable) 
+                while (TryReadStatement(out variable)
                     && variable is null)
-                { }
+                {
+                }
             }
             catch (UnexpectedTokenException)
             {
@@ -110,8 +111,9 @@ public class ScriptVariableExtractor : IJsVariableExtractor
 
         private JsVariable? ReadSingleStatement()
         {
-            while (Current is not {Tag:';'} && MoveNext())
-            { }
+            while (Current is not {Tag: ';'} && MoveNext())
+            {
+            }
 
             if (!SequenceEnded)
             {
@@ -174,6 +176,7 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                             innerBlocksCount--;
                             break;
                     }
+
                     if (innerBlocksCount == 0)
                     {
                         MoveNext();
@@ -224,7 +227,8 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                        };
             if (type is null)
             {
-                throw new UnexpectedTokenException($"Expected type, but given {Current}", new Token(Tags.Type), Current);
+                throw new UnexpectedTokenException($"Expected type, but given {Current}", new Token(Tags.Type),
+                                                   Current);
             }
 
             return type;
@@ -259,6 +263,7 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                 MoveNext();
                 return true;
             }
+
             return false;
         }
 
@@ -266,7 +271,7 @@ public class ScriptVariableExtractor : IJsVariableExtractor
 
         private bool TryReadWord(Word w)
         {
-            if (Current is Word word && word.Lexeme == w.Lexeme)
+            if (!SequenceEnded && Current is Word word && word.Lexeme == w.Lexeme)
             {
                 MoveNext();
                 return true;
@@ -325,7 +330,8 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                 return JsUndefined.Instance;
             }
 
-            throw new UnexpectedTokenException($"Expected \"undefined\", but given: {Current}", Token.Undefined, Current);
+            throw new UnexpectedTokenException($"Expected \"undefined\", but given: {Current}", Token.Undefined,
+                                               Current);
         }
 
         private JsNull ReadNull()
@@ -360,7 +366,8 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                 return new JsNumber(literal.Value);
             }
 
-            throw new UnexpectedTokenException($"Expected number literal, given: {Current}", NumberLiteral.Token, Current);
+            throw new UnexpectedTokenException($"Expected number literal, given: {Current}", NumberLiteral.Token,
+                                               Current);
         }
 
         private JsString ReadString()
@@ -371,7 +378,8 @@ public class ScriptVariableExtractor : IJsVariableExtractor
                 return new JsString(literal.Value);
             }
 
-            throw new UnexpectedTokenException($"Expected string literal, given: {Current}", StringLiteral.Token, Current);
+            throw new UnexpectedTokenException($"Expected string literal, given: {Current}", StringLiteral.Token,
+                                               Current);
         }
 
         private Token ReadToken(int tag)
