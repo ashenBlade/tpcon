@@ -20,4 +20,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Router\Router.Commands.TpLink.TLWR741ND\Router.Commands.TpLink.TLWR741ND.csproj"/>
+    </ItemGroup>
+
 </Project>

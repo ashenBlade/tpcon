@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Web;
 using Router.Commands.TpLink.TLWR741ND.Status;
 using Router.Commands.TpLink.TLWR741ND.Status.Wlan.Network;
@@ -6,6 +8,8 @@ using Router.Commands.TpLink.TLWR741ND.Utils;
 using Router.Domain.Wlan;
 using Router.Exceptions.NotSupported;
 using Router.Utils.Security;
+
+[assembly: InternalsVisibleTo("Router.Commands.TpLink.TLWR741ND.Tests")]
 
 namespace Router.Commands.TpLink.TLWR741ND.Configurators;
 
@@ -96,7 +100,7 @@ public class WlanConfigurator : BaseWlanConfigurator
         return total;
     }
 
-    private IEnumerable<KeyValuePair<string, string>> GetWlanSecurityKeyValuePairs(Security security)
+    internal static IEnumerable<KeyValuePair<string, string>> GetWlanSecurityKeyValuePairs(Security security)
     {
         return security switch
                {
@@ -111,7 +115,7 @@ public class WlanConfigurator : BaseWlanConfigurator
     }
 
 
-    private IEnumerable<KeyValuePair<string, string>> ExtractPersonalSecurityValues(PersonalSecurity personal)
+    private static IEnumerable<KeyValuePair<string, string>> ExtractPersonalSecurityValues(PersonalSecurity personal)
     {
         yield return new KeyValuePair<string, string>("secType", "3");
         yield return new KeyValuePair<string, string>("pskSecOpt", ExtractSecurityVersion(personal));
@@ -203,9 +207,9 @@ public class WlanConfigurator : BaseWlanConfigurator
 
     public override Task SetSSIDAsync(string ssid)
     {
-        if (string.IsNullOrEmpty(ssid))
+        if (ssid is null or {Length: < 1 or > 32})
         {
-            throw new ArgumentOutOfRangeException(ssid);
+            throw new ArgumentOutOfRangeException(nameof(ssid), "SSID length must be between 1 and 32");
         }
 
         return MessageSender.SendMessageAsync(new RouterHttpMessage("userRpm/WlanNetworkRpm.htm",

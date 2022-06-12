@@ -62,7 +62,7 @@ public class WlanSecurityRouterStatusExtractor
                    {
                        new("secType", Para(SecurityType)),
                        new("wepSecOpt", SecOpt(EncryptionTypeWep)),
-                       new("keytype", para[WepKeyType].ToString()),
+                       new("keytype", para[WepKeyType].ToString()!),
                        new("keynum", ( para[CurrentWepKeyIndex].GetInt() - 1 ).ToString()),
                        new("key1", Wlan(0)),
                        new("length1", Wlan(1)),
