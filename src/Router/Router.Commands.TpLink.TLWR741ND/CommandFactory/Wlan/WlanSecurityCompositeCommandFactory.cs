@@ -5,17 +5,21 @@ namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
 
 public class WlanSecurityCompositeCommandFactory : CompositeTpLinkCommandFactory
 {
-    private static IEnumerable<TpLink.CommandFactory.TpLinkCommandFactory> GetWlanSecurityCommands(
-        IWlanConfigurator wlan) =>
-        new TpLink.CommandFactory.TpLinkCommandFactory[]
-        {
-            new GetWlanSecurityStatusCommandFactory(wlan), new SetPersonalSecurityCommandFactory(wlan),
-            new SetEnterpriseSecurityCommandFactory(wlan), new SetWepSecurityCommandFactory(wlan),
-            new SetNoneSecurityCommandFactory(wlan)
-        };
+    private static IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> GetWlanSecurityCommands(
+        IWlanConfigurator wlan)
+    {
+        yield return Pair("status", () => new GetWlanSecurityStatusCommandFactory(wlan));
+        yield return Pair("personal", () => new SetPersonalSecurityCommandFactory(wlan));
+        yield return Pair("enterprise", () => new SetEnterpriseSecurityCommandFactory(wlan));
+        yield return Pair("wep", () => new SetWepSecurityCommandFactory(wlan));
+        yield return Pair("none", () => new SetNoneSecurityCommandFactory(wlan));
+
+        KeyValuePair<string, Func<BaseTpLinkCommandFactory>>
+            Pair(string name, Func<BaseTpLinkCommandFactory> factory) => new(name, factory);
+    }
 
     public WlanSecurityCompositeCommandFactory(IWlanConfigurator wlan)
-        : base(GetWlanSecurityCommands(wlan), "security")
+        : base(GetWlanSecurityCommands(wlan))
     {
     }
 }

@@ -7,10 +7,12 @@ namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Root;
 internal class RefreshTpLinkCommandFactory : SingleTpLinkCommandFactory
 {
     private readonly IRouterConfigurator _configurator;
-    public RefreshTpLinkCommandFactory(IRouterConfigurator configurator) : base("refresh")
+
+    public RefreshTpLinkCommandFactory(IRouterConfigurator configurator)
     {
         _configurator = configurator;
     }
+
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
         return new TpLinkRefreshRouterCommand(_configurator);

@@ -5,9 +5,11 @@ namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
 
 internal class DisableWirelessRadioTpLinkCommandFactory : WlanSingleCommandFactory
 {
-    public DisableWirelessRadioTpLinkCommandFactory(IWlanConfigurator wlan) 
-        : base(wlan, "disable") 
-    { }
+    public DisableWirelessRadioTpLinkCommandFactory(IWlanConfigurator wlan)
+        : base(wlan)
+    {
+    }
+
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
         return new TpLinkDisableWirelessRadioCommand(Wlan);

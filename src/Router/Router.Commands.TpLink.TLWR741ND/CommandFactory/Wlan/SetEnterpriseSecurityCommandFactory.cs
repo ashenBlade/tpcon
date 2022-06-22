@@ -17,7 +17,7 @@ public class SetEnterpriseSecurityCommandFactory : WlanSingleCommandFactory
     private const int DefaultUpdateInterval = 0; // No update
 
     public SetEnterpriseSecurityCommandFactory(IWlanConfigurator wlan)
-        : base(wlan, "enterprise")
+        : base(wlan)
     {
     }
 

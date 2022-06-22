@@ -5,15 +5,16 @@ namespace Router.Commands.TpLink;
 
 public abstract class TpLinkCommandFactory : RouterCommandFactory
 {
-    private readonly CommandFactory.TpLinkCommandFactory[] _creators;
+    private readonly IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> _creators;
 
-    protected TpLinkCommandFactory(IEnumerable<CommandFactory.TpLinkCommandFactory> creators, RouterConnectionParameters connectionParameters)
+    protected TpLinkCommandFactory(IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> creators,
+                                   RouterConnectionParameters connectionParameters)
         : base(connectionParameters)
     {
         ArgumentNullException.ThrowIfNull(creators);
-        _creators = creators.ToArray();
+        _creators = creators;
     }
-    
+
     public IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
         return new RootTpLinkCommandFactory(_creators)

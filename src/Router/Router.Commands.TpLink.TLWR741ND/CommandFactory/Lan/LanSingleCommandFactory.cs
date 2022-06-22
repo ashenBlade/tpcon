@@ -7,7 +7,7 @@ public abstract class LanSingleCommandFactory : SingleTpLinkCommandFactory
 {
     protected ILanConfigurator Lan { get; }
 
-    public LanSingleCommandFactory(ILanConfigurator lan, string name) : base(name)
+    public LanSingleCommandFactory(ILanConfigurator lan)
     {
         ArgumentNullException.ThrowIfNull(lan);
         Lan = lan;

@@ -10,7 +10,6 @@ internal class CheckConnectionTpLinkCommandFactory : SingleTpLinkCommandFactory
     private readonly IRouterConfigurator _configurator;
 
     public CheckConnectionTpLinkCommandFactory(IRouterConfigurator configurator)
-        : base("health")
     {
         _configurator = configurator;
     }

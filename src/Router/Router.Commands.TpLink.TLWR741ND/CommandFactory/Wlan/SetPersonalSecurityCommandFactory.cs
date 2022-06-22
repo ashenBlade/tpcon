@@ -5,10 +5,11 @@ using Router.Utils.Security;
 
 namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
 
-public class SetPersonalSecurityCommandFactory: WlanSingleCommandFactory
+public class SetPersonalSecurityCommandFactory : WlanSingleCommandFactory
 {
-    public SetPersonalSecurityCommandFactory(IWlanConfigurator wlan) : base(wlan, "personal")
-    { }
+    public SetPersonalSecurityCommandFactory(IWlanConfigurator wlan) : base(wlan)
+    {
+    }
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
@@ -20,8 +21,9 @@ public class SetPersonalSecurityCommandFactory: WlanSingleCommandFactory
                            : 0;
         var password = context.Arguments.TryGetValue("password", out var passwordString)
                            ? passwordString
-                           : context.CurrentCommand 
-                          ?? throw new ArgumentValueExpectedException("password", context.Command.ToArray(), "Password must be provided after \"personal\" word or in \"--password\" argument");
+                           : context.CurrentCommand
+                          ?? throw new ArgumentValueExpectedException("password", context.Command.ToArray(),
+                                                                      "Password must be provided after \"personal\" word or in \"--password\" argument");
         var encryption = context.Arguments.TryGetValue("encryption", out var encString)
                              ? encString.ToLower() switch
                                {

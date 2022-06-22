@@ -6,7 +6,7 @@ namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
 public class SetNoneSecurityCommandFactory : WlanSingleCommandFactory
 {
     public SetNoneSecurityCommandFactory(IWlanConfigurator wlan)
-        : base(wlan, "none")
+        : base(wlan)
     {
     }
 

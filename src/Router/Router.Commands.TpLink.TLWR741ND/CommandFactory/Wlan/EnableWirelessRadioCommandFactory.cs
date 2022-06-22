@@ -5,9 +5,10 @@ namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
 
 internal class EnableWirelessRadioCommandFactory : WlanSingleCommandFactory
 {
-    public EnableWirelessRadioCommandFactory(IWlanConfigurator wlan) 
-        : base(wlan, "enable")
-    { }
+    public EnableWirelessRadioCommandFactory(IWlanConfigurator wlan)
+        : base(wlan)
+    {
+    }
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {

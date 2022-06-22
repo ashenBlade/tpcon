@@ -5,13 +5,14 @@ namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Lan;
 
 internal class LanCompositeCommandFactory : CompositeTpLinkCommandFactory
 {
-    private static IEnumerable<TpLink.CommandFactory.TpLinkCommandFactory> GetLanCommands(ILanConfigurator lan)
-        => new TpLink.CommandFactory.TpLinkCommandFactory[]
-           {
-               new GetLanStatusCommandFactory(lan)
-           };
-    
+    private static IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> GetLanCommands(
+        ILanConfigurator lan)
+    {
+        yield return new("status", () => new GetLanStatusCommandFactory(lan));
+    }
+
     public LanCompositeCommandFactory(ILanConfigurator lan)
-        : base(GetLanCommands(lan), "lan")
-    { }
+        : base(GetLanCommands(lan))
+    {
+    }
 }

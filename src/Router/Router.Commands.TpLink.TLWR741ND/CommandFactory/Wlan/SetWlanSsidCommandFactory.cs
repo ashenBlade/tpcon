@@ -6,13 +6,15 @@ namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
 
 internal class SetWlanSsidCommandFactory : WlanSingleCommandFactory
 {
-    public SetWlanSsidCommandFactory(IWlanConfigurator wlan) 
-        : base(wlan, "ssid")
-    { }
-    
+    public SetWlanSsidCommandFactory(IWlanConfigurator wlan)
+        : base(wlan)
+    {
+    }
+
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        var ssid = context.CurrentCommand ?? throw new ArgumentValueExpectedException("SSID", context.Command.ToArray(), "SSID not provided");
+        var ssid = context.CurrentCommand
+                ?? throw new ArgumentValueExpectedException("SSID", context.Command.ToArray(), "SSID not provided");
         return new TpLinkSetWlanSsidCommand(Wlan, ssid);
     }
 }

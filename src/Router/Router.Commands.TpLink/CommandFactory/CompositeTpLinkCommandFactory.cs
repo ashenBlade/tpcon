@@ -2,15 +2,14 @@ using Router.Commands.CommandLine.Exceptions;
 
 namespace Router.Commands.TpLink.CommandFactory;
 
-public abstract class CompositeTpLinkCommandFactory : TpLinkCommandFactory
+public abstract class CompositeTpLinkCommandFactory : BaseTpLinkCommandFactory
 {
-    private Dictionary<string, TpLinkCommandFactory> Commands { get; }
+    private IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> _commands;
 
-    protected CompositeTpLinkCommandFactory(IEnumerable<TpLinkCommandFactory> commands, string rootName)
-        : base(rootName)
+    protected CompositeTpLinkCommandFactory(IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> commands)
     {
         ArgumentNullException.ThrowIfNull(commands);
-        Commands = commands.ToDictionary(c => c.Name);
+        _commands = commands;
     }
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
@@ -20,10 +19,16 @@ public abstract class CompositeTpLinkCommandFactory : TpLinkCommandFactory
         {
             throw new IncompleteCommandException(context.Command.ToArray());
         }
-        if (!Commands.TryGetValue(currentCommand, out var factory))
-            throw new UnknownCommandException(currentCommand, context.Command.ToArray());
-        context.MoveNext();
-        return factory.CreateRouterCommand(context);
 
+        var func = _commands
+                  .FirstOrDefault(c => c.Key == currentCommand)
+                  .Value;
+        if (func is null)
+        {
+            throw new UnknownCommandException(currentCommand, context.Command.ToArray());
+        }
+
+        context.MoveNext();
+        return func().CreateRouterCommand(context);
     }
 }

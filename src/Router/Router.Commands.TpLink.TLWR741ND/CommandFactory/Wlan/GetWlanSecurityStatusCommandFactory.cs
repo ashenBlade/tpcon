@@ -5,9 +5,10 @@ namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
 
 public class GetWlanSecurityStatusCommandFactory : WlanSingleCommandFactory
 {
-    public GetWlanSecurityStatusCommandFactory(IWlanConfigurator wlan) 
-        : base(wlan, "status")
-    { }
+    public GetWlanSecurityStatusCommandFactory(IWlanConfigurator wlan)
+        : base(wlan)
+    {
+    }
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {

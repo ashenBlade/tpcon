@@ -11,7 +11,7 @@ public class SetWepSecurityCommandFactory : WlanSingleCommandFactory
     private const string Selected = "selected";
 
     public SetWepSecurityCommandFactory(IWlanConfigurator wlan)
-        : base(wlan, "wep")
+        : base(wlan)
     {
     }
 

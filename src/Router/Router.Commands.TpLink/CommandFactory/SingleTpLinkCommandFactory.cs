@@ -1,8 +1,5 @@
 namespace Router.Commands.TpLink.CommandFactory;
 
-public abstract class SingleTpLinkCommandFactory : TpLinkCommandFactory
+public abstract class SingleTpLinkCommandFactory : BaseTpLinkCommandFactory
 {
-    protected SingleTpLinkCommandFactory(string name) 
-        : base(name)
-    { }
 }
