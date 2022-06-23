@@ -1,7 +1,7 @@
 using Router.Commands.TpLink.Configurators.Wlan;
 using Router.Commands.TpLink.TLWR741ND.Commands.Wlan;
 
-namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
+namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan.Security;
 
 public class GetWlanSecurityStatusCommandFactory : WlanSingleCommandFactory
 {

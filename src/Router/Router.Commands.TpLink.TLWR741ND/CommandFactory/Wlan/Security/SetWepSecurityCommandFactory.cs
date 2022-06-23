@@ -3,7 +3,7 @@ using Router.Commands.TpLink.Configurators.Wlan;
 using Router.Commands.TpLink.TLWR741ND.Commands.Wlan;
 using Router.Utils.Security;
 
-namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
+namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan.Security;
 
 public class SetWepSecurityCommandFactory : WlanSingleCommandFactory
 {
@@ -17,7 +17,7 @@ public class SetWepSecurityCommandFactory : WlanSingleCommandFactory
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        var type = context.Arguments.TryGetValue("type", out var typeString)
+        var type = context.Arguments.TryGetValue("auth-type", out var typeString)
                        ? typeString.ToLower() switch
                          {
                              "auto"                        => WepType.Automatic,

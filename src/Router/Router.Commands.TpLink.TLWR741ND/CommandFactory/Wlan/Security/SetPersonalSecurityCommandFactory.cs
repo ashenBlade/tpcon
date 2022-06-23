@@ -3,7 +3,7 @@ using Router.Commands.TpLink.Configurators.Wlan;
 using Router.Commands.TpLink.TLWR741ND.Commands.Wlan;
 using Router.Utils.Security;
 
-namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
+namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan.Security;
 
 public class SetPersonalSecurityCommandFactory : WlanSingleCommandFactory
 {
@@ -13,7 +13,7 @@ public class SetPersonalSecurityCommandFactory : WlanSingleCommandFactory
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        var interval = context.Arguments.TryGetValue("interval", out var intervalString)
+        var interval = context.Arguments.TryGetValue("group-key-update-interval", out var intervalString)
                            ? int.TryParse(intervalString, out var i)
                                  ? i
                                  : throw new IncorrectArgumentValueException("interval", intervalString, "integer",
@@ -23,7 +23,7 @@ public class SetPersonalSecurityCommandFactory : WlanSingleCommandFactory
                            ? passwordString
                            : context.CurrentCommand
                           ?? throw new ArgumentValueExpectedException("password", context.Command.ToArray(),
-                                                                      "Password must be provided after \"personal\" word or in \"--password\" argument");
+                                                                      "Password must be specified right after \"personal\" word or in \"--password\" argument");
         var encryption = context.Arguments.TryGetValue("encryption", out var encString)
                              ? encString.ToLower() switch
                                {

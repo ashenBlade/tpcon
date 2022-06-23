@@ -59,7 +59,31 @@ Enables Wi-Fi
 
 Disables Wi-Fi
 
-- **wlan password "*new password*"**
+- **wlan security** - set new security
+  - **wlan security none** - disable security
+  - **wlan security personal** - set WPA/WPA2 Personal security
+    - Arguments:
+      - *--password* - set password. Password can be specified right after "personal" word
+      - *--encryption* - set encryption. Supported values: "tkip", "aes", "auto" (Default)
+      - *--version* - set security version. Supported values: "wpa", "wpa2", "auto" (Default)
+      - *--group-key-update-interval* - set group key update interval. Minimum value - 30. 0 - no update (Default)
+  - **wlan security enterprise** - set WPA/WPA2 Enterprise security
+    - Arguments:
+      - *--radius-password* - set password for RADIUS server
+      - *--radius-port* - set port for RADIUS server (Default - 1812)
+      - *--radius-ip* - set IP for RADIUS server
+      - *--encryption* - set encryption. Supported values: "tkip", "aes", "auto" (Default)
+      - *--version* - set security version. Supported values: "wpa", "wpa2", "auto" (Default)
+      - *--group-key-update-interval* - set group key update interval. Minimum value - 30. 0 - no update (Default)
+  - **wlan security wep** - set WEP security
+    - Arguments:
+      - *--auth-type* - authentication type. Supported: "shared-key", "open-system", "auto" (Default)
+      - *--key-format* - format of key representation. Supported: "ascii", "hex" (Default)
+      - *--key{number}* - set value for key with {number} number.
+      - *--length{number}* - set length for key with {number} number. Supported: ("bit64", "64", "64bit"), ("bit128", "
+        128", "128bit"), ("bit152", "152", "152bit"), "disabled" (Default).
+        Total keys amount - 4
+      - *--selected* - specify key number that will be used by system. Should be number of key already specified.
 
 Set new Wi-Fi password
 
@@ -71,19 +95,28 @@ Set new Wi-Fi SSID (Wi-Fi name)
 
 Displays lan status: router local ip address, subnet mask, router mac address
 
-### Options
-- --address "*router local ip address*"
+- **lan ip**
 
-Address of TpLink router you want to connect. 
+Set router's local IP address. IP address must be specified right after "ip" word
+
+- **lan mask**
+
+Set subnet mask for LAN. Mask must be in form of IP address (e.g. 255.255.128.0)
+
+### Options
+
+- *--router-address "*router local ip address*"*
+
+Address of TpLink router you want to connect.
 Default: 192.168.0.1
 
-- --username "*admin username*"
+- *--router-username "*admin username*"*
 
-Username of router admin. 
+Username of router admin.
 That is what you enter in username input when enter browser router page.
 Default: admin
 
-- --password "*admin password*"
+- *--router-password "*admin password*"*
 
 Password of router admin.
 That is what you enter in password input when enter browser router page.

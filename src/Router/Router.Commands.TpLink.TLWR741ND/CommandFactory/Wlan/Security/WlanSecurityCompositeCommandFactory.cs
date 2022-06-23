@@ -1,7 +1,7 @@
 using Router.Commands.TpLink.CommandFactory;
 using Router.Commands.TpLink.Configurators.Wlan;
 
-namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan;
+namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan.Security;
 
 public class WlanSecurityCompositeCommandFactory : CompositeTpLinkCommandFactory
 {
