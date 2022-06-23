@@ -4,11 +4,11 @@ using Router.Utils.Security;
 
 namespace Router.Commands.TpLink.TLWR741ND.Commands.Wlan;
 
-public class TpLinkSetSecurityCommand: WlanTpLinkCommand
+public class SetWlanSecurityCommand : WlanCommand
 {
     public Security Security { get; }
 
-    protected TpLinkSetSecurityCommand(IWlanConfigurator configurator, Security security) 
+    protected SetWlanSecurityCommand(IWlanConfigurator configurator, Security security)
         : base(configurator)
     {
         Security = security;

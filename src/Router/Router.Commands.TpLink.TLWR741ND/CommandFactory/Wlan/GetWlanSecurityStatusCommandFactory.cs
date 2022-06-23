@@ -12,6 +12,6 @@ public class GetWlanSecurityStatusCommandFactory : WlanSingleCommandFactory
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        return new TpLinkGetWlanSecurityStatusCommand(Wlan, Console.Out, context.OutputFormatter);
+        return new GetWlanSecurityStatusCommand(Wlan, Console.Out, context.OutputFormatter);
     }
 }

@@ -49,6 +49,6 @@ public class SetPersonalSecurityCommandFactory : WlanSingleCommandFactory
                             }
                           : SecurityVersion.Automatic;
         var personal = new PersonalSecurity(password, encryption, version, interval);
-        return new TpLinkSetPersonalSecurityCommand(Wlan, personal);
+        return new SetWlanPersonalSecurityCommand(Wlan, personal);
     }
 }

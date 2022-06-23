@@ -14,7 +14,7 @@ internal class SetWlanSsidCommandFactory : WlanSingleCommandFactory
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
         var ssid = context.CurrentCommand
-                ?? throw new ArgumentValueExpectedException("SSID", context.Command.ToArray(), "SSID not provided");
-        return new TpLinkSetWlanSsidCommand(Wlan, ssid);
+                ?? throw new ArgumentValueExpectedException("SSID", context.Command.ToArray(), "SSID is not provided");
+        return new SetWlanSsidCommand(Wlan, ssid);
     }
 }

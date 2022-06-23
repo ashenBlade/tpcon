@@ -54,7 +54,7 @@ public class SetWepSecurityCommandFactory : WlanSingleCommandFactory
                            : throw new ArgumentValueExpectedException(Selected, context.Command,
                                                                       "Specify key to use by \"--selected\" argument");
         var security = new WepSecurity(new[] {key1, key2, key3, key4}, selected, type, format);
-        return new TpLinkSetWepSecurityCommand(Wlan, security);
+        return new SetWlanWepSecurityCommand(Wlan, security);
     }
 
     private static WepKey GetWepKeyNumber(RouterCommandContext context, int number)

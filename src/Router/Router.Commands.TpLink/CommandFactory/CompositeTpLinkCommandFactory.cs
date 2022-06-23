@@ -4,7 +4,7 @@ namespace Router.Commands.TpLink.CommandFactory;
 
 public abstract class CompositeTpLinkCommandFactory : BaseTpLinkCommandFactory
 {
-    private IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> _commands;
+    private readonly IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> _commands;
 
     protected CompositeTpLinkCommandFactory(IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> commands)
     {

@@ -11,12 +11,13 @@ public abstract class BaseConfigurator : IConfigurator
     }
 
     protected IRouterHttpMessageSender MessageSender { get; }
+
     protected async Task<Dictionary<string, JsType>> GetPageVariablesAsync(string path) =>
         ( await MessageSender.SendMessageAndParseAsync(path) )
        .ToDictionary(v => v.Name, v => v.Value);
-    
+
     protected static TJsType GetRequired<TJsType>(Dictionary<string, JsType> variables, string name, string path)
-        where TJsType: JsType =>
+        where TJsType : JsType =>
         variables.TryGetValue(name, out var type)
             ? type as TJsType ?? throw new ExpectedVariableTypeMismatchException(name, typeof(TJsType), type.GetType())
             : throw new MissingVariableInRouterResponseException(name, path);

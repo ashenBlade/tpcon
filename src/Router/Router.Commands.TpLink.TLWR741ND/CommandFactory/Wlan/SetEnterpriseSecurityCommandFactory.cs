@@ -72,6 +72,6 @@ public class SetEnterpriseSecurityCommandFactory : WlanSingleCommandFactory
                            : DefaultUpdateInterval;
         var radius = new RadiusServer(password, ip, port);
         var security = new EnterpriseSecurity(radius, version, encryption, interval);
-        return new TpLinkSetEnterpriseSecurityCommand(Wlan, security);
+        return new SetWlanEnterpriseSecurityCommand(Wlan, security);
     }
 }

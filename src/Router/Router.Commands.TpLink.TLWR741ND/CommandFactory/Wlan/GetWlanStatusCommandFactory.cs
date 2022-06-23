@@ -12,6 +12,6 @@ internal class GetWlanStatusCommandFactory : WlanSingleCommandFactory
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        return new TpLinkGetWlanStatusCommand(Wlan, context.OutputWriter, context.OutputFormatter);
+        return new GetWlanStatusCommand(Wlan, context.OutputWriter, context.OutputFormatter);
     }
 }

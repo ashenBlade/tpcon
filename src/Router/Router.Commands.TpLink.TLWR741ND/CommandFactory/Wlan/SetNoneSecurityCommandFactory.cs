@@ -12,6 +12,6 @@ public class SetNoneSecurityCommandFactory : WlanSingleCommandFactory
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        return new TpLinkSetNoneSecurityCommand(Wlan);
+        return new SetWlanNoneSecurityCommand(Wlan);
     }
 }

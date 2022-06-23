@@ -3,11 +3,12 @@ using Router.Commands.TpLink.TLWR741ND.Commands.DisplayStatus.Wlan;
 
 namespace Router.Commands.TpLink.TLWR741ND.Commands.Wlan;
 
-public class TpLinkGetWlanStatusCommand : WlanTpLinkQueryCommand
+public class GetWlanStatusCommand : WlanQueryCommand
 {
-    public TpLinkGetWlanStatusCommand(IWlanConfigurator configurator, TextWriter output, IOutputFormatter formatter) 
+    public GetWlanStatusCommand(IWlanConfigurator configurator, TextWriter output, IOutputFormatter formatter)
         : base(configurator, output, formatter)
-    { }
+    {
+    }
 
     protected override async Task<TpLink.Commands.DisplayStatus> GetDisplayStatusAsync()
     {

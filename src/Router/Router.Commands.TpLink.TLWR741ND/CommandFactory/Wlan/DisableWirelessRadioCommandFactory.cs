@@ -12,6 +12,6 @@ internal class DisableWirelessRadioTpLinkCommandFactory : WlanSingleCommandFacto
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        return new TpLinkDisableWirelessRadioCommand(Wlan);
+        return new DisableWirelessRadioCommand(Wlan);
     }
 }

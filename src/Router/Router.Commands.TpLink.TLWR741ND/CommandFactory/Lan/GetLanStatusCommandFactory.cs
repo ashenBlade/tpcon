@@ -1,5 +1,5 @@
 using Router.Commands.TpLink.Configurators.Lan;
-using Router.Commands.TpLink.TLWR741ND.Commands;
+using Router.Commands.TpLink.TLWR741ND.Commands.Lan;
 
 namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Lan;
 
@@ -12,6 +12,6 @@ internal class GetLanStatusCommandFactory : LanSingleCommandFactory
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        return new TpLinkGetLanStatusCommand(Lan, context.OutputWriter, context.OutputFormatter);
+        return new GetLanStatusCommand(Lan, context.OutputWriter, context.OutputFormatter);
     }
 }

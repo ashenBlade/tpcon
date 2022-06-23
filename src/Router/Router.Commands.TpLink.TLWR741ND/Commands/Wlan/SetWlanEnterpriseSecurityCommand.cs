@@ -4,9 +4,10 @@ using Router.Utils.Security;
 
 namespace Router.Commands.TpLink.TLWR741ND.Commands.Wlan;
 
-public class TpLinkSetEnterpriseSecurityCommand: TpLinkSetSecurityCommand
+public class SetWlanEnterpriseSecurityCommand : SetWlanSecurityCommand
 {
-    public TpLinkSetEnterpriseSecurityCommand(IWlanConfigurator configurator, EnterpriseSecurity security) 
+    public SetWlanEnterpriseSecurityCommand(IWlanConfigurator configurator, EnterpriseSecurity security)
         : base(configurator, security)
-    { }
+    {
+    }
 }

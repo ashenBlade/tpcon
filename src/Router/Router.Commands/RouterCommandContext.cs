@@ -8,7 +8,7 @@ public class RouterCommandContext
     private readonly string[] _command;
 
     public RouterCommandContext(string[] command,
-                                IDictionary<string, string> arguments, 
+                                IDictionary<string, string> arguments,
                                 IOutputFormatter outputFormatter,
                                 TextWriter outputWriter,
                                 RouterConnectionParameters connection)
@@ -19,7 +19,7 @@ public class RouterCommandContext
         OutputWriter = outputWriter;
         Connection = connection;
     }
-    
+
     public string? CurrentCommand =>
         _currentCommandIndex < _command.Length
             ? _command[_currentCommandIndex]
@@ -28,7 +28,7 @@ public class RouterCommandContext
     public string? NextCommand => _currentCommandIndex + 1 < _command.Length
                                       ? _command[_currentCommandIndex + 1]
                                       : null;
-    
+
     private int _currentCommandIndex = 0;
 
 
@@ -36,6 +36,7 @@ public class RouterCommandContext
     {
         if (_currentCommandIndex + 1 >= _command.Length)
         {
+            _currentCommandIndex = _command.Length;
             return false;
         }
 

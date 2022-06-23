@@ -9,6 +9,8 @@ internal class LanCompositeCommandFactory : CompositeTpLinkCommandFactory
         ILanConfigurator lan)
     {
         yield return new("status", () => new GetLanStatusCommandFactory(lan));
+        yield return new("ip", () => new SetIpAddressLanCommandFactory(lan));
+        yield return new("mask", () => new SetSubnetMaskLanCommandFactory(lan));
     }
 
     public LanCompositeCommandFactory(ILanConfigurator lan)

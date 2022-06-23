@@ -3,11 +3,12 @@ using Router.Commands.TpLink.Configurators.Wlan;
 
 namespace Router.Commands.TpLink.TLWR741ND.Commands.Wlan;
 
-public abstract class WlanTpLinkQueryCommand : TpLinkQueryCommand<IWlanConfigurator>
+public abstract class WlanQueryCommand : TpLinkQueryCommand<IWlanConfigurator>
 {
     protected IWlanConfigurator Wlan => Configurator;
-    
-    protected WlanTpLinkQueryCommand(IWlanConfigurator configurator, TextWriter output, IOutputFormatter formatter) 
+
+    protected WlanQueryCommand(IWlanConfigurator configurator, TextWriter output, IOutputFormatter formatter)
         : base(configurator, output, formatter)
-    { }
+    {
+    }
 }

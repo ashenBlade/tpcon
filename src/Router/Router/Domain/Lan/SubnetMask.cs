@@ -169,6 +169,20 @@ public struct SubnetMask
         return ( byte ) i;
     }
 
+    public static bool TryParse(string maskString, out SubnetMask mask)
+    {
+        mask = Zero;
+        try
+        {
+            mask = Parse(maskString);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+    }
+
     public override string ToString()
     {
         return _string;

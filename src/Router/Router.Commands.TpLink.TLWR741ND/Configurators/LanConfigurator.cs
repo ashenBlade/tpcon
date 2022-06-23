@@ -1,3 +1,5 @@
+using System.Net;
+using JsTypes;
 using Router.Commands.TpLink.Configurators.Lan;
 using Router.Commands.TpLink.TLWR741ND.Status;
 using Router.Commands.TpLink.TLWR741ND.Status.Lan.NetworkCfg;
@@ -15,18 +17,50 @@ public class LanConfigurator : BaseLanConfigurator
     {
         _networkExtractor = networkExtractor;
     }
-    
-    private static string NetworkCfgPath =>
-        "userRpm/NetworkCfgRpm.htm";
-    
+
+    private const string NetworkCfgPath = "userRpm/NetworkCfgRpm.htm";
+
     public override async Task<LanParameters> GetStatusAsync()
     {
-        var lan = await GetPageVariablesAsync("userRpm/NetworkCfgRpm.htm");
+        var status = await GetLanNetworkRouterStatusAsync();
+        return new LanParameters(status.MacAddress,
+                                 status.IpAddress,
+                                 status.CurrentSubnetMask);
+    }
+
+    private async Task<LanNetworkRouterStatus> GetLanNetworkRouterStatusAsync()
+    {
+        var lan = await GetNetworkCfgPageStatusAsync();
         var lanPara = GetRequiredArray(lan, "lanPara", NetworkCfgPath);
-        var status = _networkExtractor
+        return _networkExtractor
            .ExtractStatus(new LanNetworkPageStatus(lanPara));
-        return new LanParameters(status.MacAddress, 
-                                 status.IpAddress, 
-                                 status.SubnetMask);
+    }
+
+    private Task<Dictionary<string, JsType>> GetNetworkCfgPageStatusAsync()
+    {
+        return GetPageVariablesAsync("userRpm/NetworkCfgRpm.htm");
+    }
+
+    public override async Task SetIpAsync(IPAddress address)
+    {
+        var status = ( await GetLanNetworkRouterStatusAsync() ).WithIpAddress(address);
+        await SetStatusAsync(status);
+    }
+
+    public override async Task SetSubnetMaskAsync(SubnetMask mask)
+    {
+        var status = ( await GetLanNetworkRouterStatusAsync() ).WithSubnetMask(mask);
+        await SetStatusAsync(status);
+    }
+
+    private async Task SetStatusAsync(LanNetworkRouterStatus lan)
+    {
+        var parameters = new KeyValuePair<string, string>[]
+                         {
+                             new("lanip", lan.IpAddress.ToString()), new("lanmask", lan.SubnetMaskIndex.ToString()),
+                             new("inputMask", lan.CustomSubnetMask.ToString()),
+                         };
+
+        await MessageSender.SendMessageAndSaveAsync(NetworkCfgPath, parameters);
     }
 }
