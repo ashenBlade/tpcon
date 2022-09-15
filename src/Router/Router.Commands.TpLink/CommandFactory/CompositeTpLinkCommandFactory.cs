@@ -16,17 +16,15 @@ public abstract class CompositeTpLinkCommandFactory : BaseTpLinkCommandFactory
 
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
-        IRouterCommand GetHelpCommand()
+        KeyValuePair<CommandFactoryInfo, Func<BaseTpLinkCommandFactory>> FindCommandByName(string s)
         {
-            var commandText = string.Join(' ', context.CommandUntil);
-            return new PrintHelpCommand(context.OutputWriter,
-                                        commandText,
-                                        CommandsDescription);
+            return _commands
+               .FirstOrDefault(c => c.Key.Name == s);
         }
 
         if (context.IsLastCommand && context.Arguments.ContainsKey("help"))
         {
-            return GetHelpCommand();
+            return CreatePrintHelpCommand(context);
         }
 
         var currentCommand = context.CurrentCommand;
@@ -35,8 +33,8 @@ public abstract class CompositeTpLinkCommandFactory : BaseTpLinkCommandFactory
             throw new IncompleteCommandException(context.Command.ToArray());
         }
 
-        var pair = _commands
-           .FirstOrDefault(c => c.Key.Name == currentCommand);
+
+        var pair = FindCommandByName(currentCommand);
         var func = pair.Value;
 
         if (func is null)
@@ -44,14 +42,18 @@ public abstract class CompositeTpLinkCommandFactory : BaseTpLinkCommandFactory
             throw new UnknownCommandException(currentCommand, context.Command.ToArray());
         }
 
-        // if (context.Arguments.ContainsKey("help") && context.IsLastCommand)
-        // {
-        //     return GetHelpCommand(func());
-        // }
-
 
         context.MoveNext();
         return func().CreateRouterCommand(context);
+    }
+
+    private IRouterCommand CreatePrintHelpCommand(RouterCommandContext context, CommandFactoryInfo? info = null)
+    {
+        info ??= new CommandFactoryInfo(string.Empty, CommandsDescription);
+        var commandText = string.Join(' ', context.CommandUntil);
+        return new PrintHelpCommand(context.OutputWriter,
+                                    commandText,
+                                    info.Value.Description);
     }
 
     protected IEnumerable<string> GetCommandDescriptions()

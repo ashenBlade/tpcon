@@ -5,7 +5,7 @@ namespace Router.Commands;
 public class RouterCommandContext
 {
     public IEnumerable<string> Command => _command;
-    public IEnumerable<string> CommandUntil => _command[.._currentCommandIndex];
+    public IEnumerable<string> CommandUntil => _command.AsSpan(0, _currentCommandIndex).ToArray();
     private readonly string[] _command;
 
     public RouterCommandContext(string[] command,
@@ -45,10 +45,10 @@ public class RouterCommandContext
         return true;
     }
 
-    public bool HasNextCommand => _currentCommandIndex + 1 < _command.Length;
+    public bool HasNextCommand => _currentCommandIndex >= _command.Length;
     public IDictionary<string, string> Arguments { get; init; }
     public IOutputFormatter OutputFormatter { get; init; }
     public TextWriter OutputWriter { get; init; }
     public RouterConnectionParameters Connection { get; }
-    public bool IsLastCommand => !HasNextCommand;
+    public bool IsLastCommand => _currentCommandIndex == _command.Length;
 }
