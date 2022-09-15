@@ -1,10 +1,11 @@
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Router.Commands.TpLink.TLWR741ND.Commands.DisplayStatus.Router;
 
 public class HealthCheckDisplayStatus : TpLink.Commands.DisplayStatus
 {
-    [DisplayName("Здоров")]
+    [DisplayName("Подключение")]
     public bool Healthy { get; }
 
     public HealthCheckDisplayStatus(bool healthy)
