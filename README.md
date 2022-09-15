@@ -23,11 +23,12 @@ dotnet publish -c Release
 Then copy content of build into your folder with Software
 On linux:
 - Add `export PATH="${YOUR_PATH_TO_EXECUTABLE}:${PATH}"` to end of .bashrc
-For example `export PATH="${HOME}/bin/tpcon:${PATH}"`
+  For example `export PATH="${HOME}/bin/tpcon:${PATH}"`
 - Restart terminal
 - Run `command -v tpcon` to check successful installation
 
 On Windows:
+
 - Add `setx PATH "YOUR_PATH_TO_EXECUTABLE;%PATH"` for your account. For example: `setx PATH "C:\bin\tpcon;%PATH%"`
 - Restart command prompt
 - Run `where.exe tpcon.exe` to check success installation
@@ -35,13 +36,14 @@ On Windows:
 ## Commands
 
 ### Supported commands:
+
 - **health**
 
-Checks connection to router. 
+Checks connection to router.
 
 Prints 'OK' if connection exists or 'Could not connect to router' otherwise
 
-- **refresh** 
+- **refresh**
 
 Refreshes the router. 
 Refresh required after applying new values. 
@@ -137,6 +139,22 @@ Supported outputs:
 Example: --output table
 
 Default: plain
+
+### Complete commands
+
+To get subcommands add **--help** to argument list.
+
+```shell
+~$ tpcon lan --help
+
+Command:
+        lan
+Description:
+
+        status - Получить статус локальной сети
+        ip - Установить новый локальный адрес роутера. IP адрес задается в виде 4 чисел в диапазоне 0-255, разделенных точками. Пример: 192.168.0.1
+        mask - Изменить маску сети локальной сети. Маска задается в виде Wildcard. Например: 255.255.240.0
+```
 
 ### Warning
 
