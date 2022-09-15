@@ -7,19 +7,19 @@ public class MacAddress
 {
     private readonly byte[] _octets;
     private string? _representation;
+
     public MacAddress(IReadOnlyList<byte> octets)
     {
         if (octets.Count != 6)
         {
             throw new ArgumentOutOfRangeException(nameof(octets.Count), octets.Count,
-                                                  "There is must be 6 bytes in MAC address array length");
+                                                  "MAC адрес должнен состоять из 6 байтов");
         }
 
-        _octets = new[] {octets[0], octets[1], octets[2], octets[3], octets[4], octets[5] };
+        _octets = new[] {octets[0], octets[1], octets[2], octets[3], octets[4], octets[5]};
     }
-    
-    
-    
+
+
     public static MacAddress Parse(string mac)
     {
         if (string.IsNullOrWhiteSpace(mac))
@@ -36,9 +36,10 @@ public class MacAddress
         var regex = new Regex(MacAddressRegex);
         if (!regex.IsMatch(mac))
         {
-            throw new ArgumentOutOfRangeException(nameof(mac), mac, $"Mac address does not satisfy representation: {MacAddressRegex}");
+            throw new ArgumentOutOfRangeException(nameof(mac), mac,
+                                                  $"Mac address does not satisfy representation: {MacAddressRegex}");
         }
-        
+
         return new MacAddress(mac.Split('-').Select(hex => byte.Parse(hex, NumberStyles.HexNumber)).ToArray());
     }
 

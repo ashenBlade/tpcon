@@ -5,19 +5,21 @@ namespace Router.Commands.TpLink.TLWR741ND.Commands.DisplayStatus.Wlan;
 
 public abstract class WPASecurityDisplayStatus : SecurityDisplayStatus
 {
-    protected WPASecurityDisplayStatus(SecurityVersion version, EncryptionType encryptionType, int groupKeyUpdateInterval)
+    protected WPASecurityDisplayStatus(SecurityVersion version,
+                                       EncryptionType encryptionType,
+                                       int groupKeyUpdateInterval)
     {
         Version = version;
         EncryptionType = encryptionType;
         GroupKeyUpdateInterval = groupKeyUpdateInterval;
     }
 
-    [DisplayName("Encryption")]
+    [DisplayName("Шифрование")]
     public EncryptionType EncryptionType { get; }
-    
-    [DisplayName("Version")]
+
+    [DisplayName("Версия")]
     public SecurityVersion Version { get; }
-    
-    [DisplayName("Group update key interval")]
+
+    [DisplayName("Время обновления группового ключа")]
     public int GroupKeyUpdateInterval { get; }
 }

@@ -30,10 +30,10 @@ public class PrintHelpCommand : TpLinkCommand
     private string GetFormattedHelpMessage => $"{CommandSection}{DescriptionSection}";
 
     private string CommandSection =>
-        FormatHelpMessageSection("Command", _command);
+        FormatHelpMessageSection("Команда", _command);
 
     private string DescriptionSection =>
-        FormatHelpMessageSection("Description", _description);
+        FormatHelpMessageSection("Описание", _description);
 
 
     public override async Task ExecuteAsync()

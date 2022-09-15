@@ -12,17 +12,17 @@ public class RadiusServer
         ArgumentNullException.ThrowIfNull(address);
         if (port < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(port), "Port must not be negative");
+            throw new ArgumentOutOfRangeException(nameof(port), "Порт не может быть отрицательным");
         }
 
         if (password is null or {Length: 0 or > MaxPasswordLength})
         {
-            throw new ArgumentOutOfRangeException(nameof(password), "Password length must be between 1 and 63");
+            throw new ArgumentOutOfRangeException(nameof(password), "Длина пароля должна быть в диапазоне от 1 до 63");
         }
 
         if (port is < 0 or > 65535)
         {
-            throw new ArgumentOutOfRangeException(nameof(port), "Port must be between 1-65535");
+            throw new ArgumentOutOfRangeException(nameof(port), "Порт должен быть в диапазоне от 1 до 65535");
         }
 
         Address = address;

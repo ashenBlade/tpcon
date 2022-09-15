@@ -21,5 +21,7 @@ public class ArgumentOutOfRangeRouterResponseException : InvalidRouterResponseEx
 
     private static string GetDefaultErrorMessage(string argument, object actual, string expected)
         =>
-            $"Router responded with invalid values.\nArgument \"{argument}\" expected to be: {expected}\nBut given: {actual}";
+            "От роутера получены неверные данные.\n"
+          + $"Ожидаемое значение переменной \"{argument}\" - {expected}\n"
+          + $"Получено: {actual}";
 }

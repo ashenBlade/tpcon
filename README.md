@@ -1,163 +1,184 @@
 # TpCon
 
-tpcon - is a **CLI** tool for managing TpLink routers without using web interface
+**tpcon** - CLI утилита для управления роутерами TpLink
 
-You don't need to use web browser anymore, just use command line
-
-<hr>
-
-## Dependencies
-
-In order to run application you need .NET Framework 4.6+ installed
+В реализации используется парсинг HTML страницы и имитация HTTP запросов
 
 <hr>
 
-## Installation
+## Зависимости
 
-### From sources
+Для запуска приложения необходимо иметь .NET Core 6 Runtime
 
+## Установка
+
+### Из исходных файлов
+
+1. Запусить из корня проекта
+
+```shell
+  cd src/TpLinkConsole.Console
+  dotnet publish -c Release -o tpcon
 ```
-cd src/TpLinkConsole.Console
-dotnet publish -c Release
+
+2. Скопировать созданные файлы из папки `tpcon` в папку,
+   из которой планируется запускать приложение.
+   В примере, папка `software`
+
+```shell
+cp tpcon ~/software -r
 ```
-Then copy content of build into your folder with Software
-On linux:
-- Add `export PATH="${YOUR_PATH_TO_EXECUTABLE}:${PATH}"` to end of .bashrc
-  For example `export PATH="${HOME}/bin/tpcon:${PATH}"`
-- Restart terminal
-- Run `command -v tpcon` to check successful installation
 
-On Windows:
+## Команды
 
-- Add `setx PATH "YOUR_PATH_TO_EXECUTABLE;%PATH"` for your account. For example: `setx PATH "C:\bin\tpcon;%PATH%"`
-- Restart command prompt
-- Run `where.exe tpcon.exe` to check success installation
+### Поддерживаемые команды
 
-## Commands
+#### health
 
-### Supported commands:
+Проверить подключение к роутеру
 
-- **health**
+Печатает:
 
-Checks connection to router.
+- `Подключение: False` - нет подключения
+- `Подключение: True` - есть подкючение
 
-Prints 'OK' if connection exists or 'Could not connect to router' otherwise
+#### refresh
 
-- **refresh**
+Перезагрузить роутер.
+Перезагрузка нужна для применения некоторых команд.
+Например, после изменения пароля: `wlan password "P@ssw0rd"`
 
-Refreshes the router. 
-Refresh required after applying new values. 
-For example after ```wlan password "P@ssw0rd"```
+#### wlan
 
 - **wlan status**
 
-Prints wlan status: ssid, password, on or off
+Получить информацию о статусе беспроводной сети Wi-Fi:
+ssid, безопасность, питание
 
 - **wlan enable**
 
-Enables Wi-Fi 
+Включить Wi-Fi
 
 - **wlan disable**
 
-Disables Wi-Fi
+Выключить Wi-Fi
 
-- **wlan security** - set new security
-  - **wlan security none** - disable security
-  - **wlan security personal** - set WPA/WPA2 Personal security
-    - Arguments:
-      - *--password* - set password. Password can be specified right after "personal" word
-      - *--encryption* - set encryption. Supported values: "tkip", "aes", "auto" (Default)
-      - *--version* - set security version. Supported values: "wpa", "wpa2", "auto" (Default)
-      - *--group-key-update-interval* - set group key update interval. Minimum value - 30. 0 - no update (Default)
-  - **wlan security enterprise** - set WPA/WPA2 Enterprise security
-    - Arguments:
-      - *--radius-password* - set password for RADIUS server
-      - *--radius-port* - set port for RADIUS server (Default - 1812)
-      - *--radius-ip* - set IP for RADIUS server
-      - *--encryption* - set encryption. Supported values: "tkip", "aes", "auto" (Default)
-      - *--version* - set security version. Supported values: "wpa", "wpa2", "auto" (Default)
-      - *--group-key-update-interval* - set group key update interval. Minimum value - 30. 0 - no update (Default)
-  - **wlan security wep** - set WEP security
-    - Arguments:
-      - *--auth-type* - authentication type. Supported: "shared-key", "open-system", "auto" (Default)
-      - *--key-format* - format of key representation. Supported: "ascii", "hex" (Default)
-      - *--key{number}* - set value for key with {number} number.
-      - *--length{number}* - set length for key with {number} number. Supported: ("bit64", "64", "64bit"), ("bit128", "
-        128", "128bit"), ("bit152", "152", "152bit"), "disabled" (Default).
-        Total keys amount - 4
-      - *--selected* - specify key number that will be used by system. Should be number of key already specified.
+- **wlan security**
+  - **wlan security none** - выключить защиту
+  - **wlan security personal** - установить тип безопасности WPA/WPA2 Personal
+    - Аргументы
+      - *--password* - установить пароль
+      - *--encryption* - шифрование. Поддерживаемые типы: "tkip", "aes", "auto" (по умолчанию)
+      - *--version* - тип WPA. Поддерживаемые типы: "wpa", "wpa2", "auto" (по умолчанию)
+      - *--group-key-update-interval* - период обновления группового ключа. Должен быть либо 0 (по умолчанию), либо
+        больше 30
+  - **wlan security enterprise** - установить тип безопасности WPA/WPA2 Enterprise
+    - Аргументы
+      - *--radius-password* - пароль RADIUS сервера
+      - *--radius-port* - порт RADIUS сервера. По умолчанию - 1812
+      - *--radius-ip* - IP адрес RADIUS сервера
+      - *--encryption* - шифрование. Поддерживаемые типы: "tkip", "aes", "auto" (по умолчанию)
+      - *--version* - тип защиты. Поддерживаемые типы: "wpa", "wpa2", "auto" (по умолчанию)
+      - *--group-key-update-interval* - период обновления группового ключа. Должен быть либо 0 (по умолчанию), либо
+        больше 30
+  - **wlan security wep** - установить защиту WEP
+    - Аргументы
+      - *--auth-type* - тип аутентификации. Поддерживаемые значения: "shared-key", "open-system", "auto" (по умолчанию)
+      - *--key-format* - формат ключа. Поддерживаемые значения: "ascii", "hex" (по умолчанию)
+      - *--key{number}* - значение ключа с номером number. Например, для ключа 1 - `--key1`
+      - *--length{number}* - длина ключа с номером number. Поддерживаемые значения: ("bit64", "64", "64bit"), ("bit128"
+        , "
+        128", "128bit"), ("bit152", "152", "152bit"), "disabled" (по умолчанию). В скобках указаны эквивалентные
+        значения
+        Общее число поддерживаемых ключей - 4 (1, 2, 3, 4)
+      - *--selected* - номер ключа, который будет использоваться. Обязателен. Должен указывать на созданный с
+        помощью `--key{number}` ключ
 
-Set new Wi-Fi password
+- **wlan ssid {*new ssid*}**
 
-- **wlan ssid "*new ssid*"**
+Установить новый Wi-Fi SSID (название Wi-Fi)
 
-Set new Wi-Fi SSID (Wi-Fi name)
+Пример: `wlan ssid "Some New SSID"`
+
+#### lan
 
 - **lan status**
 
-Displays lan status: router local ip address, subnet mask, router mac address
+Показать информацию о локальной сети: локальный адрес роутера, маска подсети, MAC адрес роутера
 
-- **lan ip**
+- **lan ip {*new-ip*}**
 
-Set router's local IP address. IP address must be specified right after "ip" word
+Поставить новый локальный IP адрес роутера.
+IP адрес указать в виде 4 десятичный чисел разделенных точкой.
+
+Пример: `lan ip 192.168.0.4`
 
 - **lan mask**
 
-Set subnet mask for LAN. Mask must be in form of IP address (e.g. 255.255.128.0)
+Установить маску подсети. Маска указывается в виде IP адреса
 
-### Options
+Пример: `lan mask 255.255.240.0`
 
-- *--router-address "*router local ip address*"*
+### Общие опции
 
-Address of TpLink router you want to connect.
-Default: 192.168.0.1
+- **--router-address "*router local ip address*"**
+
+IP адрес роутера для подключения.
+
+По умолчанию: 192.168.0.1
 
 - *--router-username "*admin username*"*
 
-Username of router admin.
-That is what you enter in username input when enter browser router page.
-Default: admin
+Имя администратора роутера.
+То имя, которое вводишь при входе на страницу управления роутером.
+
+По умолчанию: admin
 
 - *--router-password "*admin password*"*
 
-Password of router admin.
-That is what you enter in password input when enter browser router page.
-Default: admin
+Пароль администратора роутера.
+Пароль, который вводишь при входе на страницу управления роутером.
+
+По умолчанию: admin
 
 - --output "*output style*"
 
-Applied for commands that prints something on screen.
+Тип форматирования используемый при выводе.
 
-Supported outputs:
+Поддерживаемые форматы:
 
-- table
-- json
-- xml,
-- plain (key-value).
-  - *For plain type supported option --delimiter (by default set to ": ")*
+- table - табличный вывод. По умолчанию
+- json - в формате JSON
+- xml - в формате XML
+- plain - в формате ключ-значение
 
-Example: --output table
+При выборе `plain` можно указать разделитель:
 
-Default: plain
+- --delimiter - строка разделителя. По умолчанию - ": "
 
-### Complete commands
+Примеры:
 
-To get subcommands add **--help** to argument list.
+- `--output table`
+- `--output plain --delimiter " - "`
+
+### Описания команд
+
+Для получения описания команд указать аргумент **--help**
 
 ```shell
 ~$ tpcon lan --help
 
-Command:
+Команда:
         lan
-Description:
+Описание:
 
         status - Получить статус локальной сети
         ip - Установить новый локальный адрес роутера. IP адрес задается в виде 4 чисел в диапазоне 0-255, разделенных точками. Пример: 192.168.0.1
         mask - Изменить маску сети локальной сети. Маска задается в виде Wildcard. Например: 255.255.240.0
 ```
 
-### Warning
+### ВНИМАНИЕ
 
-These commands were tested on [TpLink TLWR741ND](https://www.tp-link.com/ru/home-networking/wifi-router/tl-wr741nd/).
-Other versions might not be compatible.
-Use at your own risk. (Anyway you can always reset router)
+Команды были опробованы для [TpLink TLWR741ND](https://www.tp-link.com/ru/home-networking/wifi-router/tl-wr741nd/).
+Другие версии могут не поддерживаться, нарушить работу роутера и сломать его.
+Используйте это приложение на свой страх и риск.

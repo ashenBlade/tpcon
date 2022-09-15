@@ -6,10 +6,11 @@ public readonly struct ChannelNumber
     public string Number { get; } = string.Empty;
 
     public ChannelNumber(int number)
-    : this(number < 1 
-               ? throw new ArgumentOutOfRangeException(nameof(number), "Channel number must be positive") 
-               : number.ToString())
-    { }
+        : this(number < 1
+                   ? throw new ArgumentOutOfRangeException(nameof(number), "Номер канала должен быть положительным1")
+                   : number.ToString())
+    {
+    }
 
     private ChannelNumber(string number)
     {

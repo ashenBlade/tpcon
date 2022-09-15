@@ -6,12 +6,14 @@ public readonly struct ChannelWidth
     public string Width { get; } = string.Empty;
 
     public ChannelWidth(int width)
-        : this(width < 1 
-                   ? throw new ArgumentOutOfRangeException(nameof(width), "Channel width must be positive") 
+        : this(width < 1
+                   ? throw new ArgumentOutOfRangeException(nameof(width), "Ширина канала должна быть положительной")
                    : width.ToString())
-    { }
+    {
+    }
 
     private const string AutoChannel = "Auto";
+
     private ChannelWidth(string width)
     {
         Width = width;

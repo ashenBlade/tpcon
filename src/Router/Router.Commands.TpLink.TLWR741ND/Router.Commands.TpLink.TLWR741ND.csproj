@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Router.Domain.Infrastructure\Router.Domain.Infrastructure.csproj" />
-      <ProjectReference Include="..\Router.TpLink\Router.TpLink.csproj" />
-      <ProjectReference Include="..\Router.Utils\Router.Utils.csproj" />
+        <ProjectReference Include="..\..\Parser\JsUtils.Implementation\JsUtils.Implementation.csproj"/>
+        <ProjectReference Include="..\Router.Commands.TpLink\Router.Commands.TpLink.csproj"/>
+        <ProjectReference Include="..\Router.Utils\Router.Utils.csproj"/>
     </ItemGroup>
 
 </Project>

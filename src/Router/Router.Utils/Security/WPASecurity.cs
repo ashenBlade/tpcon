@@ -13,7 +13,8 @@ public abstract class WPASecurity : Domain.Wlan.Security
         if (groupKeyUpdatePeriod is < 30 and not NoGroupKeyUpdatePeriod)
         {
             throw new ArgumentOutOfRangeException(nameof(groupKeyUpdatePeriod),
-                                                  "Group key update period must be greater than 30 or 0");
+                                                  groupKeyUpdatePeriod,
+                                                  "Период обновления группового ключа должен быть больше 30 или 0");
         }
 
         Version = version;
@@ -21,12 +22,12 @@ public abstract class WPASecurity : Domain.Wlan.Security
         GroupKeyUpdatePeriod = groupKeyUpdatePeriod;
     }
 
-    [DisplayName("WPA Version")]
+    [DisplayName("WPA версия")]
     public SecurityVersion Version { get; }
 
-    [DisplayName("Encryption type")]
+    [DisplayName("Тип шифрования")]
     public EncryptionType EncryptionType { get; }
 
-    [DisplayName("Group key update period")]
+    [DisplayName("Период обновления группового ключа")]
     public int GroupKeyUpdatePeriod { get; }
 }

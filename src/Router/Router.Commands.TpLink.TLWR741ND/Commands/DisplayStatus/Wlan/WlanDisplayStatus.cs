@@ -7,8 +7,9 @@ public class WlanDisplayStatus : TpLink.Commands.DisplayStatus
 {
     public WlanDisplayStatus(WlanParameters wlan)
         : this(wlan.SSID, wlan.IsActive, wlan.Channel, wlan.Rate, wlan.Security)
-    { }
-    
+    {
+    }
+
     public WlanDisplayStatus(string ssid,
                              bool enabled,
                              Channel channel,
@@ -22,22 +23,22 @@ public class WlanDisplayStatus : TpLink.Commands.DisplayStatus
         Rate = rate.ToString();
         Security = security.Name;
     }
-    
+
     [DisplayName("SSID")]
     public string SSID { get; }
-    
-    [DisplayName("WiFi enabled")]
+
+    [DisplayName("WiFi включен")]
     public bool Enabled { get; }
 
-    [DisplayName("Channel number")]
+    [DisplayName("Номер канала")]
     public string ChannelNumber { get; }
-    
-    [DisplayName("Channel width")]
+
+    [DisplayName("Ширина канала")]
     public string ChannelWidth { get; }
 
-    [DisplayName("Security")]
+    [DisplayName("Безопасность")]
     public string Security { get; }
 
-    [DisplayName("Rate")]
+    [DisplayName("Скорость")]
     public string Rate { get; }
 }

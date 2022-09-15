@@ -12,6 +12,6 @@ public class RouterUnreachableException : RouterConnectionException
         Address = address;
     }
 
-    private static string GetDefaultMessage(IPAddress address) 
-        => $"Could not connect to router at {address}";
+    private static string GetDefaultMessage(IPAddress address)
+        => $"Не удалось подключиться к роутеру по адресу {address}";
 }
