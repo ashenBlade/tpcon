@@ -49,6 +49,8 @@ let parseCommandFromCommandLineInput: ParseCommand =
 
         parseCommandFromCommandLineInputRec context)
 
+let isArgument (arg: string) : bool = arg.StartsWith '-'
+
 let normalizeArgumentName (arg: string) = arg[2..]
 
 let parseArgumentsFromCommandsParsed: ParseArguments =
@@ -56,17 +58,28 @@ let parseArgumentsFromCommandsParsed: ParseArguments =
         let rec parseInner (ctx: CommandLineContextUnparsed) =
             match ctx.Rest with
             | [] -> Ok ctx
-            | [ arg ] -> Error(ParsingError.ArgumentExpectedError arg)
+            | [ arg ] ->
+                Ok
+                    { ctx with
+                        Arguments = (Map.add (normalizeArgumentName arg) null ctx.Arguments)
+                        Rest = list.Empty }
             | argument :: value :: rest ->
-                let normalized = normalizeArgumentName argument
+                let normalized =
+                    normalizeArgumentName argument
 
                 match Map.containsKey normalized ctx.Arguments with
                 | true -> Error(ParsingError.DuplicatedArgumentError normalized)
                 | false ->
-                    parseInner
-                        { ctx with
-                            Arguments = (Map.add normalized value ctx.Arguments)
-                            Rest = rest }
+                    if isArgument value then
+                        parseInner
+                            { ctx with
+                                Arguments = (Map.add normalized null ctx.Arguments)
+                                Rest = rest @ [ value ] }
+                    else
+                        parseInner
+                            { ctx with
+                                Arguments = (Map.add normalized value ctx.Arguments)
+                                Rest = rest }
 
         parseInner context)
 
@@ -83,11 +96,14 @@ let extractRouterParameters: ParsingPipe =
     (fun ctx ->
         let args = ctx.Arguments
 
-        let address = fallback "router-address" "192.168.0.1" args
+        let address =
+            fallback "router-address" "192.168.0.1" args
 
-        let username = fallback "router-username" "admin" args
+        let username =
+            fallback "router-username" "admin" args
 
-        let password = fallback "router-password" "admin" args
+        let password =
+            fallback "router-password" "admin" args
 
         match IPAddress.TryParse address with
         | (true, ip) -> Ok { ctx with RouterParameters = RouterConnectionParameters(ip, username, password) }

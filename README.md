@@ -126,8 +126,13 @@ Default: admin
 
 Applied for commands that prints something on screen.
 
-Supported outputs: table, json, xml, plain (key-value).
-*For plain type supported option --delimiter (by default set to ": ")*
+Supported outputs:
+
+- table
+- json
+- xml,
+- plain (key-value).
+  - *For plain type supported option --delimiter (by default set to ": ")*
 
 Example: --output table
 
@@ -136,5 +141,5 @@ Default: plain
 ### Warning
 
 These commands were tested on [TpLink TLWR741ND](https://www.tp-link.com/ru/home-networking/wifi-router/tl-wr741nd/).
-Other versions might not be compatible. 
+Other versions might not be compatible.
 Use at your own risk. (Anyway you can always reset router)

@@ -2,8 +2,13 @@ using Router.Commands.TpLink.Configurators;
 
 namespace Router.Commands.TpLink.Commands;
 
-public abstract class TpLinkCommand<TConfigurator> : IRouterCommand
-    where TConfigurator: IConfigurator
+public abstract class TpLinkCommand : IRouterCommand
+{
+    public abstract Task ExecuteAsync();
+}
+
+public abstract class TpLinkCommand<TConfigurator> : TpLinkCommand
+    where TConfigurator : IConfigurator
 {
     public TConfigurator Configurator { get; }
 
@@ -12,6 +17,4 @@ public abstract class TpLinkCommand<TConfigurator> : IRouterCommand
         ArgumentNullException.ThrowIfNull(configurator);
         Configurator = configurator;
     }
-    
-    public abstract Task ExecuteAsync();
 }

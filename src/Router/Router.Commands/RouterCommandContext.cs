@@ -5,6 +5,7 @@ namespace Router.Commands;
 public class RouterCommandContext
 {
     public IEnumerable<string> Command => _command;
+    public IEnumerable<string> CommandUntil => _command[.._currentCommandIndex];
     private readonly string[] _command;
 
     public RouterCommandContext(string[] command,
@@ -49,4 +50,5 @@ public class RouterCommandContext
     public IOutputFormatter OutputFormatter { get; init; }
     public TextWriter OutputWriter { get; init; }
     public RouterConnectionParameters Connection { get; }
+    public bool IsLastCommand => !HasNextCommand;
 }

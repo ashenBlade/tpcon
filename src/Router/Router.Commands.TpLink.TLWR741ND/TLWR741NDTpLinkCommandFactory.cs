@@ -13,7 +13,7 @@ namespace Router.Commands.TpLink.TLWR741ND;
 
 public class TLWR741NDTpLinkCommandFactory : TpLinkCommandFactory
 {
-    private static IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> GetDefaultCommands(
+    private static IEnumerable<KeyValuePair<CommandFactoryInfo, Func<BaseTpLinkCommandFactory>>> GetDefaultCommands(
         RouterConnectionParameters connectionParameters)
     {
         var sender = CreateMessageSender(connectionParameters);
@@ -22,10 +22,15 @@ public class TLWR741NDTpLinkCommandFactory : TpLinkCommandFactory
         var lan = CreateLanConfigurator(sender);
         var router = CreateRouterConfigurator(sender);
 
-        yield return new("health", () => new CheckConnectionTpLinkCommandFactory(router));
-        yield return new("refresh", () => new RefreshTpLinkCommandFactory(router));
-        yield return new("wlan", () => new WlanCompositeCommandFactory(wlan));
-        yield return new("lan", () => new LanCompositeCommandFactory(lan));
+        yield return new(new("health", "Проверить соединение с роутером"),
+                         () => new CheckConnectionTpLinkCommandFactory(router));
+        yield return new(new("refresh", "Перезагрузить роутер. "
+                                      + "Перезагрузка нужна для применения установленных изменений"),
+                         () => new RefreshTpLinkCommandFactory(router));
+        yield return new(new("wlan", "Настройки беспроводной сети"),
+                         () => new WlanCompositeCommandFactory(wlan));
+        yield return new(new("lan", "Настройки локальной сети"),
+                         () => new LanCompositeCommandFactory(lan));
     }
 
     private static RouterConfigurator CreateRouterConfigurator(IRouterHttpMessageSender sender)

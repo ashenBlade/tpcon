@@ -14,7 +14,8 @@ public class SetEnterpriseSecurityCommandFactory : WlanSingleCommandFactory
     private const string RadiusPort = "radius-port";
     private const string RadiusPassword = "radius-password";
     private const string GroupKeyUpdateInterval = "group-key-update-interval";
-    private const int DefaultUpdateInterval = 0; // No update
+    private const int NoUpdateInterval = 0;
+    private const int DefaultUpdateInterval = NoUpdateInterval;
 
     public SetEnterpriseSecurityCommandFactory(IWlanConfigurator wlan)
         : base(wlan)

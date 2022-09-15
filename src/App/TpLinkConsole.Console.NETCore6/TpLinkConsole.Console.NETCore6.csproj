@@ -13,6 +13,5 @@
       <ProjectReference Include="..\..\Router\Router.Commands.Utils\Router.Commands.Utils.fsproj" />
       <ProjectReference Include="..\..\Router\Router\Router.csproj" />
       <ProjectReference Include="..\..\Router\Router.Commands.TpLink.TLWR741ND\Router.Commands.TpLink.TLWR741ND.csproj" />
-      <ProjectReference Include="..\TpLinkConsole.Infrastructure\TpLinkConsole.Infrastructure.csproj" />
     </ItemGroup>
 </Project>

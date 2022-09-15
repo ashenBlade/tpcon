@@ -5,18 +5,22 @@ namespace Router.Commands.TpLink.TLWR741ND.CommandFactory.Wlan.Security;
 
 public class WlanSecurityCompositeCommandFactory : CompositeTpLinkCommandFactory
 {
-    private static IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> GetWlanSecurityCommands(
-        IWlanConfigurator wlan)
-    {
-        yield return Pair("status", () => new GetWlanSecurityStatusCommandFactory(wlan));
-        yield return Pair("personal", () => new SetPersonalSecurityCommandFactory(wlan));
-        yield return Pair("enterprise", () => new SetEnterpriseSecurityCommandFactory(wlan));
-        yield return Pair("wep", () => new SetWepSecurityCommandFactory(wlan));
-        yield return Pair("none", () => new SetNoneSecurityCommandFactory(wlan));
-
-        KeyValuePair<string, Func<BaseTpLinkCommandFactory>>
-            Pair(string name, Func<BaseTpLinkCommandFactory> factory) => new(name, factory);
-    }
+    private static IEnumerable<KeyValuePair<CommandFactoryInfo, Func<BaseTpLinkCommandFactory>>>
+        GetWlanSecurityCommands(
+        IWlanConfigurator wlan) =>
+        new[]
+        {
+            Command("status", "Получить информацию о защите Wi-Fi",
+                    () => new GetWlanSecurityStatusCommandFactory(wlan)),
+            Command("personal", "Выставить защиту Wi-Fi технологией WPA/WPA2-Personal",
+                    () => new SetPersonalSecurityCommandFactory(wlan)),
+            Command("enterprise", "Выставить защиту Wi-Fi технологией WPA/WPA2-Enterprise",
+                    () => new SetEnterpriseSecurityCommandFactory(wlan)),
+            Command("wep", "Выставить защиту Wi-Fi технологией Wep",
+                    () => new SetWepSecurityCommandFactory(wlan)),
+            Command("none", "Убрать защиту Wi-Fi",
+                    () => new SetNoneSecurityCommandFactory(wlan))
+        };
 
     public WlanSecurityCompositeCommandFactory(IWlanConfigurator wlan)
         : base(GetWlanSecurityCommands(wlan))

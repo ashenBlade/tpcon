@@ -11,13 +11,18 @@ internal class WlanCompositeCommandFactory : CompositeTpLinkCommandFactory
     {
     }
 
-    private static IEnumerable<KeyValuePair<string, Func<BaseTpLinkCommandFactory>>> GetWlanCommands(
+    private static IEnumerable<KeyValuePair<CommandFactoryInfo, Func<BaseTpLinkCommandFactory>>> GetWlanCommands(
         IWlanConfigurator wlan)
     {
-        yield return new("status", () => new GetWlanStatusCommandFactory(wlan));
-        yield return new("enable", () => new EnableWirelessRadioCommandFactory(wlan));
-        yield return new("disable", () => new DisableWirelessRadioTpLinkCommandFactory(wlan));
-        yield return new("ssid", () => new SetWlanSsidCommandFactory(wlan));
-        yield return new("security", () => new WlanSecurityCompositeCommandFactory(wlan));
+        yield return new(new("status", "Получить информацию о беспроводном соединении роутера"),
+                         () => new GetWlanStatusCommandFactory(wlan));
+        yield return new(new("enable", "Включить Wi-Fi. Для применения нужна перезагрузка"),
+                         () => new EnableWirelessRadioCommandFactory(wlan));
+        yield return new(new("disable", "Выключить Wi-Fi. Для применения нужна перезагрузка"),
+                         () => new DisableWirelessRadioTpLinkCommandFactory(wlan));
+        yield return new(new("ssid", "Установить SSID роутера. То, под каким именем его видят другие"),
+                         () => new SetWlanSsidCommandFactory(wlan));
+        yield return new(new("security", "Информация о защите беспроводной сети"),
+                         () => new WlanSecurityCompositeCommandFactory(wlan));
     }
 }
