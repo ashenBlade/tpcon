@@ -15,6 +15,7 @@ public static class CommandLineContextExtensions
                                                               ? delimiter
                                                               : ": "),
             OutputStyle.Xml => new XmlFormatter(),
-            _ => throw new ArgumentOutOfRangeException(nameof(context.OutputStyle), $"Unknown output style: {context.OutputStyle}")
+            _ => throw new ArgumentOutOfRangeException(nameof(context.OutputStyle),
+                                                       $"Неизвестный формат вывода: {context.OutputStyle}")
         };
 }

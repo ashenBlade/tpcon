@@ -21,21 +21,32 @@ try
 }
 catch (InvalidRouterCredentialsException)
 {
-    Console.WriteLine($"Could not connect to router: Invalid credentials provided");
+    Console.WriteLine($"Не удалось подключиться к роутеру: Неправильные логин или пароль");
+    Environment.ExitCode = 1;
 }
 catch (RouterUnreachableException)
 {
-    Console.WriteLine($"Could not connect to router: Router unreachable");
+    Console.WriteLine($"Не удалось подключиться к роутеру: Роутер недоступен");
+    Environment.ExitCode = 2;
 }
 catch (UnknownCommandException unknown)
 {
-    Console.WriteLine($"Unknown command \"{unknown.Unknown}\"");
-}
-catch (RouterException router)
-{
-    Console.WriteLine(router.Message);
+    Console.WriteLine($"Неизвестная команда: \"{unknown.Unknown}\"\nЧтобы увидеть список возможных команд введите '--help'");
+    Environment.ExitCode = 3;
 }
 catch (CommandLineException cmd)
 {
     Console.WriteLine(cmd.Message);
+    Environment.ExitCode = 4;
+}
+catch (RouterException router)
+{
+    Console.WriteLine(router.Message);
+    Environment.ExitCode = 5;
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Не удалось выполнить команду: Произошла неизвестная ошибка");
+    Console.Error.WriteLine(ex);
+    Environment.ExitCode = 5;
 }

@@ -9,28 +9,32 @@ public class EnterpriseSecurityDisplayStatus : WPASecurityDisplayStatus
 {
     public const string DisplayName = "WPA/WPA2 Enterprise";
     public override string Name => DisplayName;
-    [DisplayName("Radius address")]
+
+    [DisplayName("Radius адрес")]
     public IPAddress RadiusAddress { get; }
-    [DisplayName("Radius port")]
+
+    [DisplayName("Radius порт")]
     public int RadiusPort { get; }
-    [DisplayName("Radius password")]
+
+    [DisplayName("Radius пароль")]
     public string RadiusPassword { get; }
 
     public EnterpriseSecurityDisplayStatus(EnterpriseSecurity security)
-        : this(security.Version, 
-               security.EncryptionType, 
-               security.GroupKeyUpdatePeriod, 
-               security.Radius.Password, 
-               security.Radius.Port, 
+        : this(security.Version,
+               security.EncryptionType,
+               security.GroupKeyUpdatePeriod,
+               security.Radius.Password,
+               security.Radius.Port,
                security.Radius.Address)
-    { }
-    
-    public EnterpriseSecurityDisplayStatus(SecurityVersion version, 
-                                           EncryptionType encryptionType, 
-                                           int groupKeyUpdateInterval, 
-                                           string radiusPassword, 
-                                           int radiusPort, 
-                                           IPAddress radiusAddress) 
+    {
+    }
+
+    public EnterpriseSecurityDisplayStatus(SecurityVersion version,
+                                           EncryptionType encryptionType,
+                                           int groupKeyUpdateInterval,
+                                           string radiusPassword,
+                                           int radiusPort,
+                                           IPAddress radiusAddress)
         : base(version, encryptionType, groupKeyUpdateInterval)
     {
         RadiusPassword = radiusPassword;

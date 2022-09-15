@@ -132,7 +132,7 @@ public class WlanConfigurator : BaseWlanConfigurator
                    SecurityVersion.WPA2      => "2",
                    SecurityVersion.Automatic => "3",
                    _ => throw new
-                            FunctionalityNotSupportedRouterException($"Security ${personal.Version} is not supported")
+                            FunctionalityNotSupportedRouterException($"Тип безопасности ${personal.Version} не поддерживается")
                };
     }
 
@@ -143,7 +143,7 @@ public class WlanConfigurator : BaseWlanConfigurator
             EncryptionType.TKIP => "2",
             EncryptionType.AES  => "3",
             _ => throw new
-                     FunctionalityNotSupportedRouterException($"Encryption ${personal.EncryptionType} is not supported")
+                     FunctionalityNotSupportedRouterException($"Шифрование ${personal.EncryptionType} не поддерживается")
         };
 
     private static KeyValuePair<string, string> Pair(string s1, string s2) => new(s1, s2);
@@ -175,14 +175,14 @@ public class WlanConfigurator : BaseWlanConfigurator
                                            WepType.SharedKey  => "2",
                                            WepType.Automatic  => "3",
                                            _ => throw new
-                                                    FunctionalityNotSupportedRouterException($"Wep type {wep.Type} is not supported")
+                                                    FunctionalityNotSupportedRouterException($"WEP тип {wep.Type} не поддерживается")
                                        });
         yield return Pair("keytype", wep.Format switch
                                      {
                                          WepKeyFormat.Hex   => "1",
                                          WepKeyFormat.ASCII => "2",
                                          _ => throw new
-                                                  FunctionalityNotSupportedRouterException($"Wep key type {wep.Format} is not supported")
+                                                  FunctionalityNotSupportedRouterException($"Тип WEP ключа {wep.Format} не поддерживается")
                                      });
 
         // Override first key
@@ -196,7 +196,7 @@ public class WlanConfigurator : BaseWlanConfigurator
                                          WepKeyEncryption.Bit128   => "13",
                                          WepKeyEncryption.Bit152   => "16",
                                          _ => throw new
-                                                  FunctionalityNotSupportedRouterException($"Wep key type {wep.Selected.Encryption} is not supported")
+                                                  FunctionalityNotSupportedRouterException($"Длина WEP ключа {wep.Selected.Encryption} не поддерживается")
                                      });
         for (int i = 2; i < 5; i++)
         {
@@ -209,7 +209,7 @@ public class WlanConfigurator : BaseWlanConfigurator
     {
         if (ssid is null or {Length: < 1 or > 32})
         {
-            throw new ArgumentOutOfRangeException(nameof(ssid), "SSID length must be between 1 and 32");
+            throw new ArgumentOutOfRangeException(nameof(ssid), "Длина SSID должна быть от 1 до 32 символов");
         }
 
         return MessageSender.SendMessageAsync(new RouterHttpMessage("userRpm/WlanNetworkRpm.htm",

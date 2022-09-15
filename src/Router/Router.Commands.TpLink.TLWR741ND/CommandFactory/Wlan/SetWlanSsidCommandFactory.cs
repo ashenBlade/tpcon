@@ -14,7 +14,7 @@ internal class SetWlanSsidCommandFactory : WlanSingleCommandFactory
     public override IRouterCommand CreateRouterCommand(RouterCommandContext context)
     {
         var ssid = context.CurrentCommand
-                ?? throw new ArgumentValueExpectedException("SSID", context.Command.ToArray(), "SSID is not provided");
+                ?? throw new ArgumentValueExpectedException("SSID", context.Command.ToArray(), "SSID не указан");
         return new SetWlanSsidCommand(Wlan, ssid);
     }
 }
