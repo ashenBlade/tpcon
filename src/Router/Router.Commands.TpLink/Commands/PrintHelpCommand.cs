@@ -24,7 +24,7 @@ public class PrintHelpCommand : TpLinkCommand
     }
 
     private static string FormatHelpMessageSection(string name, string content) =>
-        $"{name}:\n{Tabulate(content)}\n";
+        $"{name}:{Tabulate(content)}\n";
 
 
     private string GetFormattedHelpMessage => $"{CommandSection}{DescriptionSection}";
